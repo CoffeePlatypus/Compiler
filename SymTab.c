@@ -31,10 +31,13 @@ CreateSymTab(int size, char * scopeName, struct SymTab * parentTable) {
      // malloc symbol table
      struct SymTab * table = malloc(sizeof(struct SymTab));
      table->scopeName = strdup(scopeName);
-     table->parent = parentTable // This might not be right
+     table->parent = parentTable; // This might not be right
      table->size = 0;
      table->count = 0;
-     table->contents = malloc(sizeof(* struct SymEntry) * size); // contets size = size of SymEntry pointers mult size?
+     table->contents = malloc(sizeof(struct SymEntry *) * size); // contets size = size of SymEntry pointers mult size?
+     for(int i = 0; i<size; i++) { // probably dont need this because content[i] gets malloced when added but it might be a good idea in case I search an empty space
+          table->contents[i] = NULL;
+     }
 }
 
 struct SymTab *
@@ -48,9 +51,9 @@ unsigned int
 HashName(int size, const char *name) {
      int hashy = 0;
      for(int i = 0; i < size; i++) {
-          hash += name[i];
+          hashy += name[i];
      }
-     return hashy;
+     return hashy % size;
 }
 
 // googled strcmp to be sure it works how I thought
@@ -61,6 +64,7 @@ FindHashedName(struct SymTab *aTable, int hashValue, const char *name) {
           if(!strcmp(temp->name, name)) {
                return temp;
           }
+          temp = temp->next;
      }
      return NULL;
 }
@@ -79,23 +83,27 @@ LookupName(struct SymTab *aTable, const char * name) {
 
 struct SymEntry *
 EnterName(struct SymTab *aTable, const char *name) {
-     int hashy = HashName(strlen(name);
-     struct SymEntry * temp = FindHashedName(aTable, hashy, name), name);
+     int hashy = HashName(strlen(name), name);
+     struct SymEntry * temp = FindHashedName(aTable, hashy, name);
      if(temp) {
           return temp;
      }
-     
+     struct SymEntry * newEntry = malloc(sizeof(struct SymEntry));
+     newEntry->name = strdup(name);
+     newEntry->next = aTable->contents[hashy];
+     aTable->contents[hashy] = newEntry;
+     return newEntry;
 }
 
 void
 SetAttr(struct SymEntry *anEntry, int kind, void *attributes) {
      anEntry->attributes = attributes;
-     anEntry->kind = kind;
+     anEntry->attrKind = kind;
 }
 
 int
 GetAttrKind(const struct SymEntry *anEntry) {
-     return anEntry? anEntry->kind : NULL;
+     return anEntry? anEntry->attrKind : NULL;
 }
 
 void *
@@ -115,13 +123,13 @@ GetTable(const struct SymEntry *anEntry) {
 
 const char *
 GetScopeName(const struct SymTab *aTable) {
-     return anEntry? aTable->ScopeName : NULL;
+     return aTable? aTable->scopeName : NULL;
 }
 
 char *
 GetScopeNamePath(const struct SymTab *aTable) {
      // I think I may run into a problem with strcat here
-     return aTable? strcat(aTable->name, GetScopeName(aTable->parent)) : '/0';
+     return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0';
 }
 
 struct SymTab *
