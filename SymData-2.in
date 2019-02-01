@@ -1,0 +1,56 @@
+createtable 10 base
+insert euclid 1
+insert aristotle 2
+insert pythagorous 3
+insert archimedes 4
+insert eudoxus 5
+insert plato 6
+insert nicomachus 7
+insert ptolemy 8
+insert eratosthenes 9
+insert diophantus 10
+insert plato 6
+insert eratosthenes 9
+insert apollonius 11
+insert asclepius 12
+insert democritus 13
+insert hippocrates 14
+insert pythagorous 3
+createtable 5 first base
+insert opal 15
+insert ruby 16
+insert topaz 17
+insert diamond 18
+insert emerald 19
+insert ruby 16
+insert diamond 18
+insert beryl 20
+insert sapphire 21
+insert ruby 16
+insert plato 6
+filtertable first
+transfertable first 15 copy
+destroytable first
+displaytable copy
+destroytable copy
+createtable 5 second base
+insert nothing 28
+createtable 5 third second
+createtable 5 fourth third
+insert gold 22
+insert platinum 23
+insert copper 24
+insert iron 25
+insert tungsten 26
+insert mercury 27
+insert copper 24
+insert pythagorous 3
+insert nothing 28
+displaytable fourth
+lookup nothing
+lookup pythagorous
+lookup plato
+destroytable fourth
+destroytable third
+destroytable second
+destroytable base

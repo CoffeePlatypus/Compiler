@@ -1,0 +1,6 @@
+createtable 10 base
+insert euclid 1
+insert aristotle 2
+lookup euclid
+lookup aristotle
+destroytable base

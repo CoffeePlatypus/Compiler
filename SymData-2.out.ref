@@ -1,0 +1,148 @@
+Start Processing Input
+created base
+entered euclid with 1
+entered aristotle with 2
+entered pythagorous with 3
+entered archimedes with 4
+entered eudoxus with 5
+entered plato with 6
+entered nicomachus with 7
+entered ptolemy with 8
+entered eratosthenes with 9
+entered diophantus with 10
+plato present in scope base with attr 6 1
+eratosthenes present in scope base with attr 9 1
+entered apollonius with 11
+entered asclepius with 12
+entered democritus with 13
+entered hippocrates with 14
+pythagorous present in scope base with attr 3 1
+created first
+entered opal with 15
+entered ruby with 16
+entered topaz with 17
+entered diamond with 18
+entered emerald with 19
+ruby present in scope base>first with attr 16 1
+diamond present in scope base>first with attr 18 1
+entered beryl with 20
+entered sapphire with 21
+ruby present in scope base>first with attr 16 2
+plato present in scope base with attr 6 2
+entered plato with 6
+Filtered Table: base>first
+Cnt Scope                                     Name  Attr
+  0 base>first                                ruby    16     2
+  1 base>first                               beryl    20     0
+  2 base>first                             diamond    18     1
+  3 base>first                               plato     6     0
+  4 base                                 aristotle     2     0
+  5 base                                     plato     6     2
+  6 base                                archimedes     4     0
+  7 base                               hippocrates    14     0
+  8 base                                diophantus    10     0
+  9 base                                   ptolemy     8     0
+ 10 base                                 asclepius    12     0
+transfer base>first:sapphire
+transfer base>first:emerald
+transfer base>first:ruby
+transfer base>first:beryl
+transfer base>first:diamond
+transfer base>first:topaz
+transfer base>first:opal
+transfer base>first:plato
+transfer base:euclid
+transfer base:eratosthenes
+transfer base:eudoxus
+transfer base:pythagorous
+transfer base:aristotle
+transfer base:apollonius
+transfer base:plato
+transfer base:archimedes
+transfer base:hippocrates
+transfer base:nicomachus
+transfer base:democritus
+transfer base:diophantus
+transfer base:ptolemy
+transfer base:asclepius
+Statistics min: 0 max: 3 avg: 1 total: 8
+destroyed first
+Table: copy
+Cnt Scope                                     Name  Attr
+  0 copy                         base:eratosthenes     9     0
+  1 copy                        base>first:diamond    18     0
+  2 copy                              base:ptolemy     8     0
+  3 copy                           base:apollonius    11     0
+  4 copy                           base>first:ruby    16     0
+  5 copy                               base:euclid     1     0
+  6 copy                           base:nicomachus     7     0
+  7 copy                          base:hippocrates    14     0
+  8 copy                              base:eudoxus     5     0
+  9 copy                          base>first:beryl    20     0
+ 10 copy                          base>first:topaz    17     0
+ 11 copy                          base>first:plato     6     0
+ 12 copy                                base:plato     6     0
+ 13 copy                       base>first:sapphire    21     0
+ 14 copy                          base:pythagorous     3     0
+ 15 copy                           base:diophantus    10     0
+ 16 copy                           base:democritus    13     0
+ 17 copy                           base>first:opal    15     0
+ 18 copy                            base:aristotle     2     0
+ 19 copy                            base:asclepius    12     0
+ 20 copy                        base>first:emerald    19     0
+ 21 copy                           base:archimedes     4     0
+Statistics min: 0 max: 4 avg: 1 total: 22
+destroyed copy
+created second
+entered nothing with 28
+created third
+created fourth
+entered gold with 22
+entered platinum with 23
+entered copper with 24
+entered iron with 25
+entered tungsten with 26
+entered mercury with 27
+copper present in scope base>second>third>fourth with attr 24 1
+pythagorous present in scope base with attr 3 2
+entered pythagorous with 3
+nothing present in scope base>second with attr 28 1
+entered nothing with 28
+Table: base>second>third>fourth
+Cnt Scope                                     Name  Attr
+  0 base>second>third>fourth               mercury    27     0
+  1 base>second>third>fourth                  iron    25     0
+  2 base>second>third>fourth           pythagorous     3     0
+  3 base>second>third>fourth                  gold    22     0
+  4 base>second>third>fourth              tungsten    26     0
+  5 base>second>third>fourth               nothing    28     0
+  6 base>second>third>fourth                copper    24     1
+  7 base>second>third>fourth              platinum    23     0
+  8 base>second                            nothing    28     1
+  9 base                                    euclid     1     0
+ 10 base                              eratosthenes     9     1
+ 11 base                                   eudoxus     5     0
+ 12 base                               pythagorous     3     2
+ 13 base                                 aristotle     2     0
+ 14 base                                apollonius    11     0
+ 15 base                                     plato     6     2
+ 16 base                                archimedes     4     0
+ 17 base                               hippocrates    14     0
+ 18 base                                nicomachus     7     0
+ 19 base                                democritus    13     0
+ 20 base                                diophantus    10     0
+ 21 base                                   ptolemy     8     0
+ 22 base                                 asclepius    12     0
+nothing found in table base>second>third>fourth
+nothing found in table base>second
+pythagorous found in table base>second>third>fourth
+pythagorous found in table base
+plato found in table base
+Statistics min: 1 max: 3 avg: 1 total: 8
+destroyed fourth
+Statistics min: 0 max: 0 avg: 0 total: 0
+destroyed third
+Statistics min: 0 max: 1 avg: 0 total: 1
+destroyed second
+Statistics min: 0 max: 3 avg: 1 total: 14
+destroyed base
