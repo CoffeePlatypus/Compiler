@@ -33,6 +33,16 @@ void printTable(struct SymTab * table) {
           if(table->scopeName) printf("Scope Name: %s\n", table->scopeName);
           printf("Size %d\n", table->size);
           printf("Count %d\n\n",table->count);
+          if(1) {
+               for(int i = 0; i<table->size; i++) {
+                    struct SymEntry * temp = table->contents[i];
+                    printf("[%d]\n", i);
+                    while(temp) {
+                         printf("\t %s \n", temp->name);
+                         temp = temp->next;
+                    }
+               }
+          }
      }else{
           printf("NULL table\n");
      }
@@ -61,6 +71,15 @@ DestroySymTab(struct SymTab *aTable) {
      struct SymTab *temp = aTable->parent;
      free(aTable->scopeName);
      // TODO add more free, like for contents probably
+     for(int i = 0; i<aTable->size; i++) {
+          struct SymEntry * temp = aTable->contents[i];
+          while(temp) {
+               struct SymEntry * next = temp->next;
+               free(temp);
+               temp = next;
+          }
+     }
+     free(aTable->contents);
      free(aTable);
      if (debug) printf("freed sym tab\n");
      return temp;
@@ -96,7 +115,7 @@ struct SymEntry *
 LookupName(struct SymTab *aTable, const char * name) {
      if(!(aTable && name)) return NULL;
      if (debug) printf("lookup name : %s\n", name);
-     struct SymEntry * temp = FindHashedName(aTable, HashName(strlen(name), name), name);
+     struct SymEntry * temp = FindHashedName(aTable, HashName(aTable->size, name), name);
      if(temp) {
           return temp;
      }else if(aTable->parent) {
@@ -125,9 +144,14 @@ EnterName(struct SymTab *aTable, const char *name) {
      struct SymEntry * newEntry = malloc(sizeof(struct SymEntry));
      newEntry->name = strdup(name);
      newEntry->next = aTable->contents[hashy];
+     newEntry->table = aTable;
      aTable->contents[hashy] = newEntry;
      aTable->count++;
-     if (debug) printf("added name\n\n");
+     if (debug) {
+          printf("added name\n\n");
+          // Statistics(aTable);
+          printTable(aTable);
+     }
      return newEntry;
 }
 
@@ -139,7 +163,7 @@ SetAttr(struct SymEntry *anEntry, int kind, void *attributes) {
 
 int
 GetAttrKind(const struct SymEntry *anEntry) {
-     return anEntry? anEntry->attrKind : NULL;
+     return anEntry? anEntry->attrKind : 0;
 }
 
 void *
@@ -182,21 +206,25 @@ void ProvisionArray(struct SymTab * aTable, bool includeParents) {
   // if (entryArraySize < reqSize) {
   //   entryArray = realloc(entryArray,reqSize * sizeof(struct SymEntry *));
   // }
+  printf("aint supported 1\n");
 }
 
 void
 CollectEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
   // enumerate table collecting SymEntry pointers, if testFunc provided used to
   // select entries, null terminate the array
+  printf("aint supported 2\n");
 }
 
 struct SymEntry **
 GetEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
+     printf("aint supported 3\n");
      return NULL;
 }
 
 struct Stats *
 Statistics(struct SymTab *aTable) {
+     if(debug) printf("\n printing stats\n");
      struct Stats * stats = malloc(sizeof(struct Stats));
      struct SymEntry * temp = aTable->contents[0];
      int count = 0;
@@ -204,6 +232,7 @@ Statistics(struct SymTab *aTable) {
           count++;
           temp = temp->next;
      }
+     if (debug) printf("hash [0] : %d\n", count);
      stats->minLen = count;
      stats->maxLen = count;
      stats->entryCnt = count;
@@ -220,7 +249,9 @@ Statistics(struct SymTab *aTable) {
           }else if(count > stats->maxLen) {
                stats->maxLen = count;
           }
+          if (debug) printf("hash [%d] : %d\n", i, count);
      }
+     if(debug) printf("\n");
      stats->avgLen = stats->entryCnt / aTable->size;
      return stats;
 }
