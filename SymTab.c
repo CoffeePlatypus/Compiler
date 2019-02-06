@@ -59,7 +59,7 @@ CreateSymTab(int size, char * scopeName, struct SymTab * parentTable) {
      table->count = 0;
      table->contents = malloc(size * sizeof(struct SymEntry *)); // contets size = size of SymEntry pointers mult size?
      for(int i = 0; i<size; i++) { //idk
-          table->contents[i] = NULL;//malloc(sizeof(struct SymEntry));
+          table->contents[i] = NULL;
      }
      if (debug) printTable(table);
      return table;
@@ -70,11 +70,11 @@ DestroySymTab(struct SymTab *aTable) {
      if (debug) printf("free sym tab\n");
      struct SymTab *temp = aTable->parent;
      free(aTable->scopeName);
-     // TODO add more free, like for contents probably
      for(int i = 0; i<aTable->size; i++) {
           struct SymEntry * temp = aTable->contents[i];
           while(temp) {
                struct SymEntry * next = temp->next;
+               free(temp->name);
                free(temp);
                temp = next;
           }
@@ -145,6 +145,8 @@ EnterName(struct SymTab *aTable, const char *name) {
      newEntry->name = strdup(name);
      newEntry->next = aTable->contents[hashy];
      newEntry->table = aTable;
+     newEntry->attributes = NULL;
+     newEntry->attrKind = 0;
      aTable->contents[hashy] = newEntry;
      aTable->count++;
      if (debug) {
@@ -188,8 +190,19 @@ GetScopeName(const struct SymTab *aTable) {
 
 char *
 GetScopeNamePath(const struct SymTab *aTable) {
+     // if(!aTable) {
+     //      // probs wrong
+     //      return '/0';
+     // }else{
+     //      char * parentString = GetScopeNamePath(aTable->parent);
+     //      char * dest =
+     //
+     // }
      // I think I may run into a problem with strcat here
-     return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0';
+     // return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0';
+     // ^ that won't works. shoot. will have to do a peice at a times
+     // do peice at a time counting string lenght;
+     return NULL;
 }
 
 struct SymTab *
@@ -197,29 +210,63 @@ GetParentTable(const struct SymTab *aTable) {
      return aTable? aTable->parent : NULL;
 }
 
+/// why are these scoped outside the methods?
 struct SymEntry ** entryArray = NULL;
 int entryArraySize = 0;
 
 void ProvisionArray(struct SymTab * aTable, bool includeParents) {
-  // sum table sizes to get requested size
-  // what do?
-  // if (entryArraySize < reqSize) {
-  //   entryArray = realloc(entryArray,reqSize * sizeof(struct SymEntry *));
-  // }
-  printf("aint supported 1\n");
+     // sum table sizes to get requested size
+     // TODO sum counts in aTable and maybe parents. lol what that said ^
+     int reqSize = aTable->count;
+     if(includeParents) {
+          struct SymTab * temp = aTable->parent;
+          while(temp) {
+               reqSize += temp->count;
+               temp = temp->parent;
+          }
+     }
+     reqSize ++;
+     if (entryArraySize < reqSize) {
+          entryArray = realloc(entryArray,reqSize * sizeof(struct SymEntry *));
+     }
+     printf("supported 1 ?\n");
 }
 
 void
 CollectEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
   // enumerate table collecting SymEntry pointers, if testFunc provided used to
   // select entries, null terminate the array
-  printf("aint supported 2\n");
+  printf("supported 2 ?\n");
+//   if(!entryTestFunct) { // if entry exists
+//      entryTestFunct(entry); // if keep entry
+// }
+     int entIndex = 0;
+     for(int i = 0; i < aTable->size; i++) {
+          struct SymEntry * temp = aTable->contents[i];
+          while(temp) {
+               if(!testFunc) { // if filter funct exists
+                    if(testFunc(temp)) {
+                         entryArray[entIndex++] = temp;
+                    }
+               }else{ // just get everything
+                    entryArray[entIndex++] = temp;
+               }// see if can simplify
+               temp = temp->next;
+          }
+     }
+     entryArray[entIndex] = NULL;
+     // todo add parents;
 }
 
 struct SymEntry **
 GetEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
-     printf("aint supported 3\n");
-     return NULL;
+     printf("supported 3?\n");
+     // ProvisionArray
+     ProvisionArray(aTable, includeParents);
+     // collect
+     CollectEntries(aTable, includeParents, testFunc);
+     // return?
+     return entryArray;
 }
 
 struct Stats *
