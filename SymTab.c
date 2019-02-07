@@ -189,25 +189,26 @@ GetScopeName(const struct SymTab *aTable) {
 
 char *
 GetScopeNamePath(const struct SymTab *aTable) {
-     printf("\nsdoisjdjsdoisdj\n");
      // I think I may run into a problem with strcat here
      // return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0'; <- no work
-     // if(!aTable) {
-     //      printf("\tno table\n");
-     //      return "/0";
-     // }else if(!aTable->parent) {
-     //      printf("\tno parent\n");
-     //      return aTable->scopeName;
-     // }else{
-     //      printf("\trecur!\n");
-     //      char * parentString = GetScopeNamePath(aTable->parent);
-     //      char * dest = malloc( (strlen(parentString)+strlen(aTable->scopeName)+2) * sizeof(char));
-     //      strcat(dest, aTable->scopeName);
-     //      strcat(dest, "/");
-     //      strcat(dest, parentString);
-     //      return dest;
-     // }
-     return strdup("\0");//strdup(aTable->scopeName);
+     if(!aTable) {
+          // printf("\tno table\n");
+          return strdup("");
+     }else if(!aTable->parent) {
+          // printf("\tno parent: %s\n",aTable->scopeName);
+          return strdup(aTable->scopeName);
+     }else{
+
+          char * parentString = GetScopeNamePath(aTable->parent);
+          // printf("\t%s has parent %s with len %d\n", aTable->scopeName, parentString,strlen(parentString));
+          char * dest = malloc( (strlen(parentString)+strlen(aTable->scopeName)+2) * sizeof(char));
+          strcat(dest, parentString);
+          free(parentString);
+          strcat(dest, ">");
+          strcat(dest, aTable->scopeName);
+          return dest;
+     }
+     return strdup(aTable->scopeName);
 
 }
 
