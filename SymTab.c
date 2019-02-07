@@ -130,7 +130,6 @@ LookupName(struct SymTab *aTable, const char * name) {
 struct SymEntry *
 EnterName(struct SymTab *aTable, const char *name) {
      if(!(aTable && name)) return NULL;
-
      if (debug) {
           printf("enter name : %s\n", name);
           // printTable(aTable);
@@ -190,19 +189,26 @@ GetScopeName(const struct SymTab *aTable) {
 
 char *
 GetScopeNamePath(const struct SymTab *aTable) {
-     // if(!aTable) {
-     //      // probs wrong
-     //      return '/0';
-     // }else{
-     //      char * parentString = GetScopeNamePath(aTable->parent);
-     //      char * dest =
-     //
-     // }
+     printf("\nsdoisjdjsdoisdj\n");
      // I think I may run into a problem with strcat here
-     // return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0';
-     // ^ that won't works. shoot. will have to do a peice at a times
-     // do peice at a time counting string lenght;
-     return NULL;
+     // return aTable? strcat(aTable->scopeName, GetScopeName(aTable->parent)) : '/0'; <- no work
+     // if(!aTable) {
+     //      printf("\tno table\n");
+     //      return "/0";
+     // }else if(!aTable->parent) {
+     //      printf("\tno parent\n");
+     //      return aTable->scopeName;
+     // }else{
+     //      printf("\trecur!\n");
+     //      char * parentString = GetScopeNamePath(aTable->parent);
+     //      char * dest = malloc( (strlen(parentString)+strlen(aTable->scopeName)+2) * sizeof(char));
+     //      strcat(dest, aTable->scopeName);
+     //      strcat(dest, "/");
+     //      strcat(dest, parentString);
+     //      return dest;
+     // }
+     return strdup("\0");//strdup(aTable->scopeName);
+
 }
 
 struct SymTab *
@@ -213,6 +219,7 @@ GetParentTable(const struct SymTab *aTable) {
 /// why are these scoped outside the methods?
 struct SymEntry ** entryArray = NULL;
 int entryArraySize = 0;
+int entIndex = 0;
 
 void ProvisionArray(struct SymTab * aTable, bool includeParents) {
      // sum table sizes to get requested size
@@ -229,43 +236,55 @@ void ProvisionArray(struct SymTab * aTable, bool includeParents) {
      if (entryArraySize < reqSize) {
           entryArray = realloc(entryArray,reqSize * sizeof(struct SymEntry *));
      }
-     printf("supported 1 ?\n");
 }
 
 void
 CollectEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
   // enumerate table collecting SymEntry pointers, if testFunc provided used to
   // select entries, null terminate the array
-  printf("supported 2 ?\n");
+  if(debug) printf("collect\n");
 //   if(!entryTestFunct) { // if entry exists
 //      entryTestFunct(entry); // if keep entry
 // }
-     int entIndex = 0;
+     if(!aTable) return;
+     if(debug) printTable(aTable);
+
      for(int i = 0; i < aTable->size; i++) {
           struct SymEntry * temp = aTable->contents[i];
           while(temp) {
-               if(!testFunc) { // if filter funct exists
-                    if(testFunc(temp)) {
-                         entryArray[entIndex++] = temp;
-                    }
-               }else{ // just get everything
-                    entryArray[entIndex++] = temp;
-               }// see if can simplify
+               if(!testFunc || testFunc(temp)) { // much better than before
+                     entryArray[entIndex++] = temp;
+                }
                temp = temp->next;
           }
+     }
+     if(includeParents) {
+          CollectEntries(aTable->parent, includeParents, testFunc);
      }
      entryArray[entIndex] = NULL;
      // todo add parents;
 }
 
+void printEntries() {
+     printf("Printin entries\n");
+     int i = 0;
+     struct SymEntry * temp = entryArray[i++];
+     while(temp) {
+          printf("\t%s\n", temp->name);
+          temp = entryArray[i++];
+     }
+}
+
 struct SymEntry **
 GetEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
-     printf("supported 3?\n");
+     if(debug) printf("get entries\n");
      // ProvisionArray
      ProvisionArray(aTable, includeParents);
      // collect
+     entIndex = 0;
      CollectEntries(aTable, includeParents, testFunc);
      // return?
+     if(debug) printEntries();
      return entryArray;
 }
 
