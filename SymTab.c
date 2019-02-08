@@ -200,12 +200,17 @@ GetScopeNamePath(const struct SymTab *aTable) {
      }else{
 
           char * parentString = GetScopeNamePath(aTable->parent);
-          // printf("\t%s has parent %s with len %d\n", aTable->scopeName, parentString,strlen(parentString));
+          //printf("\t%s has parent %s with len %d\n", aTable->scopeName, parentString,strlen(parentString));
           char * dest = malloc( (strlen(parentString)+strlen(aTable->scopeName)+2) * sizeof(char));
+          dest[0] = '\0';
+          //printf("\t\t%s\n",dest);
           strcat(dest, parentString);
+          //printf("\t\t%s\n",dest);
           free(parentString);
           strcat(dest, ">");
+          //printf("\t\t%s\n",dest);
           strcat(dest, aTable->scopeName);
+          //printf("\t\t%s\n",dest);
           return dest;
      }
      return strdup(aTable->scopeName);
