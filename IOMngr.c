@@ -82,7 +82,7 @@ OpenSource(const char * aFilename) {
   if (fstat(sourceFD,&buf)) return false;
   sourceByteCnt = buf.st_size;
   source = mmap(NULL,sourceByteCnt,PROT_READ,MAP_PRIVATE,sourceFD,0);
-  //
+  // figure out what to add
   //
   //
 }
@@ -107,7 +107,7 @@ PostMessage(struct Span span, const char * aMessage) {
       // update temps
     }else if((span->first >= temp->span->first && span->first <= temp->span->last)
           || (span->last >= temp->span->first && span->last <= temp->span->last)) {
-      return false;
+      return false; // drop overlapping span
     }else{
       Message * pre = temp;
       temp = temp->next;
@@ -118,14 +118,14 @@ PostMessage(struct Span span, const char * aMessage) {
           new = MakeMessage(span, temp->seqNumber, aMessage);
         }else if(span->first >= temp->span->first && span->first <= temp->span->last)
               || (span->last >= temp->span->first && span->last <= temp->span->last))) {
-          return false;
+          return false; // drop overlapping span
         }else{
           pre = temp;
           temp = temp->next;
         }
       }
       while(temp) {
-        // increment seqNumber because added before
+        // increment seqNumber because added a span before
         temp->seqNumber++;
         temp = temp->next;
       }
