@@ -47,6 +47,40 @@ symtest-2: SymTabDriver
 		@echo -n "Testing SymData-2 " >&2 ; \
 		cmp -s SymData-2.out SymData-2.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
 
+symtabref:
+		@for file in SymData-0 SymData-1 SymData-2 ; do \
+		  cp $$file.out $$file.out.ref ;\
+		done
+
+#===========================
+# IOMngr Project
+IOMngr.o: IOMngr.c IOMngr.h
+IOMngrDriver.o: IOMngrDriver.c IOMngr.h
+IOMngrDriver: IOMngrDriver.o IOMngr.o
+IOMngrTest.o: IOMngrTest.c IOMngr.h
+IOMngrTest: IOMngrTest.o IOMngr.o
+
+iotest:	IOMngrDriver IOMngrTest
+		make -s iotest-0
+		make -s iotest-1
+		make -s iotest-2
+
+iotest-0: IOMngrTest
+		@./IOMngrTest | tee IOMngrTest.out
+		@echo -n "Testing IOMngr-0 " >&2 ; \
+		cmp -s IOMngrTest.out IOMngrTest.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
+
+iotest-1: IOMngrDriver
+		@./IOMngrDriver IOMngrSource | tee IOMngr.out
+		@echo -n "Testing IOMngr-1 " >&2 ; \
+		cmp -s IOMngr.out IOMngr.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
+
+iotest-2: IOMngrDriver
+		@./IOMngrDriver -u IOMngrSource | tee IOMngr-UNKN.out
+		@echo -n "Testing IOMngr-3 " >&2 ; \
+		cmp -s IOMngr-UNKN.out IOMngr-UNKN.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
+
+#===========================
 # Other
 clean:
-	rm -f *.o SymTabDriver 
+	rm -f *.o SymTabDriver IOMngrTest IOMngrDriver ScannerDriver RecDescent Parse ParserScanner.c YGrammar.c Y-1 Y-2 Y-3 Y-4 y.tab.h
