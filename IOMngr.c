@@ -39,6 +39,7 @@ MakeMessage(struct Span span, int seq, const char * message) {
 
 void
 FreeHeadMessage() {
+  // does this free all messages?
 }
 
 bool
@@ -94,8 +95,46 @@ int
 GetSourceChar() {
 }
 
+
 bool
 PostMessage(struct Span span, const char * aMessage) {
+  // look for if you should add msg
+  if(Messages) {
+    Message * temp = Messages;
+    if(span->last < temp->span->first) {
+      Message * new = MakeMessage(span, 0, aMessage);
+      new->next = temp;
+      // update temps
+    }else if((span->first >= temp->span->first && span->first <= temp->span->last)
+          || (span->last >= temp->span->first && span->last <= temp->span->last)) {
+      return false;
+    }else{
+      Message * pre = temp;
+      temp = temp->next;
+      bool searching = 1;
+      while(temp && searching){
+        if (span->first > pre->span->last && span->last < temp->span->first) {
+          //add here
+          new = MakeMessage(span, temp->seqNumber, aMessage);
+        }else if(span->first >= temp->span->first && span->first <= temp->span->last)
+              || (span->last >= temp->span->first && span->last <= temp->span->last))) {
+          return false;
+        }else{
+          pre = temp;
+          temp = temp->next;
+        }
+      }
+      while(temp) {
+        // increment seqNumber because added before
+        temp->seqNumber++;
+        temp = temp->next;
+      }
+    }
+  }else{
+    Message = MakeMessage(span, 0, aMessage);
+  }
+  // if add message make it
+
 }
 
 int
