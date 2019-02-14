@@ -68,7 +68,7 @@ CreateSymTab(int size, char * scopeName, struct SymTab * parentTable) {
 struct SymTab *
 DestroySymTab(struct SymTab *aTable) {
      if (debug) printf("free sym tab\n");
-     struct SymTab *temp = aTable->parent;
+     struct SymTab *par = aTable->parent;
      free(aTable->scopeName);
      for(int i = 0; i<aTable->size; i++) {
           struct SymEntry * temp = aTable->contents[i];
@@ -82,7 +82,7 @@ DestroySymTab(struct SymTab *aTable) {
      free(aTable->contents);
      free(aTable);
      if (debug) printf("freed sym tab\n");
-     return temp;
+     return par;
 }
 
 unsigned int
