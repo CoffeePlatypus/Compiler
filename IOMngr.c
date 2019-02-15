@@ -43,17 +43,21 @@ void printMesages() {
   struct Message * temp = Messages;
   while(temp) {
     printf("Message : %s\n", temp->message);
-    printf("\tSpan : %d - %d\n",temp->span.first, temp->span.last);
-    printf("\tseq num : %d\n", temp->seqNumber);
+    printf("\t\tSpan : %d - %d\n",temp->span.first, temp->span.last);
+    printf("\t\tseq num : %d\n", temp->seqNumber);
     temp = temp->next;
   }
 }
 
 void
 FreeHeadMessage() {
-  // does this free all messages?
-  // no use it to pop and and keep looking at head;
   printf("free");
+  if(Messages) {
+      struct Message * temp = Messages;
+
+  }else{
+
+  }
 }
 
 bool
@@ -105,7 +109,9 @@ OpenSource(const char * aFilename) {
   source = mmap(NULL,sourceByteCnt,PROT_READ,MAP_PRIVATE,sourceFD,0);
   sourceIndex = 0;
   curLine = 1;
-
+  nextMessageNumber = 0;
+  nextChar = source;
+  sourceLastChar = source + sourceByteCnt - 1;
   // figure out what to add
   //
   //
@@ -121,24 +127,32 @@ CloseSource() {
 
 int
 GetSourceChar() {
-  if(source[sourceIndex] == '\0' || source[sourceIndex] == EOF) {
+  // if(source[sourceIndex] == '\0' || source[sourceIndex] == EOF) {
+  //   return EOF;
+  // }else if(source[sourceIndex] == '\n'){
+  //   curLine++;
+  // }
+  // return source[sourceIndex++];
+  if(*nextChar == '\0' || *nextChar == EOF) {
     return EOF;
-  }else if(source[sourceIndex] == '\n'){
+  }else if(*nextChar == '\n'){
     curLine++;
   }
-  return source[sourceIndex++];
+  char temp = *nextChar;
+  nextChar++;
+  return temp;
 }
 
-// ASK ABOUT MESSAGE NUMBERS!!!!!!
+
 bool
 PostMessage(struct Span span, const char * aMessage) {
-  printf("Post Message\n");
+  printf("\nPost Message with span: %d - %d\n",span.first, span.last);
   // look for if you should add msg
   if(Messages) {
     struct Message * temp = Messages;
     if(span.last < temp->span.first) {
       printf("\tnew message head\n");
-      struct Message * new = MakeMessage(span, 0, aMessage);
+      struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
       new->next = temp;
       // update temps
     }else if((span.first >= temp->span.first && span.first <= temp->span.last)
@@ -150,14 +164,16 @@ PostMessage(struct Span span, const char * aMessage) {
       temp = temp->next;
       bool searching = 1;
       while(temp && searching){
+        printf("temp span: %d %d", temp->span.first, temp->span.last);
         if (span.first > pre->span.last && span.last < temp->span.first) {
           printf("\tfound span spot\n");
-          struct Message * new = MakeMessage(span, temp->seqNumber, aMessage);
+          struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
           new->next = pre->next;
           pre->next = new;
           searching = 0;
         }else if((span.first >= temp->span.first && span.first <= temp->span.last)
-              || (span.last >= temp->span.first && span.last <= temp->span.last)) {
+              || (span.last >= temp->span.first && span.last <= temp->span.last)
+              || span.first < temp->span.first) {
           printf("\t dup\n");
           return false; // drop overlapping span
         }else{
@@ -166,21 +182,15 @@ PostMessage(struct Span span, const char * aMessage) {
         }
       }
       if(searching) {
-        struct Message * new = MakeMessage(span, temp->seqNumber, aMessage);
+        printf("add end\n");
+        struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
         new->next = pre->next;
         pre->next = new;
-      }else{
-        /// May not need this depending on intpretation of sequence number
-        while(temp) {
-          temp->seqNumber++;
-          temp = temp->next;
-        }
       }
-
     }
   }else{
     printf("\tno messages\n");
-    Messages = MakeMessage(span, 0, aMessage);
+    Messages = MakeMessage(span, nextMessageNumber++, aMessage);
   }
   return true;
 }
