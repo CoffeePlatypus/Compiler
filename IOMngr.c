@@ -51,12 +51,12 @@ void printMesages() {
 
 void
 FreeHeadMessage() {
-  printf("free");
+  //printf("free");
   if(Messages) {
       struct Message * temp = Messages;
-
-  }else{
-
+      Messages = temp->next;
+      free(temp->message);
+      free(Messages);
   }
 }
 
@@ -86,7 +86,10 @@ OutputInterval(char * start, char * stop) {  // give this span after starting or
 
 void
 OutputMessagesBefore(struct Message * curMsg) {
-  printf("output messages before\n");
+  //
+  //printf("output messages before\n");
+  OutputInterval(nextChar, source+curMsg->span.first-1);
+  nextChar += curMsg->span.first;
 }
 
 void
@@ -95,6 +98,17 @@ OutputSource() {
   // gets things started?
   // march through buffer when it is time to turn color on/off
   //Uses spans being in order
+    curLine = 1;
+    nextChar = source;
+    int index = 0;
+    while(Messages) {
+      OutputMessagesBefore(Messages);
+      OutputMarkStart(Messages);
+      OutputInterval(nextChar, source+Messages->span.last);
+      nextChar += Messages->span.last + 1;
+      OutputMarkStop();
+      FreeHeadMessage();
+    }
 }
 
 bool
@@ -122,6 +136,7 @@ void
 CloseSource() {
   // can't display until here
   printMesages();
+  OutputSource();
   printf("close source\n" );
 }
 
