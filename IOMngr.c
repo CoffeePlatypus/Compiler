@@ -18,6 +18,7 @@ int curLine;
 int nextMessageNumber;
 int nextEOFSpan;
 int sourceIndex;
+bool debug = 0;
 
 struct Message {
   struct Span span;
@@ -41,6 +42,9 @@ MakeMessage(struct Span span, int seq, const char * message) {
 
 void printMesages() {
   struct Message * temp = Messages;
+  if(!temp) {
+    printf("No Messages\n");
+  }
   while(temp) {
     printf("Message : %s\n", temp->message);
     printf("\t\tSpan : %d - %d\n",temp->span.first, temp->span.last);
@@ -65,6 +69,10 @@ isLineBreak(char * c) {
   return *c == '\n' || *c == '\r' || c == sourceLastChar;
 }
 
+bool isEOFSpan(struct Span span) {
+  return span.first == span.last;
+}
+
 // ansi escape sequences for colors
 char * colorSeqs[] = {"\033[91m","\033[92m","\033[93m","\033[94m","\033[95m","\033[96m"};
 
@@ -87,9 +95,9 @@ OutputInterval(char * start, char * stop) {  // give this span after starting or
 void
 OutputMessagesBefore(struct Message * curMsg) {
   //
-  //printf("output messages before\n");
+  // printf("\t before span: %d\n", curMsg->span.first);
   OutputInterval(nextChar, source+curMsg->span.first-1);
-  nextChar += curMsg->span.first;
+  nextChar = source + curMsg->span.first;
 }
 
 void
@@ -102,20 +110,28 @@ OutputSource() {
     nextChar = source;
     int index = 0;
     while(Messages) {
+      // printf("\tNext Span [%d - %d]\n", (int)(nextChar-source), Messages->span.first);
       OutputMessagesBefore(Messages);
+      // printf("\tNext span: [%d - %d]\n", (int)(nextChar-source), Messages->span.last);
       OutputMarkStart(Messages);
-      OutputInterval(nextChar, source+Messages->span.last);
-      nextChar += Messages->span.last + 1;
+      if (isEOFSpan(Messages->span)) {
+        printf("%s", Messages->message);
+      }else{
+        OutputInterval(nextChar, source+Messages->span.last);
+      }
+      nextChar = source + Messages->span.last +1;
+
       OutputMarkStop();
       FreeHeadMessage();
+      // if (Messages) printf("\nnext msg ::: %s\n", Messages->message);
     }
 }
 
 bool
 OpenSource(const char * aFilename) {
-  printf("open source\n");
+  if (debug) printf("open source\n");
   sourceFD = open(aFilename,O_RDONLY);
-  printf("sourceFD: %d\n",sourceFD); /// what is source FD
+  if (debug) printf("sourceFD: %d\n",sourceFD); /// what is source FD
   if (sourceFD < 0) return false;
   struct stat buf;
   if (fstat(sourceFD,&buf)) return false;
@@ -127,8 +143,6 @@ OpenSource(const char * aFilename) {
   nextChar = source;
   sourceLastChar = source + sourceByteCnt - 1;
   // figure out what to add
-  //
-  //
   return true;
 }
 
@@ -137,7 +151,7 @@ CloseSource() {
   // can't display until here
   printMesages();
   OutputSource();
-  printf("close source\n" );
+  // printf("close source\n" );
 }
 
 int
@@ -161,27 +175,33 @@ GetSourceChar() {
 
 bool
 PostMessage(struct Span span, const char * aMessage) {
-  printf("\nPost Message with span: %d - %d\n",span.first, span.last);
+  if (debug) printf("\nPost Message with span: %d - %d\n",span.first, span.last);
   // look for if you should add msg
   if(Messages) {
     struct Message * temp = Messages;
-    if(span.last < temp->span.first) {
-      printf("\tnew message head\n");
+    if(isEOFSpan(span)) {
+      while(temp->next) {
+        temp = temp->next;
+      }
+      temp->next = MakeMessage(span, nextMessageNumber++, aMessage);
+    }else if(span.last < temp->span.first) {
+      if (debug) printf("\tnew message head\n");
       struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
       new->next = temp;
       // update temps
     }else if((span.first >= temp->span.first && span.first <= temp->span.last)
           || (span.last >= temp->span.first && span.last <= temp->span.last)) {
-      printf("\t dup\n");
+      if (debug) printf("\t dup\n");
+      nextMessageNumber++;
       return false; // drop overlapping span
     }else{
       struct Message * pre = temp;
       temp = temp->next;
       bool searching = 1;
       while(temp && searching){
-        printf("temp span: %d %d", temp->span.first, temp->span.last);
+        if (debug) printf("temp span: %d %d", temp->span.first, temp->span.last);
         if (span.first > pre->span.last && span.last < temp->span.first) {
-          printf("\tfound span spot\n");
+          if(debug) printf("\tfound span spot\n");
           struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
           new->next = pre->next;
           pre->next = new;
@@ -189,7 +209,8 @@ PostMessage(struct Span span, const char * aMessage) {
         }else if((span.first >= temp->span.first && span.first <= temp->span.last)
               || (span.last >= temp->span.first && span.last <= temp->span.last)
               || span.first < temp->span.first) {
-          printf("\t dup\n");
+          if(debug) printf("\t dup\n");
+          nextMessageNumber++;
           return false; // drop overlapping span
         }else{
           pre = temp;
@@ -197,14 +218,14 @@ PostMessage(struct Span span, const char * aMessage) {
         }
       }
       if(searching) {
-        printf("add end\n");
+        if (debug) printf("add end\n");
         struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
         new->next = pre->next;
         pre->next = new;
       }
     }
   }else{
-    printf("\tno messages\n");
+    if (debug) printf("\tno messages\n");
     Messages = MakeMessage(span, nextMessageNumber++, aMessage);
   }
   return true;
