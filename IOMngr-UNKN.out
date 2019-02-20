@@ -1,0 +1,21 @@
+    1: [91m;[0m
+[91m     **[0m SEMI found
+    2:           [92m;[0m
+[92m     **[0m SEMI found
+    3: var [93m=[0m [94m25[0m[95m;[0m
+[93m     **[0m EQUAL found
+[94m     **[0m NUMBR found
+[95m     **[0m SEMI found
+    4: longvar [96m=[0m [91m4713[0m [92m-[0m 22;
+[96m     **[0m EQUAL found
+[91m     **[0m NUMBR found
+[92m     **[0m UNKWN found
+    5: 
+    6: ;         ;
+    7: 
+    8: more=54;
+    9: 
+   10: a more or less long line that does not really contain much
+   11: 
+   12: 12,13,14,15
+   13: 16;17;18;19;

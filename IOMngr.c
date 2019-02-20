@@ -16,9 +16,11 @@ char * sourceLastChar;
 char * nextChar;        // address of next char to return
 int curLine;
 int nextMessageNumber;
-int nextEOFSpan;
+int nextEOFSpan = -1;
 int sourceIndex;
 bool debug = 0;
+bool containsNewLine = false;
+bool marked = false;
 
 struct Message {
   struct Span span;
@@ -28,6 +30,8 @@ struct Message {
 };
 
 struct Message * Messages;
+struct Message * Removed;
+struct Message * EOFMessages;
 
 struct Message *
 MakeMessage(struct Span span, int seq, const char * message) {
@@ -36,7 +40,7 @@ MakeMessage(struct Span span, int seq, const char * message) {
   msg->seqNumber = seq;
   msg->message = strdup(message);
   msg->next = NULL;
-  printf("New message: %s", message);
+  // printf("New message: %s", message);
   return msg;
 }
 
@@ -53,14 +57,59 @@ void printMesages() {
   }
 }
 
+void printEOFs() {
+  struct Message * temp = EOFMessages;
+  if(!temp) {
+    printf("no eofs\n");
+  }
+  while(temp) {
+    printf("Message : %s\n", temp->message);
+    temp = temp->next;
+  }
+}
+
+void addRemoved(struct Message * temp) {
+  if(Removed) {
+    struct Message * pre = Removed;
+    while(pre->next) {
+      pre = pre->next;
+    }
+    pre->next = temp;
+    temp->next = NULL;
+  }else{
+    Removed = temp;
+    temp->next = NULL;
+  }
+}
+
+void clearRemoved() {
+  while(Removed) {
+    struct Message * temp = Removed;
+    Removed = temp->next;
+    free(temp->message);
+    free(temp);
+  }
+}
+
 void
 FreeHeadMessage() {
   //printf("free");
   if(Messages) {
       struct Message * temp = Messages;
       Messages = temp->next;
-      free(temp->message);
-      free(Messages);
+      addRemoved(temp);
+      // free(temp->message);
+      // free(Messages);
+  }
+}
+
+void FreeHeadEOF() {
+  if(EOFMessages) {
+    struct Message * temp = EOFMessages;
+    EOFMessages = temp->next;
+    addRemoved(temp);
+    free(temp->message);
+    free(EOFMessages);
   }
 }
 
@@ -70,7 +119,7 @@ isLineBreak(char * c) {
 }
 
 bool isEOFSpan(struct Span span) {
-  return span.first == span.last;
+  return span.first == span.last && span.first < 0;
 }
 
 // ansi escape sequences for colors
@@ -79,57 +128,110 @@ char * colorSeqs[] = {"\033[91m","\033[92m","\033[93m","\033[94m","\033[95m","\0
 void
 OutputMarkStart(struct Message * msg) {
   fprintf(stdout,"%s",colorSeqs[(msg->seqNumber % 6)]);
+  marked = true;
 }
 
 void
 OutputMarkStop() {
   fprintf(stdout,"\033[0m");
+  marked = false;
+}
+
+void printRemoved() {
+  struct Message * temp = Removed;
+  while(temp) {
+    OutputMarkStart(temp);
+    printf("     **");
+    OutputMarkStop();
+    printf(" %s\n",temp->message);
+    temp = temp->next;
+  }
 }
 
 void
 OutputInterval(char * start, char * stop) {  // give this span after starting or stopping color
   if (stop < start) return;
-  fwrite(start,stop - start + 1,1,stdout);
+  char * temp = start;
+  if (containsNewLine) {
+    bool mark = marked;
+    if(marked) {
+      OutputMarkStop();
+
+    }
+    printRemoved();
+    clearRemoved();
+    printf("   %2d: ", curLine);
+    containsNewLine = false;
+    if(mark){
+      OutputMarkStart(Messages);
+    }
+  }
+  while (temp < stop && !isLineBreak(temp)) {
+    temp++;
+  }
+  if (temp != stop || isLineBreak(temp)) {
+    fwrite(start,temp - start + 1,1,stdout);
+    // printf("\t");
+    containsNewLine = true;
+    curLine++;
+    OutputInterval(temp+1, stop);
+  }else{
+      fwrite(start,stop - start + 1,1,stdout);
+  }
+
 }
 
 void
 OutputMessagesBefore(struct Message * curMsg) {
-  //
-  // printf("\t before span: %d\n", curMsg->span.first);
   OutputInterval(nextChar, source+curMsg->span.first-1);
   nextChar = source + curMsg->span.first;
 }
 
 void
 OutputSource() {
-  printf("OutputSource\n");
+  // printf("OutputSource\n");
   // gets things started?
   // march through buffer when it is time to turn color on/off
   //Uses spans being in order
     curLine = 1;
     nextChar = source;
     int index = 0;
+    containsNewLine = false;
+    printf("   %2d: ", curLine);
     while(Messages) {
       // printf("\tNext Span [%d - %d]\n", (int)(nextChar-source), Messages->span.first);
       OutputMessagesBefore(Messages);
       // printf("\tNext span: [%d - %d]\n", (int)(nextChar-source), Messages->span.last);
       OutputMarkStart(Messages);
-      if (isEOFSpan(Messages->span)) {
-        printf("%s", Messages->message);
-      }else{
+      // if (isEOFSpan(Messages->span)) {
+      //   printf("\t     **");
+      //   OutputMarkStop();
+      //   printf("%s\n", Messages->message);
+      // }else{
         OutputInterval(nextChar, source+Messages->span.last);
-      }
+        OutputMarkStop();
+      // }
       nextChar = source + Messages->span.last +1;
 
-      OutputMarkStop();
       FreeHeadMessage();
       // if (Messages) printf("\nnext msg ::: %s\n", Messages->message);
+    }
+    // while(*nextChar != EOF ) {
+    //   printf("%s",nextChar);
+    // }
+    OutputInterval(nextChar, sourceLastChar);
+    while(EOFMessages) {
+      OutputMarkStart(EOFMessages);
+      printf("     **");
+      OutputMarkStop();
+      printf("%s\n", EOFMessages->message);
+      FreeHeadEOF();
     }
 }
 
 bool
 OpenSource(const char * aFilename) {
-  if (debug) printf("open source\n");
+  // if (debug) printf("open source\n");
   sourceFD = open(aFilename,O_RDONLY);
   if (debug) printf("sourceFD: %d\n",sourceFD); /// what is source FD
   if (sourceFD < 0) return false;
@@ -149,7 +251,7 @@ OpenSource(const char * aFilename) {
 void
 CloseSource() {
   // can't display until here
-  printMesages();
+  // printMesages();
   OutputSource();
   // printf("close source\n" );
 }
@@ -176,15 +278,20 @@ GetSourceChar() {
 bool
 PostMessage(struct Span span, const char * aMessage) {
   if (debug) printf("\nPost Message with span: %d - %d\n",span.first, span.last);
-  // look for if you should add msg
-  if(Messages) {
-    struct Message * temp = Messages;
-    if(isEOFSpan(span)) {
+
+  if(isEOFSpan(span)) {
+    struct Message * temp = EOFMessages;
+    if(temp) {
       while(temp->next) {
         temp = temp->next;
       }
       temp->next = MakeMessage(span, nextMessageNumber++, aMessage);
-    }else if(span.last < temp->span.first) {
+    }else{
+        EOFMessages = MakeMessage(span, nextMessageNumber++, aMessage);
+    }
+  }else if(Messages) {
+    struct Message * temp = Messages;
+    if(span.last < temp->span.first) {
       if (debug) printf("\tnew message head\n");
       struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
       new->next = temp;
@@ -251,6 +358,6 @@ MakeSpanFromLength(int start, int length) {
 struct Span
 MakeEOFSpan() {
   struct Span span = {nextEOFSpan,nextEOFSpan};
-  nextEOFSpan++;
+  nextEOFSpan--;
   return span;
 }
