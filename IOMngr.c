@@ -212,7 +212,7 @@ OutputSource() {
     printf("    %2d: ", curLine);
     while(Messages) {
       OutputMessagesBefore(Messages);
-      if(*(nextChar-1) != '\n') {
+      if((nextChar == source) || *(nextChar-1) != '\n') {
         OutputMarkStart(Messages);
       }else{
         endColorFlag = true;
