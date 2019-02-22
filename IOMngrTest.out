@@ -22,7 +22,7 @@ offset source
         [94m**[0m 5
         [95m**[0m 7 8 9
      5: Another line
-[96m[0m     6: [96mFirst second[0m
+     6: [96mFirst second[0m
      7: [96mthird[0m
      8: [96mforth fifth[0m.
         [96m**[0m First ... fifth

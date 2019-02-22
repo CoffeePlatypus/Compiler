@@ -172,13 +172,6 @@ OutputInterval(char * start, char * stop) {  // give this span after starting or
   while (temp < stop && !isLineBreak(temp)) {
     temp++;
   }
-  // if(temp == sourceLastChar) {
-  //   printf("%c",temp);
-  //   while(Messages){
-  //     FreeHeadMessage();
-  //   }
-  //   printRemoved();
-  // }else
   if (isLineBreak(temp)) {
     if (marked) {
       fwrite(start,temp - 1 - start + 1,1,stdout);
@@ -190,6 +183,7 @@ OutputInterval(char * start, char * stop) {  // give this span after starting or
       endColorFlag = true;
     }else{
       fwrite(start,temp - start + 1,1,stdout);
+      endColorFlag = false;
     }
     containsNewLine = true;
     curLine++;
@@ -218,7 +212,11 @@ OutputSource() {
     printf("    %2d: ", curLine);
     while(Messages) {
       OutputMessagesBefore(Messages);
-      OutputMarkStart(Messages);
+      if(*(nextChar-1) != '\n') {
+        OutputMarkStart(Messages);
+      }else{
+        endColorFlag = true;
+      }
       OutputInterval(nextChar, source+Messages->span.last);
       OutputMarkStop();
       nextChar = source + Messages->span.last +1;

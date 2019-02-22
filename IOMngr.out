@@ -12,7 +12,7 @@
         [92m**[0m NUMBR found
         [93m**[0m SEMI found
      5: 
-[94m[0m     6: [94m;[0m         [95m;[0m
+     6: [94m;[0m         [95m;[0m
         [94m**[0m SEMI found
         [95m**[0m SEMI found
      7: 
@@ -23,8 +23,8 @@
      9: 
     10: a more or less long line that does not really contain much
     11: 
-[93m[0m    12: [93m12[0m,[94m13[0m,[95m14[0m,[96m15[0m
-[91m[0m        [93m**[0m NUMBR found
+    12: [93m12[0m,[94m13[0m,[95m14[0m,[96m15[0m
+        [93m**[0m NUMBR found
         [94m**[0m NUMBR found
         [95m**[0m NUMBR found
         [96m**[0m NUMBR found
