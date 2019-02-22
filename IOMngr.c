@@ -89,6 +89,7 @@ void clearRemoved() {
     free(temp->message);
     free(temp);
   }
+  Removed = NULL;
 }
 
 void
@@ -107,7 +108,6 @@ void FreeHeadEOF() {
   if(EOFMessages) {
     struct Message * temp = EOFMessages;
     EOFMessages = temp->next;
-    addRemoved(temp);
     free(temp->message);
     free(EOFMessages);
   }
@@ -140,13 +140,16 @@ OutputMarkStop() {
 void printRemoved() {
   struct Message * temp = Removed;
   while(temp) {
+    printf("        ");
     OutputMarkStart(temp);
-    printf("     **");
+    printf("**");
     OutputMarkStop();
     printf(" %s\n",temp->message);
     temp = temp->next;
   }
 }
+
+int endColorFlag = false;
 
 void
 OutputInterval(char * start, char * stop) {  // give this span after starting or stopping color
@@ -156,29 +159,44 @@ OutputInterval(char * start, char * stop) {  // give this span after starting or
     bool mark = marked;
     if(marked) {
       OutputMarkStop();
-
     }
     printRemoved();
     clearRemoved();
-    printf("   %2d: ", curLine);
+    printf("    %2d: ", curLine);
     containsNewLine = false;
-    if(mark){
+    if(mark || endColorFlag){
+      endColorFlag = false;
       OutputMarkStart(Messages);
     }
   }
   while (temp < stop && !isLineBreak(temp)) {
     temp++;
   }
-  if (temp != stop || isLineBreak(temp)) {
-    fwrite(start,temp - start + 1,1,stdout);
-    // printf("\t");
+  // if(temp == sourceLastChar) {
+  //   printf("%c",temp);
+  //   while(Messages){
+  //     FreeHeadMessage();
+  //   }
+  //   printRemoved();
+  // }else
+  if (isLineBreak(temp)) {
+    if (marked) {
+      fwrite(start,temp - 1 - start + 1,1,stdout);
+      OutputMarkStop();
+      printf("%c", *temp);
+      // if(!Removed) {
+      //   OutputMarkStart(Messages);
+      // }
+      endColorFlag = true;
+    }else{
+      fwrite(start,temp - start + 1,1,stdout);
+    }
     containsNewLine = true;
     curLine++;
     OutputInterval(temp+1, stop);
   }else{
       fwrite(start,stop - start + 1,1,stdout);
   }
-
 }
 
 void
@@ -197,43 +215,31 @@ OutputSource() {
     nextChar = source;
     int index = 0;
     containsNewLine = false;
-    printf("   %2d: ", curLine);
+    printf("    %2d: ", curLine);
     while(Messages) {
-      // printf("\tNext Span [%d - %d]\n", (int)(nextChar-source), Messages->span.first);
       OutputMessagesBefore(Messages);
-      // printf("\tNext span: [%d - %d]\n", (int)(nextChar-source), Messages->span.last);
       OutputMarkStart(Messages);
-      // if (isEOFSpan(Messages->span)) {
-      //   printf("\t     **");
-      //   OutputMarkStop();
-      //   printf("%s\n", Messages->message);
-      // }else{
-        OutputInterval(nextChar, source+Messages->span.last);
-        OutputMarkStop();
-      // }
-      nextChar = source + Messages->span.last +1;
-
-      FreeHeadMessage();
-      // if (Messages) printf("\nnext msg ::: %s\n", Messages->message);
-    }
-    // while(*nextChar != EOF ) {
-    //   printf("%s",nextChar);
-    // }
-    OutputInterval(nextChar, sourceLastChar);
-    while(EOFMessages) {
-      OutputMarkStart(EOFMessages);
-      printf("     **");
+      OutputInterval(nextChar, source+Messages->span.last);
       OutputMarkStop();
-      printf("%s\n", EOFMessages->message);
+      nextChar = source + Messages->span.last +1;
+      FreeHeadMessage();
+    }
+    OutputInterval(nextChar, sourceLastChar);
+    printRemoved();
+    while(EOFMessages) {
+      printf("        ");
+      OutputMarkStart(EOFMessages);
+      printf("**");
+      OutputMarkStop();
+      printf(" %s\n", EOFMessages->message);
       FreeHeadEOF();
     }
 }
 
 bool
 OpenSource(const char * aFilename) {
-  // if (debug) printf("open source\n");
+  if(debug) printf("open source\n");
   sourceFD = open(aFilename,O_RDONLY);
-  if (debug) printf("sourceFD: %d\n",sourceFD); /// what is source FD
   if (sourceFD < 0) return false;
   struct stat buf;
   if (fstat(sourceFD,&buf)) return false;
@@ -251,7 +257,8 @@ OpenSource(const char * aFilename) {
 void
 CloseSource() {
   // can't display until here
-  // printMesages();
+  if(debug) printMesages();
+  if(debug) printEOFs();
   OutputSource();
   // printf("close source\n" );
 }
