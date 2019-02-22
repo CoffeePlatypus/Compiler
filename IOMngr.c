@@ -269,7 +269,7 @@ GetSourceChar() {
   //   curLine++;
   // }
   // return source[sourceIndex++];
-  if(*nextChar == '\0' || *nextChar == EOF) {
+  if(nextChar > sourceLastChar || *nextChar == '\0' || *nextChar == EOF) {
     return EOF;
   }else if(*nextChar == '\n'){
     curLine++;

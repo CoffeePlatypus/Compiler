@@ -241,6 +241,8 @@ void ProvisionArray(struct SymTab * aTable, bool includeParents) {
      reqSize ++;
      if (entryArraySize < reqSize) {
           entryArray = realloc(entryArray,reqSize * sizeof(struct SymEntry *));
+          entryArraySize = reqSize;
+          // added
      }
 }
 

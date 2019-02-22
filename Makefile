@@ -81,6 +81,17 @@ iotest-2: IOMngrDriver
 		cmp -s IOMngr-UNKN.out IOMngr-UNKN.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
 
 #===========================
+# Scanner Project
+ScannerDriver.o: ScannerDriver.c Scanner.h SymTab.h ScanTokens.h
+ScannerDriver: 	ScannerDriver.o Scanner.o SymTab.o IOMngr.o
+
+scantest: 	ScannerDriver
+		@./ScannerDriver | tee Scanner.out
+		@echo -n "Testing Scanner " >&2 ; \
+		cmp -s Scanner.out Scanner.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
+
+
+
 # Other
 clean:
 	rm -f *.o SymTabDriver IOMngrTest IOMngrDriver ScannerDriver RecDescent Parse ParserScanner.c YGrammar.c Y-1 Y-2 Y-3 Y-4 y.tab.h

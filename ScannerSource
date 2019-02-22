@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+@INIT
+/* Something that should not be in the table.
+*/
+
+int
+main(int argc, char **argv) { char * name;
+  int aCount; //char * name;
+  float aSize;
+
+  /*
+  /* more that should not be in the table */
+  something = anything;
+  if (something) {
+    doNothing;
+    nothing = -45;
+  }
+  */
+
+  if (argc == 2) {
+    src = argv[1];
+    lst = NULL;
+  }
+  else {
+    fprintf(stderr,"usage: progname arg1 arg2\n");
+    exit(1); // Neither should this.
+  }
+
+  aCount = 432 * 78 - 3;
+  aSize = 4.56 - 2.34;
+  aCount = -400;
+  aSize = -2.123;
+
+  exit(0);
+}
+@DUMP
