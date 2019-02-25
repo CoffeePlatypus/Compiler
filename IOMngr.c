@@ -1,3 +1,11 @@
+/* IOMngr.c
+   Author:      Julia Froegel
+   Created:     02/13/2019
+   Resources:
+      - Talking to Evan and David gave me the idea to use FreeHeadMessage like poping off a stack to know which message im on.
+      - Zach told me that Prof. Senger said we should use "nextChar > sourceLastChar" to check for EOF in case there is no EOF but I added that after it was graded
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +26,7 @@ int curLine;
 int nextMessageNumber;
 int nextEOFSpan = -1;
 int sourceIndex;
-bool debug = 0;
+bool debug_io = 0;
 bool containsNewLine = false;
 bool marked = false;
 
@@ -236,7 +244,7 @@ OutputSource() {
 
 bool
 OpenSource(const char * aFilename) {
-  if(debug) printf("open source\n");
+  if(debug_io) printf("open source\n");
   sourceFD = open(aFilename,O_RDONLY);
   if (sourceFD < 0) return false;
   struct stat buf;
@@ -255,8 +263,8 @@ OpenSource(const char * aFilename) {
 void
 CloseSource() {
   // can't display until here
-  if(debug) printMesages();
-  if(debug) printEOFs();
+  if(debug_io) printMesages();
+  if(debug_io) printEOFs();
   OutputSource();
   // printf("close source\n" );
 }
@@ -282,7 +290,7 @@ GetSourceChar() {
 
 bool
 PostMessage(struct Span span, const char * aMessage) {
-  if (debug) printf("\nPost Message with span: %d - %d\n",span.first, span.last);
+  if (debug_io) printf("\nPost Message with span: %d - %d\n",span.first, span.last);
 
   if(isEOFSpan(span)) {
     struct Message * temp = EOFMessages;
@@ -297,13 +305,13 @@ PostMessage(struct Span span, const char * aMessage) {
   }else if(Messages) {
     struct Message * temp = Messages;
     if(span.last < temp->span.first) {
-      if (debug) printf("\tnew message head\n");
+      if (debug_io) printf("\tnew message head\n");
       struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
       new->next = temp;
       // update temps
     }else if((span.first >= temp->span.first && span.first <= temp->span.last)
           || (span.last >= temp->span.first && span.last <= temp->span.last)) {
-      if (debug) printf("\t dup\n");
+      if (debug_io) printf("\t dup\n");
       nextMessageNumber++;
       return false; // drop overlapping span
     }else{
@@ -311,9 +319,9 @@ PostMessage(struct Span span, const char * aMessage) {
       temp = temp->next;
       bool searching = 1;
       while(temp && searching){
-        if (debug) printf("temp span: %d %d", temp->span.first, temp->span.last);
+        if (debug_io) printf("temp span: %d %d", temp->span.first, temp->span.last);
         if (span.first > pre->span.last && span.last < temp->span.first) {
-          if(debug) printf("\tfound span spot\n");
+          if(debug_io) printf("\tfound span spot\n");
           struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
           new->next = pre->next;
           pre->next = new;
@@ -321,7 +329,7 @@ PostMessage(struct Span span, const char * aMessage) {
         }else if((span.first >= temp->span.first && span.first <= temp->span.last)
               || (span.last >= temp->span.first && span.last <= temp->span.last)
               || span.first < temp->span.first) {
-          if(debug) printf("\t dup\n");
+          if(debug_io) printf("\t dup\n");
           nextMessageNumber++;
           return false; // drop overlapping span
         }else{
@@ -330,14 +338,14 @@ PostMessage(struct Span span, const char * aMessage) {
         }
       }
       if(searching) {
-        if (debug) printf("add end\n");
+        if (debug_io) printf("add end\n");
         struct Message * new = MakeMessage(span, nextMessageNumber++, aMessage);
         new->next = pre->next;
         pre->next = new;
       }
     }
   }else{
-    if (debug) printf("\tno messages\n");
+    if (debug_io) printf("\tno messages\n");
     Messages = MakeMessage(span, nextMessageNumber++, aMessage);
   }
   return true;

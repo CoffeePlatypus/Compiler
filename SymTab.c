@@ -1,3 +1,10 @@
+/* SymTab.c
+   Author:      Julia Froegel
+   Created:     02/01/2019
+   Resources:
+      - googled strcmp
+*/
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

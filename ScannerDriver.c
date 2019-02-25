@@ -1,5 +1,8 @@
 /* ScannerDriver.c
-
+   Author:      Julia Froegel
+   Created:     02/22/2019
+   Resources:
+      - Kelly hellped me correct my syntax for defineing IN_COMMENT
 */
 #include <stdio.h>
 #include <string.h>
