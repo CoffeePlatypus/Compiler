@@ -4,7 +4,7 @@
 #include <limits.h>
 
 #include "SymTab.h"
-bool debug = 0;
+bool debug_sym = 0;
 
 /* The symbol table entry structure proper.
 */
@@ -51,7 +51,7 @@ void printTable(struct SymTab * table) {
 struct SymTab *
 CreateSymTab(int size, char * scopeName, struct SymTab * parentTable) {
      // malloc symbol table
-     if (debug) printf("create sym tab\n");
+     if (debug_sym) printf("create sym tab\n");
      struct SymTab * table = malloc(sizeof(struct SymTab));
      table->scopeName = scopeName ? strdup(scopeName) : scopeName;
      table->parent = parentTable; // This might not be right
@@ -61,13 +61,13 @@ CreateSymTab(int size, char * scopeName, struct SymTab * parentTable) {
      for(int i = 0; i<size; i++) { //idk
           table->contents[i] = NULL;
      }
-     if (debug) printTable(table);
+     if (debug_sym) printTable(table);
      return table;
 }
 
 struct SymTab *
 DestroySymTab(struct SymTab *aTable) {
-     if (debug) printf("free sym tab\n");
+     if (debug_sym) printf("free sym tab\n");
      struct SymTab *par = aTable->parent;
      free(aTable->scopeName);
      for(int i = 0; i<aTable->size; i++) {
@@ -81,7 +81,7 @@ DestroySymTab(struct SymTab *aTable) {
      }
      free(aTable->contents);
      free(aTable);
-     if (debug) printf("freed sym tab\n");
+     if (debug_sym) printf("freed sym tab\n");
      return par;
 }
 
@@ -98,31 +98,31 @@ HashName(int size, const char *name) {
 struct SymEntry *
 FindHashedName(struct SymTab *aTable, int hashValue, const char *name) {
      if(!aTable) return NULL;
-     if (debug) printf("find hashed name at : %d\n", hashValue);
+     if (debug_sym) printf("find hashed name at : %d\n", hashValue);
      struct SymEntry * temp = aTable->contents[hashValue];
      while(temp) {
           if(!strcmp(temp->name, name)) {
-               if (debug) printf("found hashed name\n\n");
+               if (debug_sym) printf("found hashed name\n\n");
                return temp;
           }
           temp = temp->next;
      }
-     if (debug) printf("no hashed name\n");
+     if (debug_sym) printf("no hashed name\n");
      return NULL;
 }
 
 struct SymEntry *
 LookupName(struct SymTab *aTable, const char * name) {
      if(!(aTable && name)) return NULL;
-     if (debug) printf("lookup name : %s\n", name);
+     if (debug_sym) printf("lookup name : %s\n", name);
      struct SymEntry * temp = FindHashedName(aTable, HashName(aTable->size, name), name);
      if(temp) {
           return temp;
      }else if(aTable->parent) {
-          if (debug) printf("lookup in parent\n");
+          if (debug_sym) printf("lookup in parent\n");
           return LookupName(aTable->parent, name);
      }else{
-          if (debug) printf("no name\n");
+          if (debug_sym) printf("no name\n");
           return NULL;
      }
 }
@@ -130,7 +130,7 @@ LookupName(struct SymTab *aTable, const char * name) {
 struct SymEntry *
 EnterName(struct SymTab *aTable, const char *name) {
      if(!(aTable && name)) return NULL;
-     if (debug) {
+     if (debug_sym) {
           printf("enter name : %s\n", name);
           // printTable(aTable);
      }
@@ -139,7 +139,7 @@ EnterName(struct SymTab *aTable, const char *name) {
      if(temp) {
           return temp;
      }
-     if (debug) printf("create entry to add\n");
+     if (debug_sym) printf("create entry to add\n");
      struct SymEntry * newEntry = malloc(sizeof(struct SymEntry));
      newEntry->name = strdup(name);
      newEntry->next = aTable->contents[hashy];
@@ -148,7 +148,7 @@ EnterName(struct SymTab *aTable, const char *name) {
      newEntry->attrKind = 0;
      aTable->contents[hashy] = newEntry;
      aTable->count++;
-     if (debug) {
+     if (debug_sym) {
           printf("added name\n\n");
           // Statistics(aTable);
           printTable(aTable);
@@ -250,12 +250,12 @@ void
 CollectEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
   // enumerate table collecting SymEntry pointers, if testFunc provided used to
   // select entries, null terminate the array
-  if(debug) printf("collect\n");
+  if(debug_sym) printf("collect\n");
 //   if(!entryTestFunct) { // if entry exists
 //      entryTestFunct(entry); // if keep entry
 // }
      if(!aTable) return;
-     if(debug) printTable(aTable);
+     if(debug_sym) printTable(aTable);
 
      for(int i = 0; i < aTable->size; i++) {
           struct SymEntry * temp = aTable->contents[i];
@@ -285,20 +285,20 @@ void printEntries() {
 
 struct SymEntry **
 GetEntries(struct SymTab * aTable, bool includeParents, entryTestFunc testFunc) {
-     if(debug) printf("get entries\n");
+     if(debug_sym) printf("get entries\n");
      // ProvisionArray
      ProvisionArray(aTable, includeParents);
      // collect
      entIndex = 0;
      CollectEntries(aTable, includeParents, testFunc);
      // return?
-     if(debug) printEntries();
+     if(debug_sym) printEntries();
      return entryArray;
 }
 
 struct Stats *
 Statistics(struct SymTab *aTable) {
-     if(debug) printf("\n printing stats\n");
+     if(debug_sym) printf("\n printing stats\n");
      struct Stats * stats = malloc(sizeof(struct Stats));
      struct SymEntry * temp = aTable->contents[0];
      int count = 0;
@@ -306,7 +306,7 @@ Statistics(struct SymTab *aTable) {
           count++;
           temp = temp->next;
      }
-     if (debug) printf("hash [0] : %d\n", count);
+     if (debug_sym) printf("hash [0] : %d\n", count);
      stats->minLen = count;
      stats->maxLen = count;
      stats->entryCnt = count;
@@ -323,9 +323,9 @@ Statistics(struct SymTab *aTable) {
           }else if(count > stats->maxLen) {
                stats->maxLen = count;
           }
-          if (debug) printf("hash [%d] : %d\n", i, count);
+          if (debug_sym) printf("hash [%d] : %d\n", i, count);
      }
-     if(debug) printf("\n");
+     if(debug_sym) printf("\n");
      stats->avgLen = stats->entryCnt / aTable->size;
      return stats;
 }

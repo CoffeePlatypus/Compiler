@@ -12,8 +12,6 @@ Digit   [0-9]
 
 // Set to true to log each token returned to stderr
 bool shouldLog = false;
-int nestCommentCount = 0;
-
 
 // The column of the returned token's first char
 unsigned int tokenStartPosition;
@@ -29,17 +27,24 @@ unsigned int tokenStartPosition;
   }
 
 // var for comments
+int nestedCommentCount = 0;
+bool lineComment = false;
+
+#define IN_COMMENT (lineComment || nestedCommentCount > 0)
+
 
 %}
 
-
 %%
-\@INIT                          { if (!IN_COMMENT) RETURN(INIT_TOK,1); }
-\@DUMP                          { if (!IN_COMMENT) RETURN(DUMP_TOK,1); }
-\\\*														{ nestCommentCount++;}
-\*\\														{ nestCommentCount--;}
-{Letter}({Letter}|{Digit})*			{ if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
-[ \t]                           { }
-[\n]                            { lineComment = 0; }
-.                               { }
+\@INIT                          			{ if (!IN_COMMENT) RETURN(INIT_TOK,1); }
+\@DUMP                          			{ if (!IN_COMMENT) RETURN(DUMP_TOK,1); }
+\/\/  																{ lineComment = true;}
+\/\*																	{ nestedCommentCount++;}
+\*\/																	{ nestedCommentCount--;}
+{Letter}({Letter}|{Digit})*						{ if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
+\-?{Digit}+\.{Digit}{Digit}+					{ if (!IN_COMMENT) RETURN(FLOAT_TOK,0); }
+\-?{Digit}+														{ if (!IN_COMMENT) RETURN(INT_TOK,0);}
+[ \t]                           			{ }
+[\n]                            			{ lineComment = 0; }
+.                               			{ }
 %%
