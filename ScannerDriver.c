@@ -44,7 +44,6 @@ int main(int argc, char **argv) {
 
   int intSum = 0;
   float floatSum = 0;
-  int index = 0;
 
   while ((Token = yylex()) != 0) {
     snprintf(actionMessage,ACTION_MESSAGE_SIZE," ");
@@ -69,25 +68,24 @@ int main(int argc, char **argv) {
           struct Attributes * attr = GetAttr(temp);
           attr->cnt++;
           snprintf(actionMessage,ACTION_MESSAGE_SIZE," -- occurrence %d",attr->cnt);
-          index += yyleng;
         } else {
           temp = EnterName(table, yytext);
           struct Attributes * attr = malloc(sizeof(struct Attributes));
           attr->cnt = 1;
           SetAttr(temp, IDENT_TOK, attr);
           snprintf(actionMessage,ACTION_MESSAGE_SIZE," -- new ident");
-          attr->span = MakeSpan(index, index+yyleng);
-          index += yyleng;
+          attr->span = MakeSpan(tokenStartPosition, tokenStartPosition+yyleng);
         }
         // printf("Identifier: %s\n", yytext);
       } break;
       case INT_TOK: {
         intSum += atoi(yytext);
-        index += yyleng;
       } break;
       case FLOAT_TOK: {
         floatSum += atof(yytext);
-        index += yyleng;
+      } break;
+      case EQUAL_TOK: {
+
       } break;
       case DUMP_TOK: {
         printf("---------\n");

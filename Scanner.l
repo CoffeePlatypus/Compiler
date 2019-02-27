@@ -42,8 +42,9 @@ bool lineComment = false;
 \/\*																	{ nestedCommentCount++;}
 \*\/																	{ nestedCommentCount--;}
 {Letter}({Letter}|{Digit})*						{ if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
-\-?{Digit}+\.{Digit}{Digit}+					{ if (!IN_COMMENT) RETURN(FLOAT_TOK,0); }
+\-?{Digit}+\.{Digit}+					{ if (!IN_COMMENT) RETURN(FLOAT_TOK,0); }
 \-?{Digit}+														{ if (!IN_COMMENT) RETURN(INT_TOK,0);}
+\=																		{ if (!IN_COMMENT) RETURN(EQUAL_TOK,1);}
 [ \t]                           			{ }
 [\n]                            			{ lineComment = 0; }
 .                               			{ }

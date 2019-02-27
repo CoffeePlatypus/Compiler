@@ -4,28 +4,28 @@ floatSum = 4.777000
 
 Contents of Symbol Table
                     name  strt  stop   cnt 
-  0                 NULL    67    71     1
-  1               aCount    33    39     3
-  2                aSize    44    49     3
-  3                 arg1   101   105     1
-  4                 arg2   105   109     1
-  5                 argc    10    14     2
-  6                 argv    18    22     2
-  7                 char    14    18     2
-  8                 else    71    75     1
-  9                 exit   110   114     2
- 10                float    39    44     1
- 11              fprintf    75    82     1
- 12                   if    49    51     1
- 13                  int     0     3     3
- 14                  lst    64    67     1
- 15                 main     3     7     1
- 16                    n   109   110     1
- 17                 name    26    30     1
- 18             progname    93   101     1
- 19                  src    56    59     1
- 20               stderr    82    88     1
- 21                usage    88    93     1
+  0                 NULL   391   395     1
+  1               aCount   167   173     3
+  2                aSize   198   203     3
+  3                 arg1   446   450     1
+  4                 arg2   451   455     1
+  5                 argc   127   131     2
+  6                 argv   140   144     2
+  7                 char   133   137     2
+  8                 else   403   407     1
+  9                 exit   465   469     2
+ 10                float   192   197     1
+ 11              fprintf   414   421     1
+ 12                   if   345   347     1
+ 13                  int   114   117     3
+ 14                  lst   385   388     1
+ 15                 main   118   122     1
+ 16                    n   456   457     1
+ 17                 name   155   159     1
+ 18             progname   437   445     1
+ 19                  src   366   369     1
+ 20               stderr   422   428     1
+ 21                usage   430   435     1
      1: #[91minclude[0m <[92mstdio[0m.[93mh[0m>
         [91m**[0m Token#=3, Length=7, Text="include"         -- No SymbolTable
         [92m**[0m Token#=3, Length=5, Text="stdio"           -- No SymbolTable
@@ -69,53 +69,61 @@ Contents of Symbol Table
     19:   }
     20:   */
     21: 
-    22:   [95mif[0m ([96margc[0m == [91m2[0m) {
+    22:   [95mif[0m ([96margc[0m [91m=[0m[92m=[0m [93m2[0m) {
         [95m**[0m Token#=3, Length=2, Text="if"              -- new ident
         [96m**[0m Token#=3, Length=4, Text="argc"            -- occurrence 2
-        [91m**[0m Token#=4, Length=1, Text="2"               
-    23:     [92msrc[0m = [93margv[0m[[94m1[0m];
-        [92m**[0m Token#=3, Length=3, Text="src"             -- new ident
-        [93m**[0m Token#=3, Length=4, Text="argv"            -- occurrence 2
-        [94m**[0m Token#=4, Length=1, Text="1"               
-    24:     [95mlst[0m = [96mNULL[0m;
-        [95m**[0m Token#=3, Length=3, Text="lst"             -- new ident
-        [96m**[0m Token#=3, Length=4, Text="NULL"            -- new ident
+        [91m**[0m Token#=6, Length=1, Text="="               
+        [92m**[0m Token#=6, Length=1, Text="="               
+        [93m**[0m Token#=4, Length=1, Text="2"               
+    23:     [94msrc[0m [95m=[0m [96margv[0m[[91m1[0m];
+        [94m**[0m Token#=3, Length=3, Text="src"             -- new ident
+        [95m**[0m Token#=6, Length=1, Text="="               
+        [96m**[0m Token#=3, Length=4, Text="argv"            -- occurrence 2
+        [91m**[0m Token#=4, Length=1, Text="1"               
+    24:     [92mlst[0m [93m=[0m [94mNULL[0m;
+        [92m**[0m Token#=3, Length=3, Text="lst"             -- new ident
+        [93m**[0m Token#=6, Length=1, Text="="               
+        [94m**[0m Token#=3, Length=4, Text="NULL"            -- new ident
     25:   }
-    26:   [91melse[0m {
-        [91m**[0m Token#=3, Length=4, Text="else"            -- new ident
-    27:     [92mfprintf[0m([93mstderr[0m,"[94musage[0m: [95mprogname[0m [96marg1[0m [91marg2[0m\[92mn[0m");
-        [92m**[0m Token#=3, Length=7, Text="fprintf"         -- new ident
-        [93m**[0m Token#=3, Length=6, Text="stderr"          -- new ident
-        [94m**[0m Token#=3, Length=5, Text="usage"           -- new ident
-        [95m**[0m Token#=3, Length=8, Text="progname"        -- new ident
-        [96m**[0m Token#=3, Length=4, Text="arg1"            -- new ident
-        [91m**[0m Token#=3, Length=4, Text="arg2"            -- new ident
-        [92m**[0m Token#=3, Length=1, Text="n"               -- new ident
-    28:     [93mexit[0m([94m1[0m); // Neither should this.
-        [93m**[0m Token#=3, Length=4, Text="exit"            -- new ident
-        [94m**[0m Token#=4, Length=1, Text="1"               
+    26:   [95melse[0m {
+        [95m**[0m Token#=3, Length=4, Text="else"            -- new ident
+    27:     [96mfprintf[0m([91mstderr[0m,"[92musage[0m: [93mprogname[0m [94marg1[0m [95marg2[0m\[96mn[0m");
+        [96m**[0m Token#=3, Length=7, Text="fprintf"         -- new ident
+        [91m**[0m Token#=3, Length=6, Text="stderr"          -- new ident
+        [92m**[0m Token#=3, Length=5, Text="usage"           -- new ident
+        [93m**[0m Token#=3, Length=8, Text="progname"        -- new ident
+        [94m**[0m Token#=3, Length=4, Text="arg1"            -- new ident
+        [95m**[0m Token#=3, Length=4, Text="arg2"            -- new ident
+        [96m**[0m Token#=3, Length=1, Text="n"               -- new ident
+    28:     [91mexit[0m([92m1[0m); // Neither should this.
+        [91m**[0m Token#=3, Length=4, Text="exit"            -- new ident
+        [92m**[0m Token#=4, Length=1, Text="1"               
     29:   }
     30: 
-    31:   [95maCount[0m = [96m432[0m * [91m78[0m - [92m3[0m;
-        [95m**[0m Token#=3, Length=6, Text="aCount"          -- occurrence 2
-        [96m**[0m Token#=4, Length=3, Text="432"             
-        [91m**[0m Token#=4, Length=2, Text="78"              
-        [92m**[0m Token#=4, Length=1, Text="3"               
-    32:   [93maSize[0m = [94m4.56[0m - [95m2.34[0m;
-        [93m**[0m Token#=3, Length=5, Text="aSize"           -- occurrence 2
+    31:   [93maCount[0m [94m=[0m [95m432[0m * [96m78[0m - [91m3[0m;
+        [93m**[0m Token#=3, Length=6, Text="aCount"          -- occurrence 2
+        [94m**[0m Token#=6, Length=1, Text="="               
+        [95m**[0m Token#=4, Length=3, Text="432"             
+        [96m**[0m Token#=4, Length=2, Text="78"              
+        [91m**[0m Token#=4, Length=1, Text="3"               
+    32:   [92maSize[0m [93m=[0m [94m4.56[0m - [95m2.34[0m;
+        [92m**[0m Token#=3, Length=5, Text="aSize"           -- occurrence 2
+        [93m**[0m Token#=6, Length=1, Text="="               
         [94m**[0m Token#=5, Length=4, Text="4.56"            
         [95m**[0m Token#=5, Length=4, Text="2.34"            
-    33:   [96maCount[0m = [91m-400[0m;
+    33:   [96maCount[0m [91m=[0m [92m-400[0m;
         [96m**[0m Token#=3, Length=6, Text="aCount"          -- occurrence 3
-        [91m**[0m Token#=4, Length=4, Text="-400"            
-    34:   [92maSize[0m = [93m-2.123[0m;
-        [92m**[0m Token#=3, Length=5, Text="aSize"           -- occurrence 3
-        [93m**[0m Token#=5, Length=6, Text="-2.123"          
+        [91m**[0m Token#=6, Length=1, Text="="               
+        [92m**[0m Token#=4, Length=4, Text="-400"            
+    34:   [93maSize[0m [94m=[0m [95m-2.123[0m;
+        [93m**[0m Token#=3, Length=5, Text="aSize"           -- occurrence 3
+        [94m**[0m Token#=6, Length=1, Text="="               
+        [95m**[0m Token#=5, Length=6, Text="-2.123"          
     35: 
-    36:   [94mexit[0m([95m0[0m);
-        [94m**[0m Token#=3, Length=4, Text="exit"            -- occurrence 2
-        [95m**[0m Token#=4, Length=1, Text="0"               
+    36:   [96mexit[0m([91m0[0m);
+        [96m**[0m Token#=3, Length=4, Text="exit"            -- occurrence 2
+        [91m**[0m Token#=4, Length=1, Text="0"               
     37: }
-    38: [96m@DUMP[0m
-        [96m**[0m Token#=2, Length=5, Text="@DUMP"           
-        [91m**[0m EOF
+    38: [92m@DUMP[0m
+        [92m**[0m Token#=2, Length=5, Text="@DUMP"           
+        [93m**[0m EOF
