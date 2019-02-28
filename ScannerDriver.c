@@ -72,9 +72,9 @@ int main(int argc, char **argv) {
           temp = EnterName(table, yytext);
           struct Attributes * attr = malloc(sizeof(struct Attributes));
           attr->cnt = 1;
+          attr->span = MakeSpan(tokenStartPosition, tokenStartPosition+yyleng-1);
           SetAttr(temp, IDENT_TOK, attr);
           snprintf(actionMessage,ACTION_MESSAGE_SIZE," -- new ident");
-          attr->span = MakeSpan(tokenStartPosition, tokenStartPosition+yyleng);
         }
         // printf("Identifier: %s\n", yytext);
       } break;

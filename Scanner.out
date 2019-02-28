@@ -4,28 +4,28 @@ floatSum = 4.777000
 
 Contents of Symbol Table
                     name  strt  stop   cnt 
-  0                 NULL   391   395     1
-  1               aCount   167   173     3
-  2                aSize   198   203     3
-  3                 arg1   446   450     1
-  4                 arg2   451   455     1
-  5                 argc   127   131     2
-  6                 argv   140   144     2
-  7                 char   133   137     2
-  8                 else   403   407     1
-  9                 exit   465   469     2
- 10                float   192   197     1
- 11              fprintf   414   421     1
- 12                   if   345   347     1
- 13                  int   114   117     3
- 14                  lst   385   388     1
- 15                 main   118   122     1
- 16                    n   456   457     1
- 17                 name   155   159     1
- 18             progname   437   445     1
- 19                  src   366   369     1
- 20               stderr   422   428     1
- 21                usage   430   435     1
+  0                 NULL   391   394     1
+  1               aCount   167   172     3
+  2                aSize   198   202     3
+  3                 arg1   446   449     1
+  4                 arg2   451   454     1
+  5                 argc   127   130     2
+  6                 argv   140   143     2
+  7                 char   133   136     2
+  8                 else   403   406     1
+  9                 exit   465   468     2
+ 10                float   192   196     1
+ 11              fprintf   414   420     1
+ 12                   if   345   346     1
+ 13                  int   114   116     3
+ 14                  lst   385   387     1
+ 15                 main   118   121     1
+ 16                    n   456   456     1
+ 17                 name   155   158     1
+ 18             progname   437   444     1
+ 19                  src   366   368     1
+ 20               stderr   422   427     1
+ 21                usage   430   434     1
      1: #[91minclude[0m <[92mstdio[0m.[93mh[0m>
         [91m**[0m Token#=3, Length=7, Text="include"         -- No SymbolTable
         [92m**[0m Token#=3, Length=5, Text="stdio"           -- No SymbolTable
