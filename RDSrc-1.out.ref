@@ -1,0 +1,7 @@
+    1: First {
+    2:   int x, y;
+    3:   int w;
+    4:   x := 5 * (y - 2);
+    5:   y := z; w:= 1;
+    6: }
+Parse Successful

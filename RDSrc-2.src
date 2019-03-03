@@ -1,0 +1,7 @@
+Second {
+  int x,y;
+  int z, w;
+  x := 5 * (y - 2);
+  z := +4 - 3;
+  y := z; w:= 1;
+}

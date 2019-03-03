@@ -1,0 +1,7 @@
+Fourth {
+  int y, x;
+  x := 5 * (y - 2);
+  int z, w;
+  y := z; w:= 1;
+  z := (x - y + z) / (y - z) * 3 ;;
+}

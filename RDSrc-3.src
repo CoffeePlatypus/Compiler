@@ -1,0 +1,7 @@
+Third {
+  int x, y;
+  x := 5 * (y - 2);
+  y := z;
+  int w;
+  w w := 1;
+}

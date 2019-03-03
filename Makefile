@@ -90,6 +90,25 @@ scantest: 	ScannerDriver
 		@echo -n "Testing Scanner " >&2 ; \
 		cmp -s Scanner.out Scanner.out.ref; echo "out: $$?" | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
 
+#===========================
+# Recursive Descent Project
+RDSupport.o:	RDSupport.c RDSupport.h
+RecDescent.o: 	RecDescent.c Scanner.h RDTokens.h
+RecDescent: 	RecDescent.o RDGrammar.o RDScanner.o RDSupport.o IOMngr.o
+
+rdtest: 	rdtest1 rdtest2 rdtest3 rdtest4 rdtest5
+
+rdtest1: 	RecDescent
+	./RecDescent RDSrc-1.src
+rdtest2: 	RecDescent
+	./RecDescent RDSrc-2.src
+rdtest3: 	RecDescent
+	./RecDescent RDSrc-3.src
+rdtest4: 	RecDescent
+	./RecDescent RDSrc-4.src
+rdtest5: 	RecDescent
+	./RecDescent RDSrc-5.src
+
 
 
 # Other
