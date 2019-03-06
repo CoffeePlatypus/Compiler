@@ -30,7 +30,22 @@ Digit   [0-9]
 %}
 
 %%
-int                { RETURN(INT_TOK,1); }
-chr                { RETURN(CHR_TOK,1); }
+\0 						{RETURN(EOF_TOK,1)}
+int                			{ RETURN(INT_TOK,1); }
+chr               			{ RETURN(CHR_TOK,1); }
+\:\=						{ RETURN(ASSIGN_TOK,1); }
+\;						{ RETURN(SEMI_TOK,1); }
+\(						{ RETURN(LPAREN_TOK,1); }
+\)						{ RETURN(RPAREN_TOK,1); }
+\-						{ RETURN(MINUS_TOK,1); }
+\+						{ RETURN(PLUS_TOK,1); }
+\*						{ RETURN(TIMES_TOK,1); }
+\/						{ RETURN(DIV_TOK,1); }
+\{						{ RETURN(LBRACE_TOK,1); }
+\}						{ RETURN(RBRACE_TOK,1); }
+\,						{ RETURN(COMMA_TOK,1); }
+\-?{Digit}+\.{Digit}+			{ RETURN(FLOATLIT_TOK,0); }
+\-?{Digit}+					{ RETURN(INTLIT_TOK,0); }
+{Letter}({Letter}|{Digit})*		{ RETURN(IDENT_TOK,0); }
 .					         { }
 %%

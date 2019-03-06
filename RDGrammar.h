@@ -2,12 +2,12 @@
      Contains the grammar parsing routines for the grammar
 
                                            Select Set
-<Prog>    :==  Ident { <StmtSeq> }
-<StmtSeq> :==  <Stmt> ; <StmtSeq>          INT CHR Ident
-<StmtSeq> :==                              }
-<Stmt>    :== <Decl>
-<Stmt>    :== <Assign>
-<Decl>    :== <Type> <IDLst>               INT CHR
+<Prog>    :==  Ident { <StmtSeq> }         Ident {
+<StmtSeq> :==  <Stmt> ; <StmtSeq>          INT CHR Ident    // given
+<StmtSeq> :==                              }                // given
+<Stmt>    :== <Decl>                       [INT | CHR] <var list>;
+<Stmt>    :== <Assign>                     Ident := <Expr>
+<Decl>    :== <Type> <IDLst>               INT CHR          // given
 <Type>    :== INT
 <Type>    :== CHR
 <IDLst>   :== Ident <MLst>
@@ -15,11 +15,11 @@
 <MLst>    :==
 <Assign>  :==  Ident := <Expr>
 <Expr>    :==  <Term> <MExpr>
-<MExpr>   :==  <AddOp> <Term> <MExpr>      - +
-<MExpr>   :==                              ; )
+<MExpr>   :==  <AddOp> <Term> <MExpr>      - +              // given
+<MExpr>   :==                              ; )              // given
 <Term>    :==  <Factor> <MTerm>
-<MTerm>   :==  <MultOp> <Factor> <MTerm>   * /
-<MTerm>   :==                              - + ; )
+<MTerm>   :==  <MultOp> <Factor> <MTerm>   * /              // given
+<MTerm>   :==                              - + ; )          // given
 <Factor>  :==  ( <Expr> )
 <Factor>  :==  - <Factor>
 <Factor>  :==  IntLit
