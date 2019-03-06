@@ -123,7 +123,8 @@ void FreeHeadEOF() {
 
 bool
 isLineBreak(char * c) {
-  return *c == '\n' || *c == '\r' || c == sourceLastChar;
+  // removed || *c == '\r'
+  return *c == '\n'  || c == sourceLastChar;
 }
 
 bool isEOFSpan(struct Span span) {
@@ -263,8 +264,9 @@ OpenSource(const char * aFilename) {
 void
 CloseSource() {
   // can't display until here
-  if(debug_io) printMesages();
+   // printMesages();
   if(debug_io) printEOFs();
+   // printf("Myfautl ? \n");
   OutputSource();
   // printf("close source\n" );
 }
