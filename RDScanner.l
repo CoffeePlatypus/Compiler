@@ -47,5 +47,7 @@ chr               			{ RETURN(CHR_TOK,1); }
 \-?{Digit}+\.{Digit}+			{ RETURN(FLOATLIT_TOK,0); }
 \-?{Digit}+					{ RETURN(INTLIT_TOK,0); }
 {Letter}({Letter}|{Digit})*		{ RETURN(IDENT_TOK,0); }
+[ \t]                           			{ }
+[\n]                            			{ }
 .					         { }
 %%
