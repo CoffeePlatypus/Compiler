@@ -1,3 +1,8 @@
+/* RDGrammer.c
+   Author:      Julia Froegel
+   Created:     03/03/2019
+   Resources:
+*/
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -15,7 +20,6 @@ bool Prog()
   if (!Match(LBRACE_TOK)) return LEAVE_FAIL;
   if (!StmtSeq()) return LEAVE_FAIL;
   if (!Match(RBRACE_TOK)) return LEAVE_FAIL;
-
   return LEAVE_SUCC;
 }
 
