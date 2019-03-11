@@ -1,8 +1,9 @@
-    1: Third {
-    2:   int x, y;
-    3:   x := 5 * (y - 2);
-    4:   y := z;
-    5:   int w;
-    6:   w w[7m A [0m[4m [0m:= 1;
-       -A CurToken: 16 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> Stmt> Assign -- Token Match Failed
-Parse Unsuccessful
+     1: Third {
+     2:   int x, y;
+     3:   x := 5 * (y - 2);
+     4:   y := z;
+     5:   int w;
+     6:   w [91mw[0m := 1;
+        [91m**[0m CurToken: 16 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> Stmt> Assign -- Token Match Failed
+     7: }
+        [92m**[0m Parse Unsuccessful
