@@ -1,7 +1,9 @@
-    1: Second {
-    2:   int x,y;
-    3:   int z, w;
-    4:   x := 5 * (y - 2);
-    5:   z := [7m A [0m[4m+[0m4 - 3;
-       -A CurToken: 8 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> Stmt> Assign> Expr> Term> Factor -- No option in switch
-Parse Unsuccessful
+     1: Second {
+     2:   int x,y;
+     3:   int z, w;
+     4:   x := 5 * (y - 2);
+     5:   z := [91m+[0m4 - 3;
+        [91m**[0m CurToken: 8 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> Stmt> Assign> Expr> Term> Factor -- No option in switch
+     6:   y := z; w:= 1;
+     7: }
+        [92m**[0m Parse Unsuccessful

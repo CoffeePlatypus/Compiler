@@ -1,8 +1,9 @@
-    1: Fourth {
-    2:   int y, x;
-    3:   x := 5 * (y - 2);
-    4:   int z, w;
-    5:   y := z; w:= 1;
-    6:   z := (x - y + z) / (y - z) * 3 ;[7m A [0m[4m;[0m
-       -A CurToken: 4 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq -- No option in switch
-Parse Unsuccessful
+     1: Fourth {
+     2:   int y, x;
+     3:   x := 5 * (y - 2);
+     4:   int z, w;
+     5:   y := z; w:= 1;
+     6:   z := (x - y + z) / (y - z) * 3 ;[91m;[0m
+        [91m**[0m CurToken: 4 -- Prog> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq> StmtSeq -- No option in switch
+     7: }
+        [92m**[0m Parse Unsuccessful
