@@ -1,0 +1,10 @@
+// test program for parser with error on line 8
+testTwo {
+  int amt, box;
+  int x, y, w;
+  amt := 5 * y - 2;              // 5 y * 2 - amt =
+  x := 5 * (y - 2);              // 5 y 2 - * x =
+  /* should produce error at double '*' */
+  box := 5 * x / amt + 3 * * 4;
+  y := z; w:= 1;
+}

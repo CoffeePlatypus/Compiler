@@ -110,6 +110,21 @@ rdtest5: 	RecDescent
 	./RecDescent RDSrc-5.src
 
 
+#===========================
+# Parser Stage 1 & 2
+ParserScanner.o: ParserScanner.l IOMngr.h ParserGrammar.o y.tab.h
+ParserGrammar.o: FORCE ParserGrammar.y
+Parse.o: Parse.c Grammar.h Scanner.h IOMngr.h
+Parse: Parse.o ParserGrammar.o ParserScanner.o IOMngr.o
+
+partest:	parse1 parse2
+
+parse1:	Parse
+	./Parse ParSrc-1.src
+parse2:	Parse
+	./Parse ParSrc-2.src
+
+
 
 # Other
 clean:
