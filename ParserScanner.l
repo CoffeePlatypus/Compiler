@@ -39,6 +39,9 @@ Digit   [0-9]
      where token-symbolic-name appears in yacc file or is a single char.
    */
 
+\/\/  					  { lineComment = true;}
+\/\*						  { nestedCommentCount++;}
+\*\/						  { nestedCommentCount--;}
 int                             { if (!IN_COMMENT) RETURN(INT_TOK,1); }
 chr               			  { if (!IN_COMMENT) RETURN(CHR_TOK,1); }
 \:\=						  { if (!IN_COMMENT) RETURN(ASSIGN_TOK,1); }
@@ -54,7 +57,7 @@ chr               			  { if (!IN_COMMENT) RETURN(CHR_TOK,1); }
 \,						  { if (!IN_COMMENT) RETURN(',',1); }
 \-?{Digit}+				  { if (!IN_COMMENT) RETURN(INTLIT_TOK,0); }
 {Letter}({Letter}|{Digit})*	  { if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
-[\n]                            { }
-[ \t]                           { lineComment = 0; }
+[\n]                            { lineComment = false; }
+[ \t]                           { }
 .                               { }
 %%

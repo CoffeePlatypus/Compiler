@@ -55,12 +55,12 @@ main(int argc, char * argv[])
 <MLst>    :== , <IDLst>
 <MLst>    :==
 <Assign>  :==  Ident := <Expr>
-<Expr>    :==  <Term> <MExpr>
-<MExpr>   :==  <AddOp> <Term> <MExpr>      - +              // given
-<MExpr>   :==                              ; )              // given
-<Term>    :==  <Factor> <MTerm>
-<MTerm>   :==  <MultOp> <Factor> <MTerm>   * /              // given
-<MTerm>   :==                              - + ; )          // given
+<Expr>    :==  <Expr> <AddOp> <Term>         IntLit Ident ( -
+<Expr>    :==  <AddOp> <Term>                +
+<Expr>    :==  <Term>                        IntLit Ident (
+<Term>    :==  <Term> <MultOp> <Factor>       IntLit Ident (
+<Term>    :==  <MultOp> <Factor>              *
+<Term>    :==  <Factor>
 <Factor>  :==  ( <Expr> )
 <Factor>  :==  - <Factor>
 <Factor>  :==  IntLit
