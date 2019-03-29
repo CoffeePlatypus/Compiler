@@ -26,39 +26,39 @@ void yyerror(char *s);
 %token IDENT_TOK 5
 
 %%
-Prog    : IDENT_TOK '{' StmtSeq '}'     {  }                               ;
-StmtSeq : Stmt ';' StmtSeq              {  }                               ;
-StmtSeq :                               {  }                      ;
+Prog    : IDENT_TOK '{' StmtSeq '}'     {  }                                    ;
+StmtSeq : Stmt ';' StmtSeq              {  }                                    ;
+StmtSeq :                               {  }                                    ;
 
-Stmt    : Decl                          {  }                          ;
-Stmt    : Assign                        {  }                          ;
+Stmt    : Decl                          {  }                                    ;
+Stmt    : Assign                        {  }                                    ;
 
-Decl    : Type IDList                   {  }                            ;
+Decl    : Type IDList                   {  }                                    ;
 
-Type    : INT_TOK                       {  }                        ;
-Type    : CHR_TOK                       {  }                         ;
+Type    : INT_TOK                       {  }                                    ;
+Type    : CHR_TOK                       {  }                                    ;
 
-IDList   : IDENT_TOK MLst               {  }                           ;
-MLst    : ',' IDList                    {  }                          ;
-MLst    :                               {  }                      ;
+IDList   : IDENT_TOK MLst               {  }                                    ;
+MLst    : ',' IDList                    {  }                                    ;
+MLst    :                               {  }                                    ;
 
-Assign  : LHS ASSIGN_TOK Expr           { printf(" %s =\n", $1); }                   ;
-LHS     : IDENT_TOK                     { $$ = strdup(yytext); }                          ;
+Assign  : LHS ASSIGN_TOK Expr           { printf("%s =\n", $1); }               ;
+LHS     : IDENT_TOK                     { $$ = strdup(yytext); }                ;
 
-Expr    :  Expr AddOp Term              { printf("%s ", $2); }                           ;
-Expr    :  Term                         {  }                             ;
+Expr    :  Expr AddOp Term              { printf("%s ", $2); }                  ;
+Expr    :  Term                         {  }                                    ;
 
-Term    :  Term MultOp Factor           { printf("%s ", $2); }                           ;
-Term    :  Factor                       {  }                             ;
+Term    :  Term MultOp Factor           { printf("%s ", $2); }                  ;
+Term    :  Factor                       {  }                                    ;
 
-Factor  :  '(' Expr ')'                 {  }                                      ;
-Factor  :  '-' Factor                   { printf("-"); }                                      ;
-Factor  :  INTLIT_TOK                   { printf("%s ", yytext); }                                      ;
-Factor  :  IDENT_TOK                    { printf("%s ", yytext); }                                     ;
-AddOp   :  '-'                          { $$ = strdup(yytext); }                               ;
-AddOp   :  '+'                          { $$ = strdup(yytext); }                               ;
-MultOp  :  '*'                          { $$ = strdup(yytext); }                               ;
-MultOp  :  '/'                          { $$ = strdup(yytext); }                               ;
+Factor  :  '(' Expr ')'                 {  }                                    ;
+Factor  :  '-' Factor                   { printf("-"); }                        ;
+Factor  :  INTLIT_TOK                   { printf("%s ", yytext); }              ;
+Factor  :  IDENT_TOK                    { printf("%s ", yytext); }              ;
+AddOp   :  '-'                          { $$ = strdup(yytext); }                ;
+AddOp   :  '+'                          { $$ = strdup(yytext); }                ;
+MultOp  :  '*'                          { $$ = strdup(yytext); }                ;
+MultOp  :  '/'                          { $$ = strdup(yytext); }                ;
 
 %%
 

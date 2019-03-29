@@ -3,6 +3,7 @@
    Author:      Julia Froegel
    Created:     03/26/2019
    Resources:
+     - Talked to David about the grammer and he helped me realize two of my rules were pointless
 */
 
 #include <stdio.h>
