@@ -1,5 +1,5 @@
 /* Main of Parser */
-/* ScannerDriver.c
+/* ParseDriver.c
    Author:      Julia Froegel
    Created:     03/26/2019
    Resources:

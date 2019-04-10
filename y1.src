@@ -1,0 +1,12 @@
+ab, cde :: 1
+fgh, ij :: ' '
+klmn :: true
+x, xy, xyz : int
+abc, abcd : chr
+bcd : bool
+
+//main : () -> void
+
+main :: {
+
+}

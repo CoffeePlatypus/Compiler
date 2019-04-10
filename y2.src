@@ -1,0 +1,17 @@
+x, y, r :: 0
+
+main :: {
+  put('>')
+  x = get(int)
+  put('>')
+  y = get(int)
+  r = y + (x * x)
+  put('r') put('=') put(r) put('\n')
+  r = (y + x) * x
+  put('r') put('=') put(r) put('\n')
+  r = y + x * x
+  put('r') put('=') put(r) put('\n')
+  r = x * x + y
+  put('r') put('=') put(r) put('\n')
+  put(true) put(' ') put(false) put('\n')
+}

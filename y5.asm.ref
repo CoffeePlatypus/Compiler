@@ -1,0 +1,81 @@
+                    .text                                                # FinishSemantics
+                    .globl      __start                                  # FinishSemantics
+__start:                                                                 # FinishSemantics
+                    jal         _main                                    # FinishSemantics
+                    li          $v0         10                           # FinishSemantics
+                    syscall                                              # FinishSemantics
+_main:                                                                   # func entry
+                    li          $v0         4
+                    la          $a0         L1
+                    syscall
+                    li          $v0         5                            # read int syscall
+                    syscall
+                    move        $t0         $v0
+                    sw          $t0         _p
+L9:                                                                      # ProcWhile
+                    lw          $t0         _p
+                    li          $t1         1
+                    ble         $t0         $t1         L10
+                    li          $v0         4
+                    la          $a0         L2
+                    syscall
+                    lw          $t0         _p
+                    li          $v0         1
+                    move        $a0         $t0
+                    syscall
+                    li          $v0         4
+                    la          $a0         L3
+                    syscall
+                    li          $t0         2
+                    sw          $t0         _d
+L6:                                                                      # ProcWhile
+                    lw          $t0         _d
+                    lw          $t1         _p
+                    li          $t3         2
+                    div         $t4         $t1         $t3
+                    bgt         $t0         $t4         L7
+                    lw          $t0         _p
+                    lw          $t3         _d
+                    div         $t4         $t0         $t3
+                    sw          $t4         _q
+                    lw          $t0         _q
+                    lw          $t3         _d
+                    mul         $t4         $t0         $t3
+                    lw          $t0         _p
+                    bne         $t4         $t0         L5
+                    lw          $t0         _d
+                    li          $v0         1
+                    move        $a0         $t0
+                    syscall
+                    li          $v0         4
+                    la          $a0         L4
+                    syscall
+L5:                                                                      # ProcIf
+                    lw          $t0         _d
+                    li          $t3         1
+                    add         $t4         $t0         $t3
+                    sw          $t4         _d
+                    b           L6                                       # ProcWhile
+L7:                                                                      # ProcWhile
+                    li          $v0         4
+                    la          $a0         L8
+                    syscall
+                    li          $v0         4
+                    la          $a0         L1
+                    syscall
+                    li          $v0         5                            # read int syscall
+                    syscall
+                    move        $t0         $v0
+                    sw          $t0         _p
+                    b           L9                                       # ProcWhile
+L10:                                                                     # ProcWhile
+                    jr          $ra                                      # func return
+                    .data                                                # FinishSemantics
+_d:                 .word       0
+_p:                 .word       0
+_q:                 .word       0
+L8:                 .asciiz     "\n"
+L4:                 .asciiz     " "
+L1:                 .asciiz     "> "
+L3:                 .asciiz     " are "
+L2:                 .asciiz     "factors of "

@@ -1,0 +1,133 @@
+                    .text                                                # FinishSemantics
+                    .globl      __start                                  # FinishSemantics
+__start:                                                                 # FinishSemantics
+                    jal         _main                                    # FinishSemantics
+                    li          $v0         10                           # FinishSemantics
+                    syscall                                              # FinishSemantics
+_main:                                                                   # func entry
+                    subu        $sp         $sp         4                # ProcFuncBody
+                    sw          $ra         0($sp)                       # ProcFuncBody
+                    li          $v0         4
+                    la          $a0         L6
+                    syscall
+                    li          $v0         5                            # read int syscall
+                    syscall
+                    move        $t0         $v0
+                    sw          $t0         _nn
+L14:                                                                     # ProcWhile
+                    lw          $t0         _nn
+                    li          $t1         0
+                    beq         $t0         $t1         L15
+                    jal         _isPrime                                 # CallFunc
+                    li          $v0         4
+                    la          $a0         L7
+                    syscall
+                    lw          $t0         _nn
+                    li          $v0         1
+                    move        $a0         $t0
+                    syscall
+                    li          $v0         4
+                    la          $a0         L8
+                    syscall
+                    lw          $t0         _ret
+                    li          $t1         1
+                    bne         $t0         $t1         L12
+                    li          $v0         4
+                    la          $a0         L9
+                    syscall
+                    b           L13                                      # ProcIf
+L12:                                                                     # ProcIf
+                    li          $v0         4
+                    la          $a0         L10
+                    syscall
+                    lw          $t0         _c
+                    li          $v0         1
+                    move        $a0         $t0
+                    syscall
+                    li          $v0         4
+                    la          $a0         L11
+                    syscall
+L13:                                                                     # ProcIf
+                    li          $v0         4
+                    la          $a0         L6
+                    syscall
+                    li          $v0         5                            # read int syscall
+                    syscall
+                    move        $t0         $v0
+                    sw          $t0         _nn
+                    b           L14                                      # ProcWhile
+L15:                                                                     # ProcWhile
+                    li          $v0         4
+                    la          $a0         L16
+                    syscall
+main_ret:
+                    lw          $ra         0($sp)                       # ProcFuncBody
+                    addu        $sp         $sp         4                # ProcFuncBody
+                    jr          $ra                                      # func return
+_isPrime:                                                                # func entry
+                    subu        $sp         $sp         4                # ProcFuncBody
+                    sw          $ra         0($sp)                       # ProcFuncBody
+                    li          $t0         1
+                    neg         $t0         $t0
+                    sw          $t0         _r
+                    li          $t0         2
+                    sw          $t0         _d
+                    li          $t0         0
+                    sw          $t0         _c
+                    lw          $t0         _nn
+                    li          $t1         2
+                    div         $t2         $t0         $t1
+                    sw          $t2         _n
+L2:                                                                      # ProcWhile
+                    lw          $t0         _d
+                    lw          $t1         _n
+                    bgt         $t0         $t1         L3
+                    lw          $t0         _nn
+                    lw          $t1         _d
+                    div         $t3         $t0         $t1
+                    lw          $t0         _d
+                    mul         $t1         $t3         $t0
+                    sw          $t1         _a
+                    lw          $t0         _a
+                    lw          $t1         _nn
+                    bne         $t0         $t1         L1
+                    lw          $t0         _c
+                    li          $t1         1
+                    add         $t4         $t0         $t1
+                    sw          $t4         _c
+L1:                                                                      # ProcIf
+                    lw          $t0         _d
+                    li          $t1         1
+                    add         $t3         $t0         $t1
+                    sw          $t3         _d
+                    b           L2                                       # ProcWhile
+L3:                                                                      # ProcWhile
+                    lw          $t0         _c
+                    li          $t1         0
+                    bne         $t0         $t1         L4
+                    li          $t0         1                              
+                    sw          $t0         _ret
+                    b           L5                                       # ProcIf
+L4:                                                                      # ProcIf
+                    li          $t0         0
+                    sw          $t0         _ret
+L5:                                                                      # ProcIf
+isPrime_ret:
+                    lw          $ra         0($sp)                       # ProcFuncBody
+                    addu        $sp         $sp         4                # ProcFuncBody
+                    jr          $ra                                      # func return
+                    .data                                                # FinishSemantics
+_d:                 .word       0
+_n:                 .word       0
+_r:                 .word       0
+_nn:                .word       0
+_ret:               .word       0
+_a:                 .word       0
+_c:                 .word       0
+L11:                .asciiz     " divisors.\n"
+L16:                .asciiz     "done\n"
+L8:                 .asciiz     " is "
+L6:                 .asciiz     "> "
+L10:                .asciiz     "not prime. It has "
+L9:                 .asciiz     "prime.\n"
+L7:                 .asciiz     "number "

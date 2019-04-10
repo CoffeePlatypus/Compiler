@@ -1,0 +1,58 @@
+     1: 
+     2: nn : int
+     3: n : int
+     4: ret : bool
+     5: r :: 0
+     6: d :: 0
+     7: a :: 0
+     8: c :: 0
+     9: 
+    10: // test if nn is prime, return bool in ret
+    11: isPrime :: {
+    12:   r = -1;
+    13:   d = 2;
+    14:   c = 0;
+    15:   n = nn / 2
+    16:   while d <= n {
+    17:     a = (nn / d) * d
+    18:     if a == nn { c = c + 1 }
+    19:     d = d + 1
+    20:   }
+    21:   if c == 0 {
+    22:     ret = true
+    23:   }
+    24:   else {
+    25:     ret = false
+    26:   }
+    27: }
+    28: 
+    29: main :: {
+    30:   put("> ")
+    31:   nn = get(int)
+    32:   while nn ## 0 {
+    33:     isPrime()
+    34:     put("number ") put(nn) put(" is ")
+    35:     if ret == true {
+    36:       put("prime.\n")
+    37:     }
+    38:     else {
+    39:       put("not prime. It has ") put(c) put(" divisors.\n")
+    40:     }
+    41:     put("> ")
+    42:     nn = get(int)
+    43:   }
+    44:   put("done\n")
+    45: }
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               d              _d             int          0
+  1 global               n              _n             int          0
+  2 global               r              _r             int          0
+  3 global               nn             _nn            int          0
+  4 global               main           _main          () -> void
+  5 global               isPrime        _isPrime       () -> void
+  6 global               ret            _ret           bool         0
+  7 global               a              _a             int          0
+  8 global               c              _c             int          0
+Parse Successful

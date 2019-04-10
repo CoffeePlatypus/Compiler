@@ -1,0 +1,23 @@
+
+p, d, q : int;
+
+main :: {
+  put("> ")
+  p = get(int)
+  while p > 1 {
+    put("factors of ")
+    put(p)
+    put(" are ")
+    d = 2
+    while d <= p / 2 {
+      q = p / d
+      if q * d == p {
+        put(d); put(" ")
+      }
+      d = d + 1
+    }
+    put("\n")
+    put("> ")
+    p = get(int)
+  }
+}

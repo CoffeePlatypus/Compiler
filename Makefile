@@ -124,6 +124,36 @@ parse1:	Parse
 parse2:	Parse
 	./Parse ParSrc-2.src
 
+#===========================
+# Semantics
+CGTest.o:     CGTest.c YCodeGen.h
+CGTest:       CGTest.o YCodeGen.o
+
+YCodeGen.o:	YCodeGen.c YCodeGen.h
+
+YScanner.o: 	YScanner.l IOMngr.h YSemantics.h y.tab.h
+YGrammar.o y.tab.h: YGrammar.y
+YStructs.o:   YStructs.h YStructs.c
+YSemantics.o: YSemantics.c YSemantics.h YStructs.h
+Y.o: 		      Y.c Grammar.h YScanner.l IOMngr.h
+Y:		        Y.o SymTab.o IOMngr.o YGrammar.o YScanner.o YStructs.o YSemantics.o YCodeGen.o
+
+ytest: Y
+		@for file in y1 y2 y3 y4 y5 y6 y7 ; do \
+		  make -s $$file.test; \
+		done
+
+%.test: %.src
+		@./Y $* | tee $*.lst
+		@spim -noexception -file $*.asm < $*.in | tee $*.out
+		@cmp -s $*.lst $*.lst.ref; echo -n "lst: $$? " >> $*.test
+		@cmp -s $*.asm $*.asm.ref; echo -n "asm: $$? " >> $*.test
+		@cmp -s $*.out $*.out.ref; echo "out: $$?" >> $*.test
+		@echo "=========="
+		@echo -n "Testing $< " >&2 ; cat $*.test | sed 's/0/YES/g' | sed 's/1/NO/g' >&2
+		@echo "===================="
+		@rm $*.test
+
 
 
 # Other

@@ -1,0 +1,20 @@
+/* Input a number and calculate its factorial.
+*/
+
+x, fac : int;
+
+main :: {
+  put("> ")
+  x = get(int)
+  put("x = ")
+  put(x)
+  put("\n")
+  fac = 1
+  while (x > 0) {
+    fac = fac * x
+    x = x - 1
+  }
+  put("factorial = ")
+  put(fac)
+  put("\n")
+}

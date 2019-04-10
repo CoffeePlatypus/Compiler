@@ -1,0 +1,23 @@
+x : int
+
+rec : () -> void
+
+rec :: {
+  put("enter x = ") put(x) put("\n")
+  x = x - 1
+  if x ## 0 {
+    rec()
+  }
+  else {
+    put("      x = 0\n")
+  }
+  x = x + 1
+  put("exit  x = ") put(x) put("\n")
+}
+
+main :: {
+  put("> ")
+  x = get(int)
+  rec()
+  put("done\n")
+}

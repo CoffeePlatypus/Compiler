@@ -1,0 +1,45 @@
+
+nn : int
+n : int
+ret : bool
+r :: 0
+d :: 0
+a :: 0
+c :: 0
+
+// test if nn is prime, return bool in ret
+isPrime :: {
+  r = -1;
+  d = 2;
+  c = 0;
+  n = nn / 2
+  while d <= n {
+    a = (nn / d) * d
+    if a == nn { c = c + 1 }
+    d = d + 1
+  }
+  if c == 0 {
+    ret = true
+  }
+  else {
+    ret = false
+  }
+}
+
+main :: {
+  put("> ")
+  nn = get(int)
+  while nn ## 0 {
+    isPrime()
+    put("number ") put(nn) put(" is ")
+    if ret == true {
+      put("prime.\n")
+    }
+    else {
+      put("not prime. It has ") put(c) put(" divisors.\n")
+    }
+    put("> ")
+    nn = get(int)
+  }
+  put("done\n")
+}
