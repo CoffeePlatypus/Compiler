@@ -61,15 +61,15 @@ Module        : DeclList                                    { };
 DeclList      : Decl DeclList                               { };
 DeclList      : Decl                                        { };
 
-Decl          : IdList ':' BaseType                         { ProcDecl($1,$3,0); };
-Decl          : IdList "::" Literal                         { ProcDecl($1,$3->baseType,$3->value); };
-Decl          : IdList ':' FuncDecl                         { ProcDeclFunc($1,$3); };
-Decl          : IdList "::" CodeBlock                       { ProcFuncBody($1,$3); };
+Decl          : IdList ':' BaseType                         { printf("Base type \n"); ProcDecl($1,$3,0); };
+Decl          : IdList "::" Literal                         { printf("Literal \n"); ProcDecl($1,$3->baseType,$3->value); };
+Decl          : IdList ':' FuncDecl                         { printf("No\n"); ProcDeclFunc($1,$3); };
+Decl          : IdList "::" CodeBlock                       { printf("No\n"); ProcFuncBody($1,$3); };
 
-IdList        : IdItem ',' IdList                           { $$ = AppendIdList($1,$3); };
-IdList        : IdItem                                      { $$ = $1; };
+IdList        : IdItem ',' IdList                           { $$ = AppendIdList($1,$3); printf(",\n");};
+IdList        : IdItem                                      { $$ = $1; printf("___\n");};
 
-IdItem        : Id                                          { $$ = ProcName($1,MAKE_SPAN(@1)); }
+IdItem        : Id                                          { $$ = ProcName($1,MAKE_SPAN(@1)); printf("Id\n");}
 
 Id            : IDENT_TOK                                   { @$ = @1; $$ = strdup(yytext); };
 
@@ -88,6 +88,8 @@ CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
 
 StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
 StmtSeq       :                                             { $$ = NULL; };
+
+Stmt :
 
 %%
 

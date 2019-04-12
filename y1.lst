@@ -1,0 +1,27 @@
+pro name
+Id
+pro name
+Id
+___
+append
+-cde-ab- 
+,
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               cde            
+  1 global               ab             
+     1: ab, cde :: 1
+     2: [91mfgh[0m, ij :: ' '
+        [91m**[0m ERROR: "syntax error" token: "fgh"
+     3: klmn :: true
+     4: x, xy, xyz : int
+     5: abc, abcd : chr
+     6: bcd : bool
+     7: 
+     8: //main : () -> void
+     9: 
+    10: main :: {
+    11: 
+    12: }
+        [92m**[0m no main function for module

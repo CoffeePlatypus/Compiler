@@ -1,0 +1,51 @@
+pro name
+Id
+pro name
+Id
+___
+append
+-y-x- 
+,
+Base type 
+declare
+pro name
+Id
+___
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               x              
+  1 global               main           
+  2 global               y              
+     1: /* Input two numbers and calculate GCD
+     2: */
+     3: 
+     4: x, y : int;
+     5: 
+     6: main :: {
+     7:   [91mput[0m('>')
+        [91m**[0m ERROR: "syntax error" token: "put"
+     8:   x = get(int)
+     9:   put('>')
+    10:   y = get(int)
+    11:   put('x') put('=') put(x) put('\n')
+    12:   put('y') put('=') put(y) put('\n')
+    13: 
+    14:   while x ## y {
+    15:     if x < y {
+    16:       y = y - x
+    17:     }
+    18:     else {
+    19:       x = x - y
+    20:     }
+    21:   }
+    22: 
+    23:   put('g') put('=') put(x) put('\n')
+    24: }
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               x              
+  1 global               main           
+  2 global               y              
+Parse Unsuccessful

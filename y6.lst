@@ -1,0 +1,72 @@
+pro name
+Id
+___
+Base type 
+declare
+pro name
+Id
+___
+Base type 
+declare
+pro name
+Id
+___
+Base type 
+declare
+pro name
+Id
+___
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               n              
+  1 global               r              
+  2 global               nn             
+  3 global               ret            
+     1: 
+     2: nn : int
+     3: n : int
+     4: ret : bool
+     5: r :: 0
+     6: [91md[0m :: 0
+        [91m**[0m ERROR: "syntax error" token: "d"
+     7: a :: 0
+     8: c :: 0
+     9: 
+    10: // test if nn is prime, return bool in ret
+    11: isPrime :: {
+    12:   r = -1;
+    13:   d = 2;
+    14:   c = 0;
+    15:   n = nn / 2
+    16:   while d <= n {
+    17:     a = (nn / d) * d
+    18:     if a == nn { c = c + 1 }
+    19:     d = d + 1
+    20:   }
+    21:   if c == 0 {
+    22:     ret = true
+    23:   }
+    24:   else {
+    25:     ret = false
+    26:   }
+    27: }
+    28: 
+    29: main :: {
+    30:   put("> ")
+    31:   nn = get(int)
+    32:   while nn ## 0 {
+    33:     isPrime()
+    34:     put("number ") put(nn) put(" is ")
+    35:     if ret == true {
+    36:       put("prime.\n")
+    37:     }
+    38:     else {
+    39:       put("not prime. It has ") put(c) put(" divisors.\n")
+    40:     }
+    41:     put("> ")
+    42:     nn = get(int)
+    43:   }
+    44:   put("done\n")
+    45: }
+        [92m**[0m no main function for module

@@ -29,20 +29,26 @@ Digit   [0-9]
         return(val); \
       }
 
-    // comment implementation
+      bool lineComment = false;
+      int nestedCommentCount = 0;
+    #define IN_COMMENT (lineComment || nestedCommentCount > 0)
 
 %}
 
 %%
-int                             { if (!IN_COMMENT) RETURN(INT_TOK,0); }
-chr                             { if (!IN_COMMENT) RETURN(CHR_TOK,0); }
-bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,0); }
-void                            { if (!IN_COMMENT) RETURN(VOID_TOK,0); }
-true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,0); }
-false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,0); }
+\/\/  					  { lineComment = true;}
+\/\*						  { nestedCommentCount++;}
+\*\/						  { nestedCommentCount--;}
+\,                                 { if (!IN_COMMENT) RETURN(',',1); }
+int                             { if (!IN_COMMENT) RETURN(INT_TOK,1); }
+chr                             { if (!IN_COMMENT) RETURN(CHR_TOK,1); }
+bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,1); }
+void                            { if (!IN_COMMENT) RETURN(VOID_TOK,1); }
+true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
+false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
 {Letter}({Letter}|{Digit})*			{ if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1); }
-\:                              { if (!IN_COMMENT) RETURN(':',0); }
+\:                              { if (!IN_COMMENT) RETURN(':',1); }
 [ \t]                           { }
 [\n]                            { lineComment = false; }
 .                               { }

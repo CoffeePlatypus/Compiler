@@ -1,0 +1,43 @@
+pro name
+Id
+___
+Base type 
+declare
+pro name
+Id
+___
+Base type 
+declare
+pro name
+Id
+___
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               rec            
+  1 global               x              
+     1: x : int
+     2: 
+     3: rec : () -> void
+     4: 
+     5: rec :: {
+     6:   [91mput[0m("enter x = ") put(x) put("\n")
+        [91m**[0m ERROR: "syntax error" token: "put"
+     7:   x = x - 1
+     8:   if x ## 0 {
+     9:     rec()
+    10:   }
+    11:   else {
+    12:     put("      x = 0\n")
+    13:   }
+    14:   x = x + 1
+    15:   put("exit  x = ") put(x) put("\n")
+    16: }
+    17: 
+    18: main :: {
+    19:   put("> ")
+    20:   x = get(int)
+    21:   rec()
+    22:   put("done\n")
+    23: }
+        [92m**[0m no main function for module
