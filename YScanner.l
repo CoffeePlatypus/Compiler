@@ -22,7 +22,7 @@ Digit   [0-9]
     // offset = 0 for tokens that do not include the last char read
     // also computes and sets span of token
     #define RETURN(val,offset) \
-      { if (shouldLog) fprintf(stderr,"Token#=%d, Length=%zu, Text=\"%s\"\n",val,(unsigned long)yyleng,yytext); \
+      { if (shouldLog) fprintf(stdout,"Token#=%d, Length=%zu, Text=\"%s\"\n",val,(unsigned long)yyleng,yytext); \
         tokenStartPosition = GetLastPosition() - yyleng + offset; \
         yylloc.first_column = tokenStartPosition; \
         yylloc.last_column = yylloc.first_column + yyleng - 1; \
@@ -32,25 +32,24 @@ Digit   [0-9]
       bool lineComment = false;
       int nestedCommentCount = 0;
     #define IN_COMMENT (lineComment || nestedCommentCount > 0)
-
 %}
 
 %%
-\/\/  					  { lineComment = true;}
+\/\/  					  { lineComment = true; printf("line comment\n");}
 \/\*						  { nestedCommentCount++;}
 \*\/						  { nestedCommentCount--;}
-\,                                 { if (!IN_COMMENT) RETURN(',',1); }
+\,                              { if (!IN_COMMENT) RETURN(',',1); }
 int                             { if (!IN_COMMENT) RETURN(INT_TOK,1); }
 chr                             { if (!IN_COMMENT) RETURN(CHR_TOK,1); }
 bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,1); }
 void                            { if (!IN_COMMENT) RETURN(VOID_TOK,1); }
 true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
 false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
--?{Digit}{Digit}*                 { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);
-{Letter}                        { if (!IN_COMMENT) RETURN(CHRLIT_TOK,0);
-{Letter}({Letter}|{Digit})*     { if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
+-?{Digit}{Digit}*               { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);
+{Letter}({Letter}|{Digit})*     { PRINTER("id l") if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1); }
 \:                              { if (!IN_COMMENT) RETURN(':',1); }
+\'.\'                           { if (!IN_COMMENT) RETURN(CHRLIT_TOK,0);
 [ \t]                           { }
 [\n]                            { lineComment = false; }
 .                               { }
