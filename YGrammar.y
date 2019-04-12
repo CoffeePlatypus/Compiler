@@ -56,13 +56,13 @@
 
 %%
 // Step 1
-Module        : DeclList                                    { };
+Module        : DeclList                                    { printf("why"); };
 
-DeclList      : Decl DeclList                               { };
-DeclList      : Decl                                        { };
+DeclList      : Decl DeclList                               { printf("here?");};
+DeclList      : Decl                                        { printf("woiej?");};
 
-Decl          : IdList ':' BaseType                         { printf("Base type \n"); ProcDecl($1,$3,0); };
-Decl          : IdList "::" Literal                         { printf("Literal \n"); ProcDecl($1,$3->baseType,$3->value); };
+Decl          : IdList ':' BaseType                         { printf("Base type\n"); ProcDecl($1,$3,0); };
+Decl          : IdList "::" Literal                         { printf("Literal\n"); ProcDecl($1,$3->baseType,$3->value); };
 Decl          : IdList ':' FuncDecl                         { printf("No\n"); ProcDeclFunc($1,$3); };
 Decl          : IdList "::" CodeBlock                       { printf("No\n"); ProcFuncBody($1,$3); };
 
@@ -73,23 +73,23 @@ IdItem        : Id                                          { $$ = ProcName($1,M
 
 Id            : IDENT_TOK                                   { @$ = @1; $$ = strdup(yytext); };
 
-BaseType      : "int"                                       { @$ = @1; $$ = IntBaseType; };
-BaseType      : "chr"                                       { @$ = @1; $$ = ChrBaseType; };
-BaseType      : "bool"                                      { @$ = @1; $$ = BoolBaseType; };
-BaseType      : "void"                                      { @$ = @1; $$ = VoidBaseType; };
+BaseType      : "int"                                       { printf("here1?");@$ = @1; $$ = IntBaseType; };
+BaseType      : "chr"                                       { printf("here2?");@$ = @1; $$ = ChrBaseType; };
+BaseType      : "bool"                                      { printf("her3?");@$ = @1; $$ = BoolBaseType; };
+BaseType      : "void"                                      { printf("her4?");@$ = @1; $$ = VoidBaseType; };
 
-Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType); };
-Literal       : CHRLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType); };
-Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = MakeLiteralDesc(yytext,BoolBaseType); };
+Literal       : INTLIT_TOK                                  { printf("int\n");  @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType); };
+Literal       : CHRLIT_TOK                                  { printf("chr\n"); @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType); };
+Literal       : BOOLLIT_TOK                                 { printf("bool\n");@$ = @1; $$ = MakeLiteralDesc(yytext,BoolBaseType); };
 
-FuncDecl      : '(' ')' "->" BaseType                       { $$ = VoidBaseType; };
+FuncDecl      : '(' ')' "->" BaseType                       {printf("herdssd1?"); $$ = VoidBaseType; };
 
-CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
+CodeBlock     : '{' StmtSeq '}'                             { printf("her1dfsfsd?");$$ = $2; };
 
-StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
-StmtSeq       :                                             { $$ = NULL; };
+StmtSeq       : Stmt StmtSeq                                { printf("herfsdfsd1?");$$ = AppendSeq($1,$2); };
+StmtSeq       :                                             { printf("her1sdfsdf?");$$ = NULL; };
 
-Stmt :
+Stmt :                                                       {printf("her1werewrwe?");};
 
 %%
 

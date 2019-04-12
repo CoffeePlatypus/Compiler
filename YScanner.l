@@ -46,7 +46,9 @@ bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,1); }
 void                            { if (!IN_COMMENT) RETURN(VOID_TOK,1); }
 true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
 false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1); }
-{Letter}({Letter}|{Digit})*			{ if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
+-?{Digit}{Digit}*                 { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);
+{Letter}                        { if (!IN_COMMENT) RETURN(CHRLIT_TOK,0);
+{Letter}({Letter}|{Digit})*     { if (!IN_COMMENT) RETURN(IDENT_TOK,0); }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1); }
 \:                              { if (!IN_COMMENT) RETURN(':',1); }
 [ \t]                           { }
