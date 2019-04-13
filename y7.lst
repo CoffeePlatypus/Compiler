@@ -1,21 +1,3 @@
-pro name
-Id
-___
-Base type
-declare
-pro name
-Id
-___
-Base type
-declare
-pro name
-Id
-___
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               rec            
-  1 global               x              
      1: x : int
      2: 
      3: rec : () -> void

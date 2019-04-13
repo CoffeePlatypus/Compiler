@@ -17,6 +17,7 @@
 // Shared Data
 
 struct SymTab * IdentifierTable;
+int sem_debug = false;
 
 // corresponds to enum Operators
 char * Ops[] = { "add", "sub", "mul", "div"};
@@ -63,7 +64,7 @@ processFunctions(void * textCode) {
 
 void
 FinishSemantics() {
-     DisplaySymbolTable(IdentifierTable);
+     // DisplaySymbolTable(IdentifierTable);
   // build text segment
   struct InstrSeq * textCode = GenOpX(".text");
 
@@ -106,18 +107,20 @@ ProcDecl(struct IdList * idList, enum BaseTypes baseType, int initialValue) {
   // check required conditions
   // make and assign primitive type descriptor
   // make and assign id reference string
-  printf("declare\n");
   while(idList) {
        struct SymEntry * d = LookupName(IdentifierTable, GetName(idList->entry));
-       if(d) {
-            //duplicate. exit?
-            return;
-       }else{
-            d = EnterName(IdentifierTable, GetName(idList->entry));
+       // if(d) {
+       //      //duplicate. exit?
+       //      printf("duplicate %s", GetName(idList->entry));
+       //      return;
+       // }else{
+       //      d = EnterName(IdentifierTable, GetName(idList->entry));
+            if (sem_debug) printf("Entered %s = %d : %d\n", GetName(idList->entry),initialValue, baseType);
             struct Attr * attr = GetAttr(d);
             attr->typeDesc = MakePrimDesc(baseType, initialValue);
-            SetAttr(d,PrimType, attr );
-       }
+            attr->reference = AppendStr("_",attr->reference);
+            SetAttr(d,STRUCT_KIND, attr );
+       // }
        idList = idList->next;
  }
 }
@@ -134,15 +137,11 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
   // can there be multiple declared on a line? if not then it doesn't need loop
   while(idList) {
        struct SymEntry * d = LookupName(IdentifierTable, GetName(idList->entry));
-       if(d) {
-            //duplicate. exit?
-            return;
-       }else{
-            d = EnterName(IdentifierTable, GetName(idList->entry));
-            struct Attr * attr = GetAttr(d);
-            attr->typeDesc = MakePrimDesc(FuncType, type);
-            SetAttr(d,FuncType, attr );
-       }
+       d = EnterName(IdentifierTable, GetName(idList->entry));
+       struct Attr * attr = GetAttr(d);
+       attr->typeDesc = MakeFuncDesc(type);
+       attr->reference = AppendStr("_",attr->reference);
+       SetAttr(d,FuncType, attr );
        idList = idList->next;
  }
 }
@@ -158,21 +157,21 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
 struct IdList *
 AppendIdList(struct IdList * item, struct IdList * list) {
   // chain item to list, return item
-  printf("append\n");
+  // printf("append\n");
   if(!list) {
-       printf("-%s- \n",GetName(item->entry));
+       // printf("-%s- \n",GetName(item->entry));
        return item;
  }
   struct IdList * temp = list;
 
 
   while(temp->next){
-       printf("-%s",GetName(temp->entry));
+       // printf("-%s",GetName(temp->entry));
        temp = temp->next;
  }
  temp->next = item;
- printf("-%s",GetName(temp->entry));
- printf("-%s- \n",GetName(item->entry));
+ // printf("-%s",GetName(temp->entry));
+ // printf("-%s- \n",GetName(item->entry));
  return list;
 }
 
@@ -183,7 +182,7 @@ ProcName(char * tokenText, struct Span span) {
   // enter token text
   // create struct IdList * item
   // create and init attribute struct
-  printf("pro name\n");
+  // printf("pro name\n");
      struct SymEntry * dup = LookupName(IdentifierTable, tokenText);
      if(!dup) {
           dup = EnterName(IdentifierTable, tokenText);

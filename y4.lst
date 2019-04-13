@@ -1,22 +1,3 @@
-pro name
-Id
-pro name
-Id
-___
-append
--fac-x- 
-,
-Base type
-declare
-pro name
-Id
-___
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               x              
-  1 global               main           
-  2 global               fac            
      1: /* Input a number and calculate its factorial.
      2: */
      3: 
@@ -41,7 +22,7 @@ Num Scope                Name           Ref            Type
 
 Symbol Table: global
 Num Scope                Name           Ref            Type
-  0 global               x              
+  0 global               x              _x             int          0
   1 global               main           
-  2 global               fac            
+  2 global               fac            _fac           int          0
 Parse Unsuccessful

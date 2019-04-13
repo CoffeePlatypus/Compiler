@@ -1,28 +1,3 @@
-pro name
-Id
-pro name
-Id
-pro name
-Id
-___
-append
--q-d- 
-,
-append
--q-d-p- 
-,
-Base type
-declare
-pro name
-Id
-___
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               d              
-  1 global               p              
-  2 global               q              
-  3 global               main           
      1: 
      2: p, d, q : int;
      3: 
@@ -50,8 +25,8 @@ Num Scope                Name           Ref            Type
 
 Symbol Table: global
 Num Scope                Name           Ref            Type
-  0 global               d              
-  1 global               p              
-  2 global               q              
+  0 global               d              _d             int          0
+  1 global               p              _p             int          0
+  2 global               q              _q             int          0
   3 global               main           
 Parse Unsuccessful

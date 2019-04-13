@@ -44,10 +44,14 @@ MakeLiteralDesc(char * text, enum BaseTypes type) {
   desc->baseType = type;
   switch (desc->baseType) {
     case IntBaseType:
+      desc->value = atoi(text);
       break;
     case ChrBaseType:
+      desc->value = text[0];
       break;
     case BoolBaseType: {
+         // printf("bool == %s == %d\n",text, strcmp(text, "true"));
+       desc->value = strcmp(text, "true") ? 0 : 1;
     }  break;
     case VoidBaseType: {
     } break;
@@ -153,6 +157,7 @@ DisplayEntries(struct SymEntry ** entries) {
     printf("%3d %-20s %-15s",cnt,scope,GetName(entry));
     free(scope);
     int attrKind = GetAttrKind(entry);
+    // printf(" %d ",attrKind);
     struct Attr * attr = GetAttr(entry);
     switch (attrKind) {
       case VOID_KIND:

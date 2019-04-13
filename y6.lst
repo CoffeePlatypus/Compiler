@@ -1,41 +1,16 @@
-pro name
-Id
-___
-Base type
-declare
-pro name
-Id
-___
-Base type
-declare
-pro name
-Id
-___
-Base type
-declare
-pro name
-Id
-___
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               n              
-  1 global               r              
-  2 global               nn             
-  3 global               ret            
      1: 
      2: nn : int
      3: n : int
      4: ret : bool
      5: r :: 0
-     6: [91md[0m :: 0
-        [91m**[0m ERROR: "syntax error" token: "d"
+     6: d :: 0
      7: a :: 0
      8: c :: 0
      9: 
     10: // test if nn is prime, return bool in ret
     11: isPrime :: {
-    12:   r = -1;
+    12:   [91mr[0m = -1;
+        [91m**[0m ERROR: "syntax error" token: "r"
     13:   d = 2;
     14:   c = 0;
     15:   n = nn / 2
