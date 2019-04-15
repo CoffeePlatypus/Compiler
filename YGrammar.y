@@ -33,10 +33,10 @@
 %type <BaseType> BaseType
 %type <LiteralDesc> Literal
 %type <BaseType> FuncDecl
-//%type <InstrSeq> CodeBlock
-//%type <InstrSeq> StmtSeq
-//%type <InstrSeq> Stmt
-//%type <InstrSeq> AssignStmt
+%type <InstrSeq> CodeBlock
+%type <InstrSeq> StmtSeq
+%type <InstrSeq> Stmt
+%type <InstrSeq> AssignStmt
 
 /* List of token name, corresponding numbers will be generated */
 /* y.tab.h will be generated from these */
@@ -64,12 +64,12 @@ DeclList      : Decl                                        {  };
 Decl          : IdList ':' BaseType                         { ProcDecl($1,$3,0); };
 Decl          : IdList "::" Literal                         { ProcDecl($1,$3->baseType,$3->value); };
 Decl          : IdList ':' FuncDecl                         { ProcDeclFunc($1,$3); };
-//Decl          : IdList "::" CodeBlock                       { ProcFuncBody($1,$3); };
+Decl          : IdList "::" CodeBlock                       { ProcFuncBody($1,$3); };
 
 IdList        : IdItem ',' IdList                           { $$ = AppendIdList($1,$3); };
 IdList        : IdItem                                      { $$ = $1; };
 
-IdItem        : Id                                          { $$ = ProcName($1,MAKE_SPAN(@1)); }
+IdItem        : Id                                          { $$ = ProcName($1,MAKE_SPAN(@1)); };
 
 Id            : IDENT_TOK                                   { @$ = @1; $$ = strdup(yytext); };
 
@@ -84,12 +84,19 @@ Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = Make
 
 FuncDecl      : '(' ')' "->" BaseType                       { $$ = VoidBaseType; };
 
-//CodeBlock     : '{' StmtSeq '}'                             { printf("her1dfsfsd?");$$ = $2; };
+CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
 
-//StmtSeq       : Stmt StmtSeq                                { printf("herfsdfsd1?");$$ = AppendSeq($1,$2); };
-//StmtSeq       :                                             { printf("her1sdfsdf?");$$ = NULL; };
+//StmtSeq       : Stmt StmtSeq                               { $$ = AppendSeq($1,$2); };
+StmtSeq       :                                             { $$ = NULL; };
 
-//Stmt :                                                       {printf("her1werewrwe?");};
+//Stmt :       '\n'                                                {};
+//Stmt          : AssignStmt                                  { }
+
+//AssignStmt    : Id '=' Expr                                 { }
+// todo figure out %left op
+// %left uminus
+//Expr          : Expr Op Expr                                { }
+
 
 %%
 

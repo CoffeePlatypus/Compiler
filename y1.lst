@@ -1,4 +1,5 @@
-     1: ab, cde :: 1
+fun
+ref _main     1: ab, cde :: 1
      2: fgh, ij :: ' '
      3: klmn :: true
      4: x, xy, xyz : int
@@ -7,8 +8,7 @@
      7: 
      8: //main : () -> void
      9: 
-    10: main [91m:[0m: {
-        [91m**[0m ERROR: "syntax error" token: ""
+    10: main :: {
     11: 
     12: }
 
@@ -26,4 +26,4 @@ Num Scope                Name           Ref            Type
   9 global               abc            _abc           chr          0
  10 global               ab             _ab            int          1
  11 global               bcd            _bcd           bool         0
-Parse Unsuccessful
+Parse Successful

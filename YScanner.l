@@ -39,6 +39,8 @@ Digit   [0-9]
 \/\*						  { nestedCommentCount++;                             }
 \*\/						  { nestedCommentCount--;                             }
 \,                              { if (!IN_COMMENT) RETURN(',',1);                   }
+\{                              { if (!IN_COMMENT) RETURN('{',1);                   }
+\}                              { if (!IN_COMMENT) RETURN('}',1);                   }
 int                             { if (!IN_COMMENT) RETURN(INT_TOK,1);               }
 chr                             { if (!IN_COMMENT) RETURN(CHR_TOK,1);               }
 bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,1);              }
@@ -51,7 +53,7 @@ false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1);       
 \:                              { if (!IN_COMMENT) RETURN(':',1);                   }
 \'.\'                           { if (!IN_COMMENT) RETURN(CHRLIT_TOK,0);            }
 [ \t]                           { }
-[\n]                            { lineComment = false; }
+[\n]                            { lineComment = false;}
 .                               { }
 
 %%

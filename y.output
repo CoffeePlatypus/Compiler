@@ -1,3 +1,9 @@
+Nonterminals useless in grammar
+
+   AssignStmt
+   Stmt
+
+
 Grammar
 
     0 $accept: Module $end
@@ -10,68 +16,79 @@ Grammar
     4 Decl: IdList ':' BaseType
     5     | IdList "::" Literal
     6     | IdList ':' FuncDecl
+    7     | IdList "::" CodeBlock
 
-    7 IdList: IdItem ',' IdList
-    8       | IdItem
+    8 IdList: IdItem ',' IdList
+    9       | IdItem
 
-    9 IdItem: Id
+   10 IdItem: Id
 
-   10 Id: IDENT_TOK
+   11 Id: IDENT_TOK
 
-   11 BaseType: "int"
-   12         | "chr"
-   13         | "bool"
-   14         | "void"
+   12 BaseType: "int"
+   13         | "chr"
+   14         | "bool"
+   15         | "void"
 
-   15 Literal: INTLIT_TOK
-   16        | CHRLIT_TOK
-   17        | BOOLLIT_TOK
+   16 Literal: INTLIT_TOK
+   17        | CHRLIT_TOK
+   18        | BOOLLIT_TOK
 
-   18 FuncDecl: '(' ')' "->" BaseType
+   19 FuncDecl: '(' ')' "->" BaseType
+
+   20 CodeBlock: '{' StmtSeq '}'
+
+   21 StmtSeq: %empty
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 18
-')' (41) 18
-',' (44) 7
+'(' (40) 19
+')' (41) 19
+',' (44) 8
 ':' (58) 4 6
+'{' (123) 20
+'}' (125) 20
 error (256)
-IDENT_TOK (258) 10
-"int" (259) 11
-"chr" (260) 12
-"bool" (261) 13
-"void" (262) 14
-INTLIT_TOK (263) 15
-CHRLIT_TOK (264) 16
-BOOLLIT_TOK (265) 17
-"->" (266) 18
-"::" (267) 5
+IDENT_TOK (258) 11
+"int" (259) 12
+"chr" (260) 13
+"bool" (261) 14
+"void" (262) 15
+INTLIT_TOK (263) 16
+CHRLIT_TOK (264) 17
+BOOLLIT_TOK (265) 18
+"->" (266) 19
+"::" (267) 5 7
 
 
 Nonterminals, with rules where they appear
 
-$accept (17)
+$accept (19)
     on left: 0
-Module (18)
+Module (20)
     on left: 1, on right: 0
-DeclList (19)
+DeclList (21)
     on left: 2 3, on right: 1 2
-Decl (20)
-    on left: 4 5 6, on right: 2 3
-IdList (21)
-    on left: 7 8, on right: 4 5 6 7
-IdItem (22)
-    on left: 9, on right: 7 8
-Id (23)
-    on left: 10, on right: 9
-BaseType (24)
-    on left: 11 12 13 14, on right: 4 18
-Literal (25)
-    on left: 15 16 17, on right: 5
-FuncDecl (26)
-    on left: 18, on right: 6
+Decl (22)
+    on left: 4 5 6 7, on right: 2 3
+IdList (23)
+    on left: 8 9, on right: 4 5 6 7 8
+IdItem (24)
+    on left: 10, on right: 8 9
+Id (25)
+    on left: 11, on right: 10
+BaseType (26)
+    on left: 12 13 14 15, on right: 4 19
+Literal (27)
+    on left: 16 17 18, on right: 5
+FuncDecl (28)
+    on left: 19, on right: 6
+CodeBlock (29)
+    on left: 20, on right: 7
+StmtSeq (30)
+    on left: 21, on right: 20
 
 
 State 0
@@ -90,9 +107,9 @@ State 0
 
 State 1
 
-   10 Id: IDENT_TOK .
+   11 Id: IDENT_TOK .
 
-    $default  reduce using rule 10 (Id)
+    $default  reduce using rule 11 (Id)
 
 
 State 2
@@ -130,6 +147,7 @@ State 5
     4 Decl: IdList . ':' BaseType
     5     | IdList . "::" Literal
     6     | IdList . ':' FuncDecl
+    7     | IdList . "::" CodeBlock
 
     "::"  shift, and go to state 10
     ':'   shift, and go to state 11
@@ -137,19 +155,19 @@ State 5
 
 State 6
 
-    7 IdList: IdItem . ',' IdList
-    8       | IdItem .
+    8 IdList: IdItem . ',' IdList
+    9       | IdItem .
 
     ','  shift, and go to state 12
 
-    $default  reduce using rule 8 (IdList)
+    $default  reduce using rule 9 (IdList)
 
 
 State 7
 
-    9 IdItem: Id .
+   10 IdItem: Id .
 
-    $default  reduce using rule 9 (IdItem)
+    $default  reduce using rule 10 (IdItem)
 
 
 State 8
@@ -169,12 +187,15 @@ State 9
 State 10
 
     5 Decl: IdList "::" . Literal
+    7     | IdList "::" . CodeBlock
 
     INTLIT_TOK   shift, and go to state 13
     CHRLIT_TOK   shift, and go to state 14
     BOOLLIT_TOK  shift, and go to state 15
+    '{'          shift, and go to state 16
 
-    Literal  go to state 16
+    Literal    go to state 17
+    CodeBlock  go to state 18
 
 
 State 11
@@ -182,132 +203,162 @@ State 11
     4 Decl: IdList ':' . BaseType
     6     | IdList ':' . FuncDecl
 
-    "int"   shift, and go to state 17
-    "chr"   shift, and go to state 18
-    "bool"  shift, and go to state 19
-    "void"  shift, and go to state 20
-    '('     shift, and go to state 21
+    "int"   shift, and go to state 19
+    "chr"   shift, and go to state 20
+    "bool"  shift, and go to state 21
+    "void"  shift, and go to state 22
+    '('     shift, and go to state 23
 
-    BaseType  go to state 22
-    FuncDecl  go to state 23
+    BaseType  go to state 24
+    FuncDecl  go to state 25
 
 
 State 12
 
-    7 IdList: IdItem ',' . IdList
+    8 IdList: IdItem ',' . IdList
 
     IDENT_TOK  shift, and go to state 1
 
-    IdList  go to state 24
+    IdList  go to state 26
     IdItem  go to state 6
     Id      go to state 7
 
 
 State 13
 
-   15 Literal: INTLIT_TOK .
-
-    $default  reduce using rule 15 (Literal)
-
-
-State 14
-
-   16 Literal: CHRLIT_TOK .
+   16 Literal: INTLIT_TOK .
 
     $default  reduce using rule 16 (Literal)
 
 
-State 15
+State 14
 
-   17 Literal: BOOLLIT_TOK .
+   17 Literal: CHRLIT_TOK .
 
     $default  reduce using rule 17 (Literal)
 
 
+State 15
+
+   18 Literal: BOOLLIT_TOK .
+
+    $default  reduce using rule 18 (Literal)
+
+
 State 16
+
+   20 CodeBlock: '{' . StmtSeq '}'
+
+    $default  reduce using rule 21 (StmtSeq)
+
+    StmtSeq  go to state 27
+
+
+State 17
 
     5 Decl: IdList "::" Literal .
 
     $default  reduce using rule 5 (Decl)
 
 
-State 17
-
-   11 BaseType: "int" .
-
-    $default  reduce using rule 11 (BaseType)
-
-
 State 18
 
-   12 BaseType: "chr" .
+    7 Decl: IdList "::" CodeBlock .
 
-    $default  reduce using rule 12 (BaseType)
+    $default  reduce using rule 7 (Decl)
 
 
 State 19
 
-   13 BaseType: "bool" .
+   12 BaseType: "int" .
 
-    $default  reduce using rule 13 (BaseType)
+    $default  reduce using rule 12 (BaseType)
 
 
 State 20
 
-   14 BaseType: "void" .
+   13 BaseType: "chr" .
 
-    $default  reduce using rule 14 (BaseType)
+    $default  reduce using rule 13 (BaseType)
 
 
 State 21
 
-   18 FuncDecl: '(' . ')' "->" BaseType
+   14 BaseType: "bool" .
 
-    ')'  shift, and go to state 25
+    $default  reduce using rule 14 (BaseType)
 
 
 State 22
+
+   15 BaseType: "void" .
+
+    $default  reduce using rule 15 (BaseType)
+
+
+State 23
+
+   19 FuncDecl: '(' . ')' "->" BaseType
+
+    ')'  shift, and go to state 28
+
+
+State 24
 
     4 Decl: IdList ':' BaseType .
 
     $default  reduce using rule 4 (Decl)
 
 
-State 23
+State 25
 
     6 Decl: IdList ':' FuncDecl .
 
     $default  reduce using rule 6 (Decl)
 
 
-State 24
-
-    7 IdList: IdItem ',' IdList .
-
-    $default  reduce using rule 7 (IdList)
-
-
-State 25
-
-   18 FuncDecl: '(' ')' . "->" BaseType
-
-    "->"  shift, and go to state 26
-
-
 State 26
 
-   18 FuncDecl: '(' ')' "->" . BaseType
+    8 IdList: IdItem ',' IdList .
 
-    "int"   shift, and go to state 17
-    "chr"   shift, and go to state 18
-    "bool"  shift, and go to state 19
-    "void"  shift, and go to state 20
-
-    BaseType  go to state 27
+    $default  reduce using rule 8 (IdList)
 
 
 State 27
 
-   18 FuncDecl: '(' ')' "->" BaseType .
+   20 CodeBlock: '{' StmtSeq . '}'
 
-    $default  reduce using rule 18 (FuncDecl)
+    '}'  shift, and go to state 29
+
+
+State 28
+
+   19 FuncDecl: '(' ')' . "->" BaseType
+
+    "->"  shift, and go to state 30
+
+
+State 29
+
+   20 CodeBlock: '{' StmtSeq '}' .
+
+    $default  reduce using rule 20 (CodeBlock)
+
+
+State 30
+
+   19 FuncDecl: '(' ')' "->" . BaseType
+
+    "int"   shift, and go to state 19
+    "chr"   shift, and go to state 20
+    "bool"  shift, and go to state 21
+    "void"  shift, and go to state 22
+
+    BaseType  go to state 31
+
+
+State 31
+
+   19 FuncDecl: '(' ')' "->" BaseType .
+
+    $default  reduce using rule 19 (FuncDecl)

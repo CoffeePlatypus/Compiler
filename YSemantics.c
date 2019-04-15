@@ -84,15 +84,19 @@ FinishSemantics() {
   AppendSeq(textCode,GenOpX("syscall"));
 
   // append code for all Functions
+ struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
+ // to do add from List
 
-  // build data segment
+  struct InstrSeq * dataCode = GenOpX(".data");
+  //todo get data
+  struct SymEntry ** dataList = GetEntries(IdentifierTable, false, selectPrimType);
 
-  // combine and write - I commented VVV out
-  // struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
-  // WriteSeq(moduleCode);
+  // combine and write
+  struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
+  WriteSeq(moduleCode);
   //
   // // free code
-  // FreeSeq(moduleCode);
+  FreeSeq(moduleCode);
   CloseCodeGen();
 
   CloseSource();
@@ -137,10 +141,10 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
   // can there be multiple declared on a line? if not then it doesn't need loop
   while(idList) {
        struct SymEntry * d = LookupName(IdentifierTable, GetName(idList->entry));
-       d = EnterName(IdentifierTable, GetName(idList->entry));
+       // d = EnterName(IdentifierTable, GetName(idList->entry));
        struct Attr * attr = GetAttr(d);
        attr->typeDesc = MakeFuncDesc(type);
-       attr->reference = AppendStr("_",attr->reference);
+       attr->reference = AppendStr("_",GetName(idList->entry));
        SetAttr(d,FuncType, attr );
        idList = idList->next;
  }
@@ -148,10 +152,25 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
 
 void
 ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
-     printf("not here\n");
+     printf("fun\n");
   // check single item //InstrSeq in YCodeGen
   // check has typeDesc, if not create one indicating void return
   // wrap codeBlock in function entry label and jump return, assign to typeDesc
+  // prepend entry lable and append jr $ra
+
+  struct SymEntry * d = LookupName(IdentifierTable, GetName(idItem->entry));
+  struct Attr * attr = GetAttr(d);
+  if(! attr->typeDesc) {
+       attr->typeDesc = MakeFuncDesc(VOID_KIND);
+  }
+  attr->reference = AppendStr("_",GetName(idItem->entry));
+  //figrue out how
+  printf("ref %s", attr->reference);
+  codeBlock = AppendSeq(GenLabelX(attr->reference), codeBlock);
+  AppendSeq(codeBlock, GenOp1X("jr","$ra"));
+
+  attr->typeDesc->funcDesc.funcCode = codeBlock;
+
 }
 
 struct IdList *
@@ -163,8 +182,6 @@ AppendIdList(struct IdList * item, struct IdList * list) {
        return item;
  }
   struct IdList * temp = list;
-
-
   while(temp->next){
        // printf("-%s",GetName(temp->entry));
        temp = temp->next;
@@ -182,13 +199,13 @@ ProcName(char * tokenText, struct Span span) {
   // enter token text
   // create struct IdList * item
   // create and init attribute struct
-  // printf("pro name\n");
      struct SymEntry * dup = LookupName(IdentifierTable, tokenText);
      if(!dup) {
           dup = EnterName(IdentifierTable, tokenText);
           SetAttr(dup, 0,MakeAttr(NULL, tokenText, span));
           return MakeIdList(dup, span);
      }else{
+          //todo maybe problem
            return NULL;
      }
 }
