@@ -1,5 +1,4 @@
-fun
-ref _main     1: ab, cde :: 1
+     1: ab, cde :: 1
      2: fgh, ij :: ' '
      3: klmn :: true
      4: x, xy, xyz : int

@@ -86,10 +86,24 @@ FinishSemantics() {
   // append code for all Functions
  struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
  // to do add from List
+ while(*functionList) {
+      struct SymEntry * temp = *functionList;
+      struct Attr * attr = GetAttr(temp);
+      AppendSeq(textCode, attr->typeDesc->funcDesc.funcCode);
+      functionList++;
+  }
 
   struct InstrSeq * dataCode = GenOpX(".data");
   //todo get data
   struct SymEntry ** dataList = GetEntries(IdentifierTable, false, selectPrimType);
+  while(*dataList) {
+       struct SymEntry * temp = *dataList;
+       struct Attr * attr = GetAttr(temp);
+       char * data = AppendStr(attr->reference, "\t\t\t.word\t");
+       // data = AppendStr(data, itoa(attr->typeDesc->primDesc.initialValue ));
+       AppendSeq(dataCode, GenLabel(data));
+       dataList++;
+   }
 
   // combine and write
   struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
@@ -131,7 +145,7 @@ ProcDecl(struct IdList * idList, enum BaseTypes baseType, int initialValue) {
 
 void
 ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
-     printf("declare funct\n");
+     // printf("declare funct\n");
   // walk idList item entries
   // get entry attributes
   // check required conditions
@@ -152,7 +166,7 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
 
 void
 ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
-     printf("fun\n");
+     // printf("fun\n");
   // check single item //InstrSeq in YCodeGen
   // check has typeDesc, if not create one indicating void return
   // wrap codeBlock in function entry label and jump return, assign to typeDesc
@@ -165,9 +179,9 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   }
   attr->reference = AppendStr("_",GetName(idItem->entry));
   //figrue out how
-  printf("ref %s", attr->reference);
-  codeBlock = AppendSeq(GenLabelX(attr->reference), codeBlock);
-  AppendSeq(codeBlock, GenOp1X("jr","$ra"));
+  // printf("ref %s", attr->reference);
+  codeBlock = AppendSeq(GenLabelC(attr->reference, "func entry"), codeBlock);
+  AppendSeq(codeBlock, GenOp1C("jr","$ra","func return"));
 
   attr->typeDesc->funcDesc.funcCode = codeBlock;
 
