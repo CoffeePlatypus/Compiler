@@ -54,7 +54,10 @@ extern int yydebug;
     CHRLIT_TOK = 264,
     BOOLLIT_TOK = 265,
     ARROW_TOK = 266,
-    DBLCOLON_TOK = 267
+    DBLCOLON_TOK = 267,
+    PUT_TOK = 268,
+    GET_TOK = 269,
+    UMINUS = 270
   };
 #endif
 /* Tokens.  */
@@ -68,6 +71,9 @@ extern int yydebug;
 #define BOOLLIT_TOK 265
 #define ARROW_TOK 266
 #define DBLCOLON_TOK 267
+#define PUT_TOK 268
+#define GET_TOK 269
+#define UMINUS 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -82,8 +88,9 @@ union YYSTYPE
   struct IdList * IdList;
   struct LiteralDesc * LiteralDesc;
   struct InstrSeq * InstrSeq;
+  struct ExprResult * ExprResult;
 
-#line 87 "y.tab.h" /* yacc.c:1909  */
+#line 94 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

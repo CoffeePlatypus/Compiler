@@ -3,8 +3,8 @@
      3: rec : () -> void
      4: 
      5: rec :: {
-     6:   [91mput[0m("enter x = ") put(x) put("\n")
-        [91m**[0m ERROR: "syntax error" token: "put"
+     6:   put("[91menter[0m x = ") put(x) put("\n")
+        [91m**[0m ERROR: "syntax error" token: "enter"
      7:   x = x - 1
      8:   if x ## 0 {
      9:     rec()

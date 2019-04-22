@@ -3,7 +3,7 @@
     Author:      Julia Froegel
     Created:     04/08/2019
     Resources:
-      - Talked to David about the grammer and he helped me realize two of my rules were pointless
+
  */
 
 
@@ -99,9 +99,12 @@ FinishSemantics() {
   while(*dataList) {
        struct SymEntry * temp = *dataList;
        struct Attr * attr = GetAttr(temp);
-       char * data = AppendStr(attr->reference, "\t\t\t.word\t");
+       // char * data = AppendStr(attr->reference, "\t\t\t.word\t");
        // data = AppendStr(data, itoa(attr->typeDesc->primDesc.initialValue ));
-       AppendSeq(dataCode, GenLabel(data));
+       char * retType = malloc(sizeof(char)*10);
+       sprintf(retType, "%d", attr->typeDesc->primDesc.initialValue);
+       if (sem_debug) printf("%s\n",retType);
+       AppendSeq(dataCode, GenInstr(attr->reference, ".word", retType, NULL, NULL, NULL));
        dataList++;
    }
 
@@ -127,18 +130,11 @@ ProcDecl(struct IdList * idList, enum BaseTypes baseType, int initialValue) {
   // make and assign id reference string
   while(idList) {
        struct SymEntry * d = LookupName(IdentifierTable, GetName(idList->entry));
-       // if(d) {
-       //      //duplicate. exit?
-       //      printf("duplicate %s", GetName(idList->entry));
-       //      return;
-       // }else{
-       //      d = EnterName(IdentifierTable, GetName(idList->entry));
-            if (sem_debug) printf("Entered %s = %d : %d\n", GetName(idList->entry),initialValue, baseType);
-            struct Attr * attr = GetAttr(d);
-            attr->typeDesc = MakePrimDesc(baseType, initialValue);
-            attr->reference = AppendStr("_",attr->reference);
-            SetAttr(d,STRUCT_KIND, attr );
-       // }
+       if (sem_debug) printf("Entered %s = %d : %d\n", GetName(idList->entry),initialValue, baseType);
+       struct Attr * attr = GetAttr(d);
+       attr->typeDesc = MakePrimDesc(baseType, initialValue);
+       attr->reference = AppendStr("_",attr->reference);
+       SetAttr(d,STRUCT_KIND, attr );
        idList = idList->next;
  }
 }
@@ -159,7 +155,7 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
        struct Attr * attr = GetAttr(d);
        attr->typeDesc = MakeFuncDesc(type);
        attr->reference = AppendStr("_",GetName(idList->entry));
-       SetAttr(d,FuncType, attr );
+       SetAttr(d,STRUCT_KIND, attr );
        idList = idList->next;
  }
 }
@@ -173,11 +169,17 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   // prepend entry lable and append jr $ra
 
   struct SymEntry * d = LookupName(IdentifierTable, GetName(idItem->entry));
+  // printf("name %s\n", GetName(idItem->entry));
   struct Attr * attr = GetAttr(d);
+
   if(! attr->typeDesc) {
-       attr->typeDesc = MakeFuncDesc(VOID_KIND);
+       attr->typeDesc = MakeFuncDesc(3);
+       // scared that this suddenly works
+       // printf("here %d\n", attr->typeDesc->funcDesc.returnType);
   }
   attr->reference = AppendStr("_",GetName(idItem->entry));
+  // printf("atr %s\n", attr->reference);
+  SetAttr(d,STRUCT_KIND, attr );
   //figrue out how
   // printf("ref %s", attr->reference);
   codeBlock = AppendSeq(GenLabelC(attr->reference, "func entry"), codeBlock);
@@ -222,4 +224,63 @@ ProcName(char * tokenText, struct Span span) {
           //todo maybe problem
            return NULL;
      }
+}
+
+struct InstrSeq *
+ProcAssign(char * id, struct ExprResult * res){
+     struct SymEntry * d = LookupName(IdentifierTable, id);
+     struct Attr * attr = GetAttr(d);
+     ReleaseTmpReg(res->resultRegister);
+     return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(AvailTmpReg()), attr->reference));
+}
+
+struct InstrSeq *
+Put(struct LiteralDesc * lit){
+     // syscall print output
+     return NULL;
+}
+
+struct ExprResult *
+GetInt(){
+     // todo generate syscall to get int
+     return NULL;
+}
+
+///// Expr Code! //////////
+
+struct ExprResult *
+ProcOp(struct ExprResult * oprnd1, struct ExprResult * oprnd2, int opNum) {
+     int reg = AvailTmpReg();
+     struct InstrSeq * instr = GenOp3(Ops[opNum], TmpRegName(reg), TmpRegName(oprnd1->resultRegister),  TmpRegName(oprnd2->resultRegister));
+     WriteSeq(instr);
+     ReleaseTmpReg(oprnd1->resultRegister);
+     ReleaseTmpReg(oprnd2->resultRegister);
+     return MakeExprResult(AppendSeq(AppendSeq(oprnd1->exprCode, oprnd2->exprCode), instr), reg, opNum, IntBaseType );
+}
+
+struct ExprResult *
+ProcUmin(struct ExprResult * oprnd1) {
+     int reg = AvailTmpReg();
+     struct InstrSeq * instr = GenOp3("sub", TmpRegName(reg), "0", TmpRegName(oprnd1->resultRegister));
+     WriteSeq(instr);
+     ReleaseTmpReg(oprnd1->resultRegister);
+     return MakeExprResult(AppendSeq(oprnd1->exprCode, instr), reg, '-', IntBaseType );
+}
+
+struct ExprResult *
+ProcInt(char * val) {
+     // IntBaseType
+     int reg = AvailTmpReg();
+     return MakeExprResult(GenOp2("li", TmpRegName(reg), val), reg, 'l', IntBaseType);
+}
+
+struct ExprResult *
+ProcLoadVar(char * id) {
+     struct SymEntry * d = LookupName(IdentifierTable, id);
+     struct Attr * attr = GetAttr(d);
+     // attr->typeDesc->initialValue;
+     int reg = AvailTmpReg();
+     struct InstrSeq * instr = GenOp2("lw", TmpRegName(reg), id);
+     WriteSeq(instr);
+     return MakeExprResult(instr, reg, 'l', attr->typeDesc->primDesc.type);
 }

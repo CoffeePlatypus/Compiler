@@ -14,10 +14,10 @@
 Symbol Table: global
 Num Scope                Name           Ref            Type
   0 global               cde            _cde           int          1
-  1 global               fgh            _fgh           chr         39
-  2 global               ij             _ij            chr         39
+  1 global               fgh            _fgh           chr         32
+  2 global               ij             _ij            chr         32
   3 global               x              _x             int          0
-  4 global               main           
+  4 global               main           _main          () -> void
   5 global               klmn           _klmn          bool         1
   6 global               xy             _xy            int          0
   7 global               xyz            _xyz           int          0

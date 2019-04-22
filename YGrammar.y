@@ -22,6 +22,7 @@
   struct IdList * IdList;
   struct LiteralDesc * LiteralDesc;
   struct InstrSeq * InstrSeq;
+  struct ExprResult * ExprResult;
 }
 
 /* Type declaration for data attached to non-terminals. Allows     */
@@ -37,7 +38,8 @@
 %type <InstrSeq> StmtSeq
 %type <InstrSeq> Stmt
 %type <InstrSeq> AssignStmt
-
+%type <ExprResult> Expr
+%type <ExprResult> Oprnd
 /* List of token name, corresponding numbers will be generated */
 /* y.tab.h will be generated from these */
 /* %token symbolic-name text-used-in-rules */
@@ -51,8 +53,13 @@
 %token BOOLLIT_TOK
 %token ARROW_TOK       "->"
 %token DBLCOLON_TOK    "::"
+%token PUT_TOK         "put"
+%token GET_TOK         "get"
 
 /* operator associativity and precedence in increasing order */
+%left '+' '-'
+%left '*' '/'
+%left UMINUS
 
 %%
 // Step 1
@@ -86,16 +93,24 @@ FuncDecl      : '(' ')' "->" BaseType                       { $$ = VoidBaseType;
 
 CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
 
-//StmtSeq       : Stmt StmtSeq                               { $$ = AppendSeq($1,$2); };
+StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
 StmtSeq       :                                             { $$ = NULL; };
 
-//Stmt :       '\n'                                                {};
-//Stmt          : AssignStmt                                  { }
+Stmt          : "put" '(' Literal ')'                       { $$ = Put($3); };
+Stmt          : AssignStmt                                  { $$ = $1; };
 
-//AssignStmt    : Id '=' Expr                                 { }
-// todo figure out %left op
-// %left uminus
-//Expr          : Expr Op Expr                                { }
+AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
+
+Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0); } ;
+Expr    :  Expr '-' Expr                { $$ = ProcOp($1, $3, 1); } ;
+Expr    :  Expr '*' Expr                { $$ = ProcOp($1, $3, 2); } ;
+Expr    :  Expr '/' Expr                { $$ = ProcOp($1, $3, 3); } ;
+Expr    :  '(' Expr ')'                 { $$ = $2; } ;
+Expr    :  '-' Expr       %prec UMINUS  { $$ = ProcUmin($2); } ;
+Expr    : "get" '(' "int" ')'           { $$ = GetInt();};
+Expr    :  Oprnd                        { $$ = $1; } ;
+Oprnd   :  INTLIT_TOK                   { $$ = ProcInt(yytext); } ;
+Oprnd   :  IDENT_TOK                    { $$ = ProcLoadVar(yytext); }
 
 
 %%

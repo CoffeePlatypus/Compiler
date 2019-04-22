@@ -47,7 +47,8 @@ MakeLiteralDesc(char * text, enum BaseTypes type) {
       desc->value = atoi(text);
       break;
     case ChrBaseType:
-      desc->value = text[0];
+     // printf("t %s %d\n",text, text[0]);
+      desc->value = text[1];
       break;
     case BoolBaseType: {
          // printf("bool == %s == %d\n",text, strcmp(text, "true"));
@@ -66,6 +67,16 @@ MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span) {
   attr->reference = reference;
   attr->declSpan = span;
   return attr;
+}
+
+struct ExprResult *
+MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType){
+     struct ExprResult * res = malloc(sizeof(struct ExprResult));
+     res->exprCode = exprCode;
+     res->resultRegister = resultRegister;
+     res->operator = operator;
+     res->resType = resType;
+     return res;
 }
 
 void

@@ -20,3 +20,12 @@ void                    ProcDeclFunc(struct IdList * idList, enum BaseTypes type
 void                    ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock);
 struct IdList *         AppendIdList(struct IdList * item, struct IdList * list);
 struct IdList *         ProcName(char * tokenText, struct Span span);
+
+struct InstrSeq * ProcAssign(char * id, struct ExprResult * res);
+struct InstrSeq * Put(struct LiteralDesc * lit);
+
+struct ExprResult * ProcOp(struct ExprResult * oprnd1, struct ExprResult * oprnd2, int opNum);
+struct ExprResult * ProcUmin(struct ExprResult * oprnd1);
+struct ExprResult * ProcInt(char * val);
+struct ExprResult * ProcLoadVar(char * id);
+struct ExprResult * GetInt();

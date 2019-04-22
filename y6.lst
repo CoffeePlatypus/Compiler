@@ -9,8 +9,8 @@
      9: 
     10: // test if nn is prime, return bool in ret
     11: isPrime :: {
-    12:   [91mr[0m = -1;
-        [91m**[0m ERROR: "syntax error" token: "r"
+    12:   r = [91m-1[0m;
+        [91m**[0m ERROR: "syntax error" token: "-1"
     13:   d = 2;
     14:   c = 0;
     15:   n = nn / 2
