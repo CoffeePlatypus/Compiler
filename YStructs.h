@@ -58,6 +58,7 @@ struct ExprResult {
      int resultRegister;
      char operator;
      enum BaseTypes resType;
+     struct LiteralDesc * desc;
 };
 
 // Make and Free Structs
@@ -66,7 +67,7 @@ struct TypeDesc *      MakePrimDesc(enum BaseTypes type, int initialValue);
 struct TypeDesc *      MakeFuncDesc(enum BaseTypes returnType);
 struct LiteralDesc *   MakeLiteralDesc(char * text, enum BaseTypes type);
 struct Attr *          MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span);
-struct ExprResult *    MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType);
+struct ExprResult *    MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc);
 
 void                   FreeIdList(struct IdList * item);
 void                   FreeTypeDesc(struct TypeDesc * typeDesc);

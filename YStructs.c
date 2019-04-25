@@ -70,12 +70,13 @@ MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span) {
 }
 
 struct ExprResult *
-MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType){
+MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc){
      struct ExprResult * res = malloc(sizeof(struct ExprResult));
      res->exprCode = exprCode;
      res->resultRegister = resultRegister;
      res->operator = operator;
      res->resType = resType;
+     res->desc = desc;
      return res;
 }
 

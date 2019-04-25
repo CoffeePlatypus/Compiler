@@ -33,6 +33,7 @@
 %type <IdList> IdList
 %type <BaseType> BaseType
 %type <LiteralDesc> Literal
+//%type <PrimDesc> PutLit
 %type <BaseType> FuncDecl
 %type <InstrSeq> CodeBlock
 %type <InstrSeq> StmtSeq
@@ -96,21 +97,26 @@ CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
 StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
 StmtSeq       :                                             { $$ = NULL; };
 
-Stmt          : "put" '(' Literal ')'                       { $$ = Put($3); };
+//PutLit        : CHRLIT_TOK                                  { @$ = @1; $$ = MakePrimDesc(ChrBaseType, yytext[1]); };
+//PutLit        : Id                                          { $$ = LookupName(IdentifierTable, $1)->typeDesc; };
+
+Stmt          : "put" '(' Expr ')'                       { $$ = Put($3); };
 Stmt          : AssignStmt                                  { $$ = $1; };
 
 AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
 
-Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0); } ;
-Expr    :  Expr '-' Expr                { $$ = ProcOp($1, $3, 1); } ;
-Expr    :  Expr '*' Expr                { $$ = ProcOp($1, $3, 2); } ;
-Expr    :  Expr '/' Expr                { $$ = ProcOp($1, $3, 3); } ;
-Expr    :  '(' Expr ')'                 { $$ = $2; } ;
-Expr    :  '-' Expr       %prec UMINUS  { $$ = ProcUmin($2); } ;
-Expr    : "get" '(' "int" ')'           { $$ = GetInt();};
-Expr    :  Oprnd                        { $$ = $1; } ;
-Oprnd   :  INTLIT_TOK                   { $$ = ProcInt(yytext); } ;
-Oprnd   :  IDENT_TOK                    { $$ = ProcLoadVar(yytext); }
+Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0);     } ;
+Expr    :  Expr '-' Expr                { $$ = ProcOp($1, $3, 1);     } ;
+Expr    :  Expr '*' Expr                { $$ = ProcOp($1, $3, 2);     } ;
+Expr    :  Expr '/' Expr                { $$ = ProcOp($1, $3, 3);     } ;
+Expr    :  '(' Expr ')'                 { $$ = $2;                    } ;
+Expr    :  '-' Expr       %prec UMINUS  { $$ = ProcUmin($2);          } ;
+Expr    :  GET_TOK '(' "int" ')'        { $$ = GetInt();              } ;
+Expr    :  Oprnd                        { $$ = $1;                    } ;
+Oprnd   :  INTLIT_TOK                   { $$ = ProcLit(yytext, IntBaseType);       } ;
+Oprnd   :  IDENT_TOK                    { $$ = ProcLoadVar(yytext);                } ;
+Oprnd   :  CHRLIT_TOK                   { $$ = ProcLit(yytext, ChrBaseType);       } ;
+Oprnd   :  BOOLLIT_TOK                  { $$ = ProcLit(yytext, BoolBaseType);      } ;
 
 
 %%

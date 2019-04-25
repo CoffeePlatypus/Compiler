@@ -22,10 +22,10 @@ struct IdList *         AppendIdList(struct IdList * item, struct IdList * list)
 struct IdList *         ProcName(char * tokenText, struct Span span);
 
 struct InstrSeq * ProcAssign(char * id, struct ExprResult * res);
-struct InstrSeq * Put(struct LiteralDesc * lit);
+struct InstrSeq * Put(struct ExprResult * res);
 
 struct ExprResult * ProcOp(struct ExprResult * oprnd1, struct ExprResult * oprnd2, int opNum);
 struct ExprResult * ProcUmin(struct ExprResult * oprnd1);
-struct ExprResult * ProcInt(char * val);
+struct ExprResult * ProcLit(char * val, enum BaseTypes type);
 struct ExprResult * ProcLoadVar(char * id);
 struct ExprResult * GetInt();

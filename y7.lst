@@ -1,10 +1,10 @@
      1: x : int
      2: 
-     3: rec : () -> void
+     3: rec : () -[91m>[0m void
+        [91m**[0m ERROR: "syntax error" token: "-"
      4: 
      5: rec :: {
-     6:   put("[91menter[0m x = ") put(x) put("\n")
-        [91m**[0m ERROR: "syntax error" token: "enter"
+     6:   put("enter x = ") put(x) put("\n")
      7:   x = x - 1
      8:   if x ## 0 {
      9:     rec()
@@ -22,4 +22,9 @@
     21:   rec()
     22:   put("done\n")
     23: }
-        [92m**[0m no main function for module
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               rec            
+  1 global               x              _x             int          0
+Parse Unsuccessful
