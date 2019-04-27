@@ -1,4 +1,8 @@
-proc assingproc assingproc assingproc assing     1: 
+;proc ass : r
+;proc ass : d
+;proc ass : c
+proc ass : n
+     1: 
      2: nn : int
      3: n : int
      4: ret : bool
@@ -44,15 +48,4 @@ proc assingproc assingproc assingproc assing     1:
     43:   }
     44:   put("done\n")
     45: }
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               d              _d             int          0
-  1 global               n              _n             int          0
-  2 global               r              _r             int          0
-  3 global               nn             _nn            int          0
-  4 global               isPrime        
-  5 global               ret            _ret           bool         0
-  6 global               a              _a             int          0
-  7 global               c              _c             int          0
-Parse Unsuccessful
+        [92m**[0m no main function for module

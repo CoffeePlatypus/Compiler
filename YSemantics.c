@@ -66,55 +66,55 @@ void
 FinishSemantics() {
      // DisplaySymbolTable(IdentifierTable);
   // build text segment
-  // struct InstrSeq * textCode = GenOpX(".text");
-  //
-  // // form module preamble
-  // struct SymEntry * mainEntry = LookupName(IdentifierTable,"main");
-  // CondPostMessageAndExit(!mainEntry,MakeEOFSpan(),"no main function for module");
+  struct InstrSeq * textCode = GenOpX(".text");
+
+  // form module preamble
+  struct SymEntry * mainEntry = LookupName(IdentifierTable,"main");
+  CondPostMessageAndExit(!mainEntry,MakeEOFSpan(),"no main function for module");
 
   // should make sure main takes no arguments
-  // struct Attr * mainAttr = GetAttr(mainEntry);
+  struct Attr * mainAttr = GetAttr(mainEntry);
 
   // boilerplate for spim
-  // AppendSeq(textCode,GenOp1X(".globl","__start"));
-  // AppendSeq(textCode,GenLabelX("__start"));
-  //
-  // AppendSeq(textCode,GenOp1X("jal",mainAttr->reference));
-  // AppendSeq(textCode,GenOp2X("li","$v0","10"));
-  // AppendSeq(textCode,GenOpX("syscall"));
+  AppendSeq(textCode,GenOp1X(".globl","__start"));
+  AppendSeq(textCode,GenLabelX("__start"));
+
+  AppendSeq(textCode,GenOp1X("jal",mainAttr->reference));
+  AppendSeq(textCode,GenOp2X("li","$v0","10"));
+  AppendSeq(textCode,GenOpX("syscall"));
 
   // append code for all Functions
- // struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
- // // to do add from List
- // while(*functionList) {
- //      struct SymEntry * temp = *functionList;
- //      struct Attr * attr = GetAttr(temp);
- //      AppendSeq(textCode, attr->typeDesc->funcDesc.funcCode);
- //      functionList++;
- //  }
+ struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
+ // to do add from List
+ while(*functionList) {
+      struct SymEntry * temp = *functionList;
+      struct Attr * attr = GetAttr(temp);
+      AppendSeq(textCode, attr->typeDesc->funcDesc.funcCode);
+      functionList++;
+  }
 
-  // struct InstrSeq * dataCode = GenOpX(".data");
-  //todo get data
-  // struct SymEntry ** dataList = GetEntries(IdentifierTable, false, selectPrimType);
-  // while(*dataList) {
-  //      struct SymEntry * temp = *dataList;
-  //      struct Attr * attr = GetAttr(temp);
-  //      // char * data = AppendStr(attr->reference, "\t\t\t.word\t");
-  //      // data = AppendStr(data, itoa(attr->typeDesc->primDesc.initialValue ));
-  //      char * retType = malloc(sizeof(char)*10);
-  //      sprintf(retType, "%d", attr->typeDesc->primDesc.initialValue);
-  //      if (sem_debug) printf("%s\n",retType);
-  //      AppendSeq(dataCode, GenInstr(attr->reference, ".word", retType, NULL, NULL, NULL));
-  //      dataList++;
-  //  }
+  struct InstrSeq * dataCode = GenOpX(".data");
+  // todo get data
+  struct SymEntry ** dataList = GetEntries(IdentifierTable, false, selectPrimType);
+  while(*dataList) {
+       struct SymEntry * temp = *dataList;
+       struct Attr * attr = GetAttr(temp);
+       // char * data = AppendStr(attr->reference, "\t\t\t.word\t");
+       // data = AppendStr(data, itoa(attr->typeDesc->primDesc.initialValue ));
+       char * retType = malloc(sizeof(char)*10);
+       sprintf(retType, "%d", attr->typeDesc->primDesc.initialValue);
+       if (sem_debug) printf("%s\n",retType);
+       AppendSeq(dataCode, GenInstr(attr->reference, ".word", retType, NULL, NULL, NULL));
+       dataList++;
+   }
 
   // combine and write
-  // struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
-  // WriteSeq(moduleCode);
-  // //
-  // // // free code
-  // FreeSeq(moduleCode);
-  // CloseCodeGen();
+  struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
+  WriteSeq(moduleCode);
+  //
+  // // free code
+  FreeSeq(moduleCode);
+  CloseCodeGen();
 
   CloseSource();
 
@@ -228,19 +228,26 @@ ProcName(char * tokenText, struct Span span) {
 
 struct InstrSeq *
 ProcAssign(char * id, struct ExprResult * res){
-     printf("proc assing");
+     if (!res) return NULL;
+     printf("proc ass : %s\n", id);
      struct SymEntry * d = LookupName(IdentifierTable, id);
      struct Attr * attr = GetAttr(d);
      ReleaseTmpReg(res->resultRegister);
-     return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(AvailTmpReg()), attr->reference));
+     // int reg = AvailTmpReg();
+     ReleaseTmpReg(res->resultRegister);
+     return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(res->resultRegister), attr->reference));
 }
 
 struct InstrSeq *
 Put(struct ExprResult * expr){
-     printf("put");
-     // syscall print output
 
-     int reg = AvailTmpReg();
+     // syscall print output
+     if (! expr) {
+          printf("put null\n");
+          return NULL;
+     } // :[
+     printf("put \n");//, expr->desc->value);
+     int reg = expr->operator == 'w'? expr->resultRegister : AvailTmpReg();
      int lval = expr->desc->value;
 
      if(expr->desc->baseType == BoolBaseType) {
@@ -248,8 +255,8 @@ Put(struct ExprResult * expr){
      }
      char * val = malloc(sizeof(char)*5);
      sprintf(val, "%d", lval);
-     struct InstrSeq * ins = GenOp2("li",TmpRegName(reg), val);
-     switch(expr->desc->baseType->baseType) {
+     struct InstrSeq * ins = expr->operator == 'w'? expr->exprCode :GenOp2("li",TmpRegName(reg), val);
+     switch(expr->desc->baseType) {
           case IntBaseType:
             AppendSeq(ins, GenOp2("li", "$v0", "1"));
             break;
@@ -260,15 +267,15 @@ Put(struct ExprResult * expr){
      AppendSeq(ins, GenOp2("move", "$a0", TmpRegName(reg)));
      AppendSeq(ins, GenOp("syscall"));
      ReleaseTmpReg(reg);
-     return AppendSeq(expr->exprCode, ins) ;
+     return ins ;
 }
 
 struct ExprResult *
 GetInt(){
      // todo generate syscall to get int
      // int reg
-     printf("get int");
-     struct InstrSeq * ins = AppendSeq(GenOp2("li", "$v0", "5"), GenOp("syscall"));
+     printf("get int\n");
+     struct InstrSeq * ins = AppendSeq(GenOp2C("li", "$v0", "5","read int syscall"), GenOp("syscall"));
      int reg = AvailTmpReg();
      AppendSeq(ins, GenOp2("move", TmpRegName(reg), "$v0"));
      // WriteSeq(ins);
@@ -279,6 +286,12 @@ GetInt(){
 
 struct ExprResult *
 ProcOp(struct ExprResult * oprnd1, struct ExprResult * oprnd2, int opNum) {
+     if ( oprnd1==NULL || oprnd2==NULL) {
+          if(oprnd1 == NULL) printf("\t\t\t\t\top1 == null");
+          if(oprnd2 == NULL) printf("\t\t\t\t\top2 == null");
+          printf("\n");
+          return NULL;
+     }
      int reg = AvailTmpReg();
      struct InstrSeq * instr = GenOp3(Ops[opNum], TmpRegName(reg), TmpRegName(oprnd1->resultRegister),  TmpRegName(oprnd2->resultRegister));
      // WriteSeq(instr);
@@ -299,17 +312,30 @@ ProcUmin(struct ExprResult * oprnd1) {
 struct ExprResult *
 ProcLit(char * val, enum BaseTypes type) {
      // IntBaseType
-     int reg = AvailTmpReg();
-     return MakeExprResult(GenOp2("li", TmpRegName(reg), val), reg, 'l', type, MakeLiteralDesc(val, type));
+     // printf("proc Lit %s : %d\n",val, type);
+     // int reg = AvailTmpReg();
+     struct LiteralDesc * litDesc = MakeLiteralDesc(val, type);
+     // printf("litDesc %d", litDesc->value);
+     // struct InstrSeq * ins = GenOp2("li", TmpRegName(reg), val);
+     return MakeExprResult(NULL, -1, 'l', type, litDesc );
 }
 
 struct ExprResult *
 ProcLoadVar(char * id) {
+     // printf("load id %s\n",id);
+     // DisplaySymbolTable(IdentifierTable);
      struct SymEntry * d = LookupName(IdentifierTable, id);
+     if(d == NULL) {
+          printf("\tid not found: %s\n",id);
+          return NULL;
+     }
+     // printf(" ~~~id %s\n", id);
      struct Attr * attr = GetAttr(d);
      // attr->typeDesc->initialValue;
      int reg = AvailTmpReg();
-     struct InstrSeq * instr = GenOp2("lw", TmpRegName(reg), id);
+     struct InstrSeq * instr = GenOp2("lw", TmpRegName(reg), attr->reference);
      // WriteSeq(instr);
-     return MakeExprResult(instr, reg, 'l', attr->typeDesc->primDesc.type, MakeLiteralDesc(attr->typeDesc->primDesc.initialValue, attr->typeDesc->primDesc.type));
+     char * stringy = malloc(sizeof(char)*10);
+     sprintf(stringy, "%d", attr->typeDesc->primDesc.initialValue); // This is gross and stupid - Should probably not do it this way
+     return MakeExprResult(instr, reg, 'w', attr->typeDesc->primDesc.type, MakeLiteralDesc(stringy, attr->typeDesc->primDesc.type));
 }

@@ -50,7 +50,7 @@ Grammar
    33     | Oprnd
 
    34 Oprnd: INTLIT_TOK
-   35      | IDENT_TOK
+   35      | Id
    36      | CHRLIT_TOK
    37      | BOOLLIT_TOK
 
@@ -70,7 +70,7 @@ $end (0) 0
 '{' (123) 20
 '}' (125) 20
 error (256)
-IDENT_TOK (258) 11 35
+IDENT_TOK (258) 11
 "int" (259) 12 32
 "chr" (260) 13
 "bool" (261) 14
@@ -100,7 +100,7 @@ IdList (31)
 IdItem (32)
     on left: 10, on right: 8 9
 Id (33)
-    on left: 11, on right: 10 25
+    on left: 11, on right: 10 25 35
 BaseType (34)
     on left: 12 13 14 15, on right: 4 19
 Literal (35)
@@ -415,14 +415,15 @@ State 33
 
    23 Stmt: "put" '(' . Expr ')'
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 45
     Oprnd  go to state 46
 
@@ -431,14 +432,15 @@ State 34
 
    25 AssignStmt: Id '=' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 47
     Oprnd  go to state 46
 
@@ -471,69 +473,71 @@ State 37
 
 State 38
 
-   35 Oprnd: IDENT_TOK .
-
-    $default  reduce using rule 35 (Oprnd)
-
-
-State 39
-
    34 Oprnd: INTLIT_TOK .
 
     $default  reduce using rule 34 (Oprnd)
 
 
-State 40
+State 39
 
    36 Oprnd: CHRLIT_TOK .
 
     $default  reduce using rule 36 (Oprnd)
 
 
-State 41
+State 40
 
    37 Oprnd: BOOLLIT_TOK .
 
     $default  reduce using rule 37 (Oprnd)
 
 
-State 42
+State 41
 
    32 Expr: "get" . '(' "int" ')'
 
     '('  shift, and go to state 49
 
 
-State 43
+State 42
 
    31 Expr: '-' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 50
+    Oprnd  go to state 46
+
+
+State 43
+
+   30 Expr: '(' . Expr ')'
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 51
     Oprnd  go to state 46
 
 
 State 44
 
-   30 Expr: '(' . Expr ')'
+   35 Oprnd: Id .
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
-
-    Expr   go to state 51
-    Oprnd  go to state 46
+    $default  reduce using rule 35 (Oprnd)
 
 
 State 45
@@ -618,14 +622,15 @@ State 52
 
    26 Expr: Expr '+' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 59
     Oprnd  go to state 46
 
@@ -634,14 +639,15 @@ State 53
 
    27 Expr: Expr '-' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 60
     Oprnd  go to state 46
 
@@ -650,14 +656,15 @@ State 54
 
    28 Expr: Expr '*' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 61
     Oprnd  go to state 46
 
@@ -666,14 +673,15 @@ State 55
 
    29 Expr: Expr '/' . Expr
 
-    IDENT_TOK    shift, and go to state 38
-    INTLIT_TOK   shift, and go to state 39
-    CHRLIT_TOK   shift, and go to state 40
-    BOOLLIT_TOK  shift, and go to state 41
-    "get"        shift, and go to state 42
-    '-'          shift, and go to state 43
-    '('          shift, and go to state 44
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
 
+    Id     go to state 44
     Expr   go to state 62
     Oprnd  go to state 46
 

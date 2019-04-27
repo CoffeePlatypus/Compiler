@@ -1,4 +1,4 @@
-     1: x : int
+     1: x : int
      2: 
      3: rec : () -[91m>[0m void
         [91m**[0m ERROR: "syntax error" token: "-"
@@ -22,9 +22,4 @@
     21:   rec()
     22:   put("done\n")
     23: }
-
-Symbol Table: global
-Num Scope                Name           Ref            Type
-  0 global               rec            
-  1 global               x              _x             int          0
-Parse Unsuccessful
+        [92m**[0m no main function for module

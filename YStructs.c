@@ -48,7 +48,11 @@ MakeLiteralDesc(char * text, enum BaseTypes type) {
       break;
     case ChrBaseType:
      // printf("t %s %d\n",text, text[0]);
-      desc->value = text[1];
+      if(text[1] == '\\'){
+           desc->value = 10;
+      }else{
+           desc->value = text[1];
+      }
       break;
     case BoolBaseType: {
          // printf("bool == %s == %d\n",text, strcmp(text, "true"));

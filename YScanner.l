@@ -56,13 +56,13 @@ true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1);       
 false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1);           }
 put                             { if (!IN_COMMENT) RETURN(PUT_TOK,1);               }
 get                             { if (!IN_COMMENT) RETURN(GET_TOK,1);               }
--?{Digit}{Digit}*               { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);            }
-{Letter}({Letter}|{Digit})*     { if (!IN_COMMENT) RETURN(IDENT_TOK,0);             }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1);          }
 \:                              { if (!IN_COMMENT) RETURN(':',1);                   }
-\'.\'                           { if (!IN_COMMENT) RETURN(CHRLIT_TOK,0);            }
+\'\\?.\'                        { if (!IN_COMMENT) RETURN(CHRLIT_TOK,1);            }
+-?{Digit}{Digit}*               { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);            }
+{Letter}({Letter}|{Digit})*     { if (!IN_COMMENT) RETURN(IDENT_TOK,0);             }
 [ \t]                           { }
 [\n]                            { lineComment = false;}
-.                               { }
+
 
 %%

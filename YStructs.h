@@ -33,6 +33,7 @@ struct PrimDesc {
 };
 
 enum DeclTypes { UnknownType, PrimType, FuncType };
+
 struct TypeDesc {
   enum DeclTypes declType;
   union {
