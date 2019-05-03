@@ -83,6 +83,14 @@ MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, en
      res->desc = desc;
      return res;
 }
+struct CondResult *
+MakeCondResult(struct InstrSeq * exprCode, int resultRegister, char * str){
+     struct CondResult * res = malloc(sizeof(struct CondResult));
+     res->exprCode = exprCode;
+     res->resultRegister = resultRegister;
+     res->label = str;
+     return res;
+}
 
 void
 FreeIdList(struct IdList * item) {

@@ -4,6 +4,8 @@
     Created:     04/08/2019
     Resources:
 
+    ¯\_(ツ)_/¯
+
  */
 
 
@@ -115,7 +117,7 @@ FinishSemantics() {
   // // free code
   FreeSeq(moduleCode);
   CloseCodeGen();
-
+ //
   CloseSource();
 
   DisplaySymbolTable(IdentifierTable);
@@ -162,7 +164,7 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
 
 void
 ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
-     printf("fun\n");
+     // printf("fun\n");
   // check single item //InstrSeq in YCodeGen
   // check has typeDesc, if not create one indicating void return
   // wrap codeBlock in function entry label and jump return, assign to typeDesc
@@ -175,7 +177,7 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   if(! attr->typeDesc) {
        attr->typeDesc = MakeFuncDesc(3);
        // scared that this suddenly works
-       printf("here %d\n", attr->typeDesc->funcDesc.returnType);
+       // printf("here %d\n", attr->typeDesc->funcDesc.returnType);
   }
   attr->reference = AppendStr("_",GetName(idItem->entry));
   // printf("atr %s\n", attr->reference);
@@ -229,7 +231,7 @@ ProcName(char * tokenText, struct Span span) {
 struct InstrSeq *
 ProcAssign(char * id, struct ExprResult * res){
      if (!res) return NULL;
-     printf("proc ass : %s\n", id);
+     // printf("proc ass : %s\n", id);
      struct SymEntry * d = LookupName(IdentifierTable, id);
      struct Attr * attr = GetAttr(d);
      ReleaseTmpReg(res->resultRegister);
@@ -240,13 +242,13 @@ ProcAssign(char * id, struct ExprResult * res){
 
 struct InstrSeq *
 Put(struct ExprResult * expr){
-
+     // printf("")
      // syscall print output
      if (! expr) {
           printf("put null\n");
           return NULL;
      } // :[
-     printf("put \n");//, expr->desc->value);
+     // printf("put \n");//, expr->desc->value);
      int reg = expr->operator == 'w'? expr->resultRegister : AvailTmpReg();
      int lval = expr->desc->value;
 
@@ -274,7 +276,7 @@ struct ExprResult *
 GetInt(){
      // todo generate syscall to get int
      // int reg
-     printf("get int\n");
+     // printf("get int\n");
      struct InstrSeq * ins = AppendSeq(GenOp2C("li", "$v0", "5","read int syscall"), GenOp("syscall"));
      int reg = AvailTmpReg();
      AppendSeq(ins, GenOp2("move", TmpRegName(reg), "$v0"));
@@ -338,4 +340,50 @@ ProcLoadVar(char * id) {
      char * stringy = malloc(sizeof(char)*10);
      sprintf(stringy, "%d", attr->typeDesc->primDesc.initialValue); // This is gross and stupid - Should probably not do it this way
      return MakeExprResult(instr, reg, 'w', attr->typeDesc->primDesc.type, MakeLiteralDesc(stringy, attr->typeDesc->primDesc.type));
+}
+
+//////// Cond /////////
+struct CondResult *
+ProcCond(struct ExprResult * x, char * op, struct ExprResult * y) {
+
+     struct InstrSeq * ins = AppendSeq(x->exprCode, y->exprCode);
+     // printf(NewLabel());
+     struct CondResult * res = MakeCondResult(ins, 0, NewLabel());
+     AppendSeq(res->exprCode, GenOp3(op,TmpRegName(x->resultRegister), TmpRegName(y->resultRegister), res->label));
+     ReleaseTmpReg(x->resultRegister);
+     ReleaseTmpReg(y->resultRegister);
+     printf("finished cond %s\n", res->label);
+     return res;
+}
+
+struct InstrSeq *
+ProcIf(struct CondResult * res, struct InstrSeq * ins) {
+     printf("proc if\n");
+     ins = AppendSeq(res->exprCode, ins);
+     AppendSeq(ins, GenLabel(res->label));
+     return ins;
+}
+
+struct InstrSeq *
+ProcIfElse(struct CondResult * res, struct InstrSeq * ins1, struct InstrSeq * ins2){
+     printf("proc if else\n");
+     char * l = NewLabel();
+     // WriteSeq(ins2);
+     AppendSeq(ins1, GenOp1X("b", l));
+     AppendSeq(ins1, GenLabelX(res->label));
+     AppendSeq(ins2, GenLabelX(l));
+     // printf("1 %s \n2 %s\n", res->label, l);
+     return AppendSeq( AppendSeq(res->exprCode, ins1), ins2);
+}
+
+struct InstrSeq *
+ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
+     printf("Proc while");
+     // WriteSeq(ins);
+     char * l = NewLabel();
+     struct InstrSeq * res =  AppendSeq(GenLabelX(l), cond->exprCode);
+     AppendSeq(res, ins);
+     AppendSeq(res, GenOp1X("b",l));
+     AppendSeq(res, GenLabelX(cond->label));
+     res;
 }

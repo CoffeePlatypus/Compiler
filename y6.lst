@@ -1,8 +1,7 @@
-;proc ass : r
-;proc ass : d
-;proc ass : c
-proc ass : n
-     1: 
+;;;finished cond L1
+finished cond L2
+codeblock
+     1: 
      2: nn : int
      3: n : int
      4: ret : bool
@@ -17,11 +16,11 @@
     13:   d = 2;
     14:   c = 0;
     15:   n = nn / 2
-    16:   while [91md[0m <= n {
-        [91m**[0m ERROR: "syntax error" token: "d"
+    16:   while d <= n {
     17:     a = (nn / d) * d
     18:     if a == nn { c = c + 1 }
-    19:     d = d + 1
+    19:     [91md[0m = d + 1
+        [91m**[0m ERROR: "syntax error" token: "d"
     20:   }
     21:   if c == 0 {
     22:     ret = true

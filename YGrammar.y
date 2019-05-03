@@ -23,6 +23,7 @@
   struct LiteralDesc * LiteralDesc;
   struct InstrSeq * InstrSeq;
   struct ExprResult * ExprResult;
+  struct CondResult * CondResult;
 }
 
 /* Type declaration for data attached to non-terminals. Allows     */
@@ -33,7 +34,6 @@
 %type <IdList> IdList
 %type <BaseType> BaseType
 %type <LiteralDesc> Literal
-//%type <PrimDesc> PutLit
 %type <BaseType> FuncDecl
 %type <InstrSeq> CodeBlock
 %type <InstrSeq> StmtSeq
@@ -41,6 +41,9 @@
 %type <InstrSeq> AssignStmt
 %type <ExprResult> Expr
 %type <ExprResult> Oprnd
+%type <CondResult> Cond
+%type <Text> CondOp
+
 /* List of token name, corresponding numbers will be generated */
 /* y.tab.h will be generated from these */
 /* %token symbolic-name text-used-in-rules */
@@ -49,6 +52,9 @@
 %token CHR_TOK    	   "chr"
 %token BOOL_TOK        "bool"
 %token VOID_TOK        "void"
+%token IF_TOK          "if"
+%token ELSE_TOK        "else"
+%token WHILE_TOK       "while"
 %token INTLIT_TOK
 %token CHRLIT_TOK
 %token BOOLLIT_TOK
@@ -56,6 +62,10 @@
 %token DBLCOLON_TOK    "::"
 %token PUT_TOK         "put"
 %token GET_TOK         "get"
+%token GTEQ_TOK        ">="
+%token LTEQ_TOK        "<="
+%token EQ_TOK          "=="
+%token NTEQ_TOK        "##"
 
 /* operator associativity and precedence in increasing order */
 %left '+' '-'
@@ -81,28 +91,40 @@ IdItem        : Id                                          { $$ = ProcName($1,M
 
 Id            : IDENT_TOK                                   { @$ = @1; $$ = strdup(yytext); };
 
-BaseType      : "int"                                       { @$ = @1; $$ = IntBaseType; };
-BaseType      : "chr"                                       { @$ = @1; $$ = ChrBaseType; };
+BaseType      : "int"                                       { @$ = @1; $$ = IntBaseType;  };
+BaseType      : "chr"                                       { @$ = @1; $$ = ChrBaseType;  };
 BaseType      : "bool"                                      { @$ = @1; $$ = BoolBaseType; };
 BaseType      : "void"                                      { @$ = @1; $$ = VoidBaseType; };
 
-Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType); };
-Literal       : CHRLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType); };
+Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType);  };
+Literal       : CHRLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType);  };
 Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = MakeLiteralDesc(yytext,BoolBaseType); };
 
 FuncDecl      : '(' ')' "->" BaseType                       { $$ = VoidBaseType; };
 
-CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
+CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; printf("codeblock\n");};
 
 StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
 StmtSeq       :                                             { $$ = NULL; };
 
-Stmt          : "put" '(' Expr ')'                       { $$ = Put($3); };
-Stmt          : AssignStmt                                  { $$ = $1; };
+Stmt          : "put" '(' Expr ')'                          { $$ = Put($3);                };
+Stmt          : AssignStmt                                  { $$ = $1;                     };
+//Stmt          : "if" Cond CodeBlock                         { $$ = ProcIf($2, $3);       };
+Stmt          : "if" Cond CodeBlock "else" CodeBlock        { $$ = ProcIfElse($2, $3, $5); };
+Stmt          : "while" Cond CodeBlock                      { $$ = ProcWhile($2, $3);      };
+
+Cond          : Expr CondOp Expr                            { $$ = ProcCond($1, $2, $3);   };
+
+CondOp        : '>'                                         { $$ = strdup("ble");   };
+CondOp        : '<'                                         { $$ = strdup("bge");   };
+CondOp        : ">="                                        { $$ = strdup("bl" );   };
+CondOp        : "<="                                        { $$ = strdup("bg" );   };
+CondOp        : "=="                                        { $$ = strdup("bne");   };
+CondOp        : "##"                                        { $$ = strdup("beq");   };
 
 AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
 
-Expr    :  Expr '+' Expr                {  $$ = ProcOp($1, $3, 0);     } ;
+Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0);     } ;
 Expr    :  Expr '-' Expr                { $$ = ProcOp($1, $3, 1);     } ;
 Expr    :  Expr '*' Expr                { $$ = ProcOp($1, $3, 2);     } ;
 Expr    :  Expr '/' Expr                { $$ = ProcOp($1, $3, 3);     } ;
@@ -110,10 +132,10 @@ Expr    :  '(' Expr ')'                 { $$ = $2;                    } ;
 Expr    :  '-' Expr       %prec UMINUS  { $$ = ProcUmin($2);          } ;
 Expr    :  GET_TOK '(' "int" ')'        { $$ = GetInt();              } ;
 Expr    :  Oprnd                        { $$ = $1;                    } ;
-Oprnd   :  INTLIT_TOK                   {   $$ = ProcLit(strdup(yytext), IntBaseType);       } ;
-Oprnd   :  Id                           {   $$ = ProcLoadVar($1);                    } ;
-Oprnd   :  CHRLIT_TOK                   {   $$ = ProcLit(strdup(yytext), ChrBaseType);       } ;
-Oprnd   :  BOOLLIT_TOK                  {   $$ = ProcLit(strdup(yytext), BoolBaseType);      } ;
+Oprnd   :  INTLIT_TOK                   { $$ = ProcLit(strdup(yytext), IntBaseType);       } ;
+Oprnd   :  Id                           { $$ = ProcLoadVar($1);                            } ;
+Oprnd   :  CHRLIT_TOK                   { $$ = ProcLit(strdup(yytext), ChrBaseType);       } ;
+Oprnd   :  BOOLLIT_TOK                  { $$ = ProcLit(strdup(yytext), BoolBaseType);      } ;
 
 
 %%

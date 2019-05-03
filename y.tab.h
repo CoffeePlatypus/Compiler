@@ -50,14 +50,21 @@ extern int yydebug;
     CHR_TOK = 260,
     BOOL_TOK = 261,
     VOID_TOK = 262,
-    INTLIT_TOK = 263,
-    CHRLIT_TOK = 264,
-    BOOLLIT_TOK = 265,
-    ARROW_TOK = 266,
-    DBLCOLON_TOK = 267,
-    PUT_TOK = 268,
-    GET_TOK = 269,
-    UMINUS = 270
+    IF_TOK = 263,
+    ELSE_TOK = 264,
+    WHILE_TOK = 265,
+    INTLIT_TOK = 266,
+    CHRLIT_TOK = 267,
+    BOOLLIT_TOK = 268,
+    ARROW_TOK = 269,
+    DBLCOLON_TOK = 270,
+    PUT_TOK = 271,
+    GET_TOK = 272,
+    GTEQ_TOK = 273,
+    LTEQ_TOK = 274,
+    EQ_TOK = 275,
+    NTEQ_TOK = 276,
+    UMINUS = 277
   };
 #endif
 /* Tokens.  */
@@ -66,14 +73,21 @@ extern int yydebug;
 #define CHR_TOK 260
 #define BOOL_TOK 261
 #define VOID_TOK 262
-#define INTLIT_TOK 263
-#define CHRLIT_TOK 264
-#define BOOLLIT_TOK 265
-#define ARROW_TOK 266
-#define DBLCOLON_TOK 267
-#define PUT_TOK 268
-#define GET_TOK 269
-#define UMINUS 270
+#define IF_TOK 263
+#define ELSE_TOK 264
+#define WHILE_TOK 265
+#define INTLIT_TOK 266
+#define CHRLIT_TOK 267
+#define BOOLLIT_TOK 268
+#define ARROW_TOK 269
+#define DBLCOLON_TOK 270
+#define PUT_TOK 271
+#define GET_TOK 272
+#define GTEQ_TOK 273
+#define LTEQ_TOK 274
+#define EQ_TOK 275
+#define NTEQ_TOK 276
+#define UMINUS 277
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -89,8 +103,9 @@ union YYSTYPE
   struct LiteralDesc * LiteralDesc;
   struct InstrSeq * InstrSeq;
   struct ExprResult * ExprResult;
+  struct CondResult * CondResult;
 
-#line 94 "y.tab.h" /* yacc.c:1909  */
+#line 109 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

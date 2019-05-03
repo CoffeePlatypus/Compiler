@@ -1,35 +1,4 @@
-put 
-get int
-proc ass : x
-put 
-get int
-proc ass : y
-proc ass : r
-put 
-put 
-put 
-put 
-proc ass : r
-put 
-put 
-put 
-put 
-proc ass : r
-put 
-put 
-put 
-put 
-proc ass : r
-put 
-put 
-put 
-put 
-put 
-put 
-put 
-put 
-fun
-here 3
+codeblock
      1: x, y, r :: 0
      2: 
      3: main :: {

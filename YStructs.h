@@ -33,6 +33,7 @@ struct PrimDesc {
 };
 
 enum DeclTypes { UnknownType, PrimType, FuncType };
+enum CondOps {slt, sle, sgt, sge, seq, sne};
 
 struct TypeDesc {
   enum DeclTypes declType;
@@ -62,6 +63,12 @@ struct ExprResult {
      struct LiteralDesc * desc;
 };
 
+struct CondResult {
+     struct InstrSeq * exprCode;
+     int resultRegister;
+     char * label;
+};
+
 // Make and Free Structs
 struct IdList *        MakeIdList(struct SymEntry * entry, struct Span span);
 struct TypeDesc *      MakePrimDesc(enum BaseTypes type, int initialValue);
@@ -69,6 +76,8 @@ struct TypeDesc *      MakeFuncDesc(enum BaseTypes returnType);
 struct LiteralDesc *   MakeLiteralDesc(char * text, enum BaseTypes type);
 struct Attr *          MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span);
 struct ExprResult *    MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc);
+struct CondResult *    MakeCondResult(struct InstrSeq * exprCode, int resultRegister, char * label);
+
 
 void                   FreeIdList(struct IdList * item);
 void                   FreeTypeDesc(struct TypeDesc * typeDesc);

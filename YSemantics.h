@@ -29,3 +29,8 @@ struct ExprResult * ProcUmin(struct ExprResult * oprnd1);
 struct ExprResult * ProcLit(char * val, enum BaseTypes type);
 struct ExprResult * ProcLoadVar(char * id);
 struct ExprResult * GetInt();
+
+struct CondResult * ProcCond(struct ExprResult * x, char * op, struct ExprResult * y);
+struct InstrSeq * ProcIf(struct CondResult * res, struct InstrSeq * ins);
+struct InstrSeq * ProcIfElse(struct CondResult * res, struct InstrSeq * ins, struct InstrSeq * ins2);
+struct InstrSeq * ProcWhile(struct CondResult * cond, struct InstrSeq * ins);
