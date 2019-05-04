@@ -73,6 +73,14 @@ MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span) {
   return attr;
 }
 
+struct StrAttr *
+MakeStrAttr(char * label, char * text){
+     struct StrAttr * str = malloc(sizeof(struct StrAttr));
+     str->label = label;
+     str->text = text;
+     return str;
+}
+
 struct ExprResult *
 MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc){
      struct ExprResult * res = malloc(sizeof(struct ExprResult));

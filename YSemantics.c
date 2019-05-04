@@ -19,6 +19,7 @@
 // Shared Data
 
 struct SymTab * IdentifierTable;
+struct SymTab * StringTable;
 int sem_debug = false;
 
 // corresponds to enum Operators
@@ -31,6 +32,7 @@ char * CmpSetReg[] = { "slt", "sle", "sgt", "sge", "seq", "sne" };
 void
 InitSemantics() {
   IdentifierTable = CreateSymTab(100,"global",NULL);
+  StringTable = CreateSymTab(100, "strings", NULL);
 }
 
 bool
@@ -46,6 +48,10 @@ processGlobalIdentifier(void * dataCode) {
     const struct SymEntry * entry = *p;
     struct Attr * attr = GetAttr(entry);
     // gen code here
+    char * retType = malloc(sizeof(char)*10);
+    sprintf(retType, "%d", attr->typeDesc->primDesc.initialValue);
+    if (sem_debug) printf("%s\n",retType);
+    AppendSeq(dataCode, GenInstr(attr->reference, ".word", retType, NULL, NULL, NULL));
     p++;
   }
 }
@@ -59,7 +65,25 @@ selectFuncType(struct SymEntry * entry) {
 void
 processFunctions(void * textCode) {
   // need to implement
+  struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
 
+  while(*functionList) {
+       struct SymEntry * temp = *functionList;
+       struct Attr * attr = GetAttr(temp);
+       AppendSeq(textCode, attr->typeDesc->funcDesc.funcCode);
+       functionList++;
+   }
+}
+
+void
+processStrings(void * dataCode){
+     struct SymEntry **  asciiz = GetEntries(StringTable, false, NULL);
+     while (*asciiz) {
+          const struct SymEntry * entry = *asciiz;
+          struct StrAttr * attr = GetAttr(entry);
+          AppendSeq(dataCode, GenInstr(attr->label, ".asciiz", attr->text, NULL, NULL, NULL));
+          asciiz++;
+     }
 }
 
 // Semantics Actions
@@ -86,29 +110,11 @@ FinishSemantics() {
   AppendSeq(textCode,GenOpX("syscall"));
 
   // append code for all Functions
- struct SymEntry ** functionList = GetEntries(IdentifierTable, false, selectFuncType);
- // to do add from List
- while(*functionList) {
-      struct SymEntry * temp = *functionList;
-      struct Attr * attr = GetAttr(temp);
-      AppendSeq(textCode, attr->typeDesc->funcDesc.funcCode);
-      functionList++;
-  }
+  processFunctions(textCode);
 
   struct InstrSeq * dataCode = GenOpX(".data");
-  // todo get data
-  struct SymEntry ** dataList = GetEntries(IdentifierTable, false, selectPrimType);
-  while(*dataList) {
-       struct SymEntry * temp = *dataList;
-       struct Attr * attr = GetAttr(temp);
-       // char * data = AppendStr(attr->reference, "\t\t\t.word\t");
-       // data = AppendStr(data, itoa(attr->typeDesc->primDesc.initialValue ));
-       char * retType = malloc(sizeof(char)*10);
-       sprintf(retType, "%d", attr->typeDesc->primDesc.initialValue);
-       if (sem_debug) printf("%s\n",retType);
-       AppendSeq(dataCode, GenInstr(attr->reference, ".word", retType, NULL, NULL, NULL));
-       dataList++;
-   }
+  processGlobalIdentifier(dataCode);
+  processStrings(dataCode);
 
   // combine and write
   struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
@@ -117,7 +123,7 @@ FinishSemantics() {
   // // free code
   FreeSeq(moduleCode);
   CloseCodeGen();
- //
+
   CloseSource();
 
   DisplaySymbolTable(IdentifierTable);
@@ -184,8 +190,14 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   SetAttr(d,STRUCT_KIND, attr );
   //figrue out how
   // printf("ref %s", attr->reference);
-  codeBlock = AppendSeq(GenLabelC(attr->reference, "func entry"), codeBlock);
-  AppendSeq(codeBlock, GenOp1C("jr","$ra","func return"));
+  struct InstrSeq * header = AppendSeq(GenLabelC(attr->reference, "func entry"), GenOp3X("subu", "$sp", "$sp","4"));
+  AppendSeq(header, GenOp2X("sw", "$ra", "0($sp)"));
+  codeBlock = AppendSeq( header, codeBlock);
+
+  struct InstrSeq * exit = AppendSeq(GenLabel(AppendStr(attr->reference,"_ret")), GenOp2X("lw","$ra", "0($sp)"));
+  AppendSeq(exit, GenOp3X("addu", "$sp", "$sp", "4"));
+  AppendSeq(exit, GenOp1C("jr","$ra","func return"));
+  AppendSeq(codeBlock, exit);
 
   attr->typeDesc->funcDesc.funcCode = codeBlock;
 
@@ -234,9 +246,12 @@ ProcAssign(char * id, struct ExprResult * res){
      // printf("proc ass : %s\n", id);
      struct SymEntry * d = LookupName(IdentifierTable, id);
      struct Attr * attr = GetAttr(d);
+     // if (res->resultRegister == -1) {
+     //
+     // }
      ReleaseTmpReg(res->resultRegister);
      // int reg = AvailTmpReg();
-     ReleaseTmpReg(res->resultRegister);
+
      return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(res->resultRegister), attr->reference));
 }
 
@@ -270,6 +285,19 @@ Put(struct ExprResult * expr){
      AppendSeq(ins, GenOp("syscall"));
      ReleaseTmpReg(reg);
      return ins ;
+}
+
+struct InstrSeq *
+PutString(char * str){
+     // StingTable
+     // dup = EnterName(IdentifierTable, tokenText);
+     char * l = NewLabel();
+     struct SymEntry * ent = EnterName(StringTable, l);
+     SetAttr(ent,STRUCT_KIND, MakeStrAttr(l,str));
+     struct InstrSeq * ins = GenOp2("li", "$v0", "4");
+     AppendSeq(ins, GenOp2("la", "$a0", l));
+     AppendSeq(ins, GenOp("syscall"));
+     return ins;
 }
 
 struct ExprResult *
@@ -315,10 +343,14 @@ struct ExprResult *
 ProcLit(char * val, enum BaseTypes type) {
      // IntBaseType
      // printf("proc Lit %s : %d\n",val, type);
-     // int reg = AvailTmpReg();
+
      struct LiteralDesc * litDesc = MakeLiteralDesc(val, type);
      // printf("litDesc %d", litDesc->value);
-     // struct InstrSeq * ins = GenOp2("li", TmpRegName(reg), val);
+     if (type == IntBaseType) {
+          int reg = AvailTmpReg();
+          struct InstrSeq * ins = GenOp2("li", TmpRegName(reg), val);
+          return MakeExprResult(ins, reg, 'l', type, litDesc );
+     }
      return MakeExprResult(NULL, -1, 'l', type, litDesc );
 }
 
@@ -352,7 +384,7 @@ ProcCond(struct ExprResult * x, char * op, struct ExprResult * y) {
      AppendSeq(res->exprCode, GenOp3(op,TmpRegName(x->resultRegister), TmpRegName(y->resultRegister), res->label));
      ReleaseTmpReg(x->resultRegister);
      ReleaseTmpReg(y->resultRegister);
-     printf("finished cond %s\n", res->label);
+     // printf("finished cond %s\n", res->label);
      return res;
 }
 
@@ -386,4 +418,9 @@ ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
      AppendSeq(res, GenOp1X("b",l));
      AppendSeq(res, GenLabelX(cond->label));
      res;
+}
+
+struct InstrSeq *
+ProcFuncCall(char * id){
+     return GenOp1("jal", AppendStr("_", id));
 }

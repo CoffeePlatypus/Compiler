@@ -30,6 +30,7 @@
 /* $# notation to be correctly type casted for function arguments. */
 /* %type <union-field-name> non-terminal                           */
 %type <Text> Id
+%type <Text> String
 %type <IdList> IdItem
 %type <IdList> IdList
 %type <BaseType> BaseType
@@ -55,6 +56,7 @@
 %token IF_TOK          "if"
 %token ELSE_TOK        "else"
 %token WHILE_TOK       "while"
+%token STRLIT_TOK      "string"
 %token INTLIT_TOK
 %token CHRLIT_TOK
 %token BOOLLIT_TOK
@@ -91,6 +93,8 @@ IdItem        : Id                                          { $$ = ProcName($1,M
 
 Id            : IDENT_TOK                                   { @$ = @1; $$ = strdup(yytext); };
 
+String        : "string"                                    { $$ = strdup(yytext); };
+
 BaseType      : "int"                                       { @$ = @1; $$ = IntBaseType;  };
 BaseType      : "chr"                                       { @$ = @1; $$ = ChrBaseType;  };
 BaseType      : "bool"                                      { @$ = @1; $$ = BoolBaseType; };
@@ -108,17 +112,19 @@ StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,
 StmtSeq       :                                             { $$ = NULL; };
 
 Stmt          : "put" '(' Expr ')'                          { $$ = Put($3);                };
+Stmt          : "put" '(' String ')'                        { $$ = PutString($3);          };
 Stmt          : AssignStmt                                  { $$ = $1;                     };
-//Stmt          : "if" Cond CodeBlock                         { $$ = ProcIf($2, $3);       };
+Stmt          : "if" Cond CodeBlock                         { $$ = ProcIf($2, $3);         };
 Stmt          : "if" Cond CodeBlock "else" CodeBlock        { $$ = ProcIfElse($2, $3, $5); };
 Stmt          : "while" Cond CodeBlock                      { $$ = ProcWhile($2, $3);      };
+Stmt          : Id '(' ')'                                  { $$ = ProcFuncCall($1);       };
 
 Cond          : Expr CondOp Expr                            { $$ = ProcCond($1, $2, $3);   };
 
 CondOp        : '>'                                         { $$ = strdup("ble");   };
 CondOp        : '<'                                         { $$ = strdup("bge");   };
-CondOp        : ">="                                        { $$ = strdup("bl" );   };
-CondOp        : "<="                                        { $$ = strdup("bg" );   };
+CondOp        : ">="                                        { $$ = strdup("blt" );  };
+CondOp        : "<="                                        { $$ = strdup("bgt" );  };
 CondOp        : "=="                                        { $$ = strdup("bne");   };
 CondOp        : "##"                                        { $$ = strdup("beq");   };
 

@@ -50,6 +50,7 @@ Digit   [0-9]
 \/                              { if (!IN_COMMENT) RETURN('/',1);                   }
 \>                              { if (!IN_COMMENT) RETURN('>',1);                   }
 \<                              { if (!IN_COMMENT) RETURN('<',1);                   }
+\-\>                            { if (!IN_COMMENT) RETURN(ARROW_TOK ,1);            }
 \>\=                            { if (!IN_COMMENT) RETURN(GTEQ_TOK ,1);             }
 \<\=                            { if (!IN_COMMENT) RETURN(LTEQ_TOK,1);              }
 \=\=                            { if (!IN_COMMENT) RETURN(EQ_TOK,1);                }
@@ -68,6 +69,7 @@ while                           { if (!IN_COMMENT) RETURN(WHILE_TOK,1);         
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1);          }
 \:                              { if (!IN_COMMENT) RETURN(':',1);                   }
 \'\\?.\'                        { if (!IN_COMMENT) RETURN(CHRLIT_TOK,1);            }
+\"(\\?.)*\"                     { if (!IN_COMMENT) RETURN(STRLIT_TOK,1);            }
 -?{Digit}{Digit}*               { if (!IN_COMMENT) RETURN(INTLIT_TOK,0);            }
 {Letter}({Letter}|{Digit})*     { if (!IN_COMMENT) RETURN(IDENT_TOK,0);             }
 [ \t]                           { }

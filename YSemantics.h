@@ -23,6 +23,7 @@ struct IdList *         ProcName(char * tokenText, struct Span span);
 
 struct InstrSeq * ProcAssign(char * id, struct ExprResult * res);
 struct InstrSeq * Put(struct ExprResult * res);
+struct InstrSeq * PutString(char * str);
 
 struct ExprResult * ProcOp(struct ExprResult * oprnd1, struct ExprResult * oprnd2, int opNum);
 struct ExprResult * ProcUmin(struct ExprResult * oprnd1);
@@ -31,6 +32,8 @@ struct ExprResult * ProcLoadVar(char * id);
 struct ExprResult * GetInt();
 
 struct CondResult * ProcCond(struct ExprResult * x, char * op, struct ExprResult * y);
+
 struct InstrSeq * ProcIf(struct CondResult * res, struct InstrSeq * ins);
 struct InstrSeq * ProcIfElse(struct CondResult * res, struct InstrSeq * ins, struct InstrSeq * ins2);
 struct InstrSeq * ProcWhile(struct CondResult * cond, struct InstrSeq * ins);
+struct InstrSeq * ProcFuncCall(char * id);

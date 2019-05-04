@@ -12,7 +12,7 @@ main :: {
     while d <= p / 2 {
       q = p / d
       if q * d == p {
-        put(d); put(" ")
+        put(d) put(" ")
       }
       d = d + 1
     }

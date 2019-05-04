@@ -2,3 +2,12 @@ SPIM Version 8.0 of January 8, 2010
 Copyright 1990-2010, James R. Larus.
 All Rights Reserved.
 See the file README for a full copyright notice.
+The following symbols are undefined:
+_nn
+_isPrime
+L6
+L7
+L8
+_ret
+
+[0x00400018]	0x3c010000  lui $1, 0 [L6]                  ; 11: la          $a0         L6                             

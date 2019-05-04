@@ -5,6 +5,8 @@ __start:                                                                 # Finis
                     li          $v0         10                           # FinishSemantics
                     syscall                                              # FinishSemantics
 _main:                                                                   # func entry
+                    subu        $sp         $sp         4                # ProcFuncBody
+                    sw          $ra         0($sp)                       # ProcFuncBody
                     li          $t0         62                             
                     li          $v0         11                             
                     move        $a0         $t0                            
@@ -125,6 +127,9 @@ _main:                                                                   # func 
                     li          $v0         11                             
                     move        $a0         $t0                            
                     syscall                                                
+_main_ret:                                                                 
+                    lw          $ra         0($sp)                       # ProcFuncBody
+                    addu        $sp         $sp         4                # ProcFuncBody
                     jr          $ra                                      # func return
                     .data                                                # FinishSemantics
 _r:                 .word       0                                          

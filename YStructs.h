@@ -55,6 +55,11 @@ struct TypeDesc {
    struct Span declSpan;
 };
 
+struct StrAttr{
+     char * label;
+     char * text;
+};
+
 struct ExprResult {
      struct InstrSeq * exprCode;
      int resultRegister;
@@ -77,7 +82,7 @@ struct LiteralDesc *   MakeLiteralDesc(char * text, enum BaseTypes type);
 struct Attr *          MakeAttr(struct TypeDesc * typeDesc, char * reference, struct Span span);
 struct ExprResult *    MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc);
 struct CondResult *    MakeCondResult(struct InstrSeq * exprCode, int resultRegister, char * label);
-
+struct StrAttr *       MakeStrAttr(char * label, char * text);
 
 void                   FreeIdList(struct IdList * item);
 void                   FreeTypeDesc(struct TypeDesc * typeDesc);
