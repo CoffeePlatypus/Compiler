@@ -14,36 +14,51 @@ _main:                                                                   # func 
                     syscall                                                
                     move        $t0         $v0                            
                     sw          $t0         _nn                            
-L14:                                                                     # ProcWhile
+L16:                                                                     # ProcWhile
                     lw          $t0         _nn                            
                     li          $t1         0                              
                     beq         $t0         $t1         L7                 
-                    jal         _isPrime                                   
+                    jal         _isPrime                                 # CallFunc
                     li          $v0         4                              
                     la          $a0         L8                             
                     syscall                                                
-                    lw          $t0         _ret                           
-                    bne         $t0                     L9                 
-                    li          $v0         4                              
-                    la          $a0         L10                            
+                    lw          $t0         _nn                            
+                    li          $v0         1                              
+                    move        $a0         $t0                            
                     syscall                                                
-                    b           L12                                      # ProcIfElse
-L9:                                                                      # ProcIfElse
+                    li          $v0         4                              
+                    la          $a0         L9                             
+                    syscall                                                
+                    lw          $t0         _ret                           
+                    li          $t1         1                              
+                    bne         $t0         $t1         L10                
                     li          $v0         4                              
                     la          $a0         L11                            
                     syscall                                                
-L12:                                                                     # ProcIfElse
+                    b           L14                                      # ProcIfElse
+L10:                                                                     # ProcIfElse
+                    li          $v0         4                              
+                    la          $a0         L12                            
+                    syscall                                                
+                    lw          $t0         _c                             
+                    li          $v0         1                              
+                    move        $a0         $t0                            
+                    syscall                                                
                     li          $v0         4                              
                     la          $a0         L13                            
+                    syscall                                                
+L14:                                                                     # ProcIfElse
+                    li          $v0         4                              
+                    la          $a0         L15                            
                     syscall                                                
                     li          $v0         5                            # read int syscall
                     syscall                                                
                     move        $t0         $v0                            
                     sw          $t0         _nn                            
-                    b           L14                                      # ProcWhile
+                    b           L16                                      # ProcWhile
 L7:                                                                      # ProcWhile
                     li          $v0         4                              
-                    la          $a0         L15                            
+                    la          $a0         L17                            
                     syscall                                                
 _main_ret:                                                                 
                     lw          $ra         0($sp)                       # ProcFuncBody
@@ -89,10 +104,12 @@ L1:                                                                      # ProcW
                     lw          $t0         _c                             
                     li          $t1         0                              
                     bne         $t0         $t1         L4                 
-                    sw                      _ret                           
+                    li          $t0         1                              
+                    sw          $t0         _ret                           
                     b           L5                                       # ProcIfElse
 L4:                                                                      # ProcIfElse
-                    sw                      _ret                           
+                    li          $t0         0                              
+                    sw          $t0         _ret                           
 L5:                                                                      # ProcIfElse
 _isPrime_ret:                                                              
                     lw          $ra         0($sp)                       # ProcFuncBody
@@ -107,8 +124,10 @@ _ret:               .word       0
 _a:                 .word       0                                          
 _c:                 .word       0                                          
 L6:                 .asciiz     "> "                                       
-L8:                 .asciiz     "number ") put(nn) put(" is "                               
-L10:                .asciiz     "prime.\n"                                 
-L11:                .asciiz     "not prime. It has ") put(c) put(" divisors.\n"                               
-L13:                .asciiz     "> "                                       
-L15:                .asciiz     "done\n"                                   
+L8:                 .asciiz     "number "                                  
+L9:                 .asciiz     " is "                                     
+L11:                .asciiz     "prime.\n"                                 
+L12:                .asciiz     "not prime. It has "                               
+L13:                .asciiz     " divisors.\n"                               
+L15:                .asciiz     "> "                                       
+L17:                .asciiz     "done\n"                                   

@@ -1,16 +1,4 @@
-;;;codeblock
-proc if
-codeblock
-Proc whilecodeblock
-codeblock
-proc if else
-codeblock
-codeblock
-codeblock
-proc if else
-codeblock
-Proc whilecodeblock
-     1: 
+;;;     1: 
      2: nn : int
      3: n : int
      4: ret : bool

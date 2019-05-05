@@ -1,9 +1,4 @@
-;codeblock
-codeblock
-proc if else
-codeblock
-Proc whilecodeblock
-     1: /* Input two numbers and calculate GCD
+;     1: /* Input two numbers and calculate GCD
      2: */
      3: 
      4: x, y : int;

@@ -106,7 +106,7 @@ Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = Make
 
 FuncDecl      : '(' ')' "->" BaseType                       { $$ = VoidBaseType; };
 
-CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; printf("codeblock\n");};
+CodeBlock     : '{' StmtSeq '}'                             { $$ = $2; };
 
 StmtSeq       : Stmt StmtSeq                                { $$ = AppendSeq($1,$2); };
 StmtSeq       :                                             { $$ = NULL; };

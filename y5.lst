@@ -1,9 +1,4 @@
-;codeblock
-proc if
-codeblock
-Proc whilecodeblock
-Proc whilecodeblock
-     1: 
+;     1: 
      2: p, d, q : int;
      3: 
      4: main :: {

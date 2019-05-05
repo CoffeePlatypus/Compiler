@@ -111,21 +111,21 @@ _main:                                                                   # func 
                     li          $v0         11                             
                     move        $a0         $t0                            
                     syscall                                                
-                    li          $t0         84                             
+                    li          $t1         84                             
                     li          $v0         11                             
-                    move        $a0         $t0                            
+                    move        $a0         $t1                            
                     syscall                                                
-                    li          $t0         32                             
+                    li          $t1         32                             
                     li          $v0         11                             
-                    move        $a0         $t0                            
+                    move        $a0         $t1                            
                     syscall                                                
-                    li          $t0         70                             
+                    li          $t2         70                             
                     li          $v0         11                             
-                    move        $a0         $t0                            
+                    move        $a0         $t2                            
                     syscall                                                
-                    li          $t0         10                             
+                    li          $t2         10                             
                     li          $v0         11                             
-                    move        $a0         $t0                            
+                    move        $a0         $t2                            
                     syscall                                                
 _main_ret:                                                                 
                     lw          $ra         0($sp)                       # ProcFuncBody

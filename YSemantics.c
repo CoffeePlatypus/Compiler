@@ -233,11 +233,8 @@ ProcName(char * tokenText, struct Span span) {
      if(!dup) {
           dup = EnterName(IdentifierTable, tokenText);
           SetAttr(dup, 0,MakeAttr(NULL, tokenText, span));
-          return MakeIdList(dup, span);
-     }else{
-          //todo maybe problem
-           return NULL;
      }
+     return MakeIdList(dup, span);
 }
 
 struct InstrSeq *
@@ -257,7 +254,7 @@ ProcAssign(char * id, struct ExprResult * res){
 
 struct InstrSeq *
 Put(struct ExprResult * expr){
-     // printf("")
+     // printf("Put %s\n", expr->desc->value);
      // syscall print output
      if (! expr) {
           printf("put null\n");
@@ -291,6 +288,7 @@ struct InstrSeq *
 PutString(char * str){
      // StingTable
      // dup = EnterName(IdentifierTable, tokenText);
+     // printf("put: %s\n",str);
      char * l = NewLabel();
      struct SymEntry * ent = EnterName(StringTable, l);
      SetAttr(ent,STRUCT_KIND, MakeStrAttr(l,str));
@@ -346,9 +344,13 @@ ProcLit(char * val, enum BaseTypes type) {
 
      struct LiteralDesc * litDesc = MakeLiteralDesc(val, type);
      // printf("litDesc %d", litDesc->value);
-     if (type == IntBaseType) {
+     if (type == IntBaseType ) {
           int reg = AvailTmpReg();
           struct InstrSeq * ins = GenOp2("li", TmpRegName(reg), val);
+          return MakeExprResult(ins, reg, 'l', type, litDesc );
+     }else if( type == BoolBaseType){
+          int reg = AvailTmpReg();
+          struct InstrSeq * ins = GenOp2("li", TmpRegName(reg),  strcmp(val, "true") ? "0" : "1");
           return MakeExprResult(ins, reg, 'l', type, litDesc );
      }
      return MakeExprResult(NULL, -1, 'l', type, litDesc );
@@ -358,6 +360,7 @@ struct ExprResult *
 ProcLoadVar(char * id) {
      // printf("load id %s\n",id);
      // DisplaySymbolTable(IdentifierTable);
+     // printf("lw %s\n",id);
      struct SymEntry * d = LookupName(IdentifierTable, id);
      if(d == NULL) {
           printf("\tid not found: %s\n",id);
@@ -390,7 +393,7 @@ ProcCond(struct ExprResult * x, char * op, struct ExprResult * y) {
 
 struct InstrSeq *
 ProcIf(struct CondResult * res, struct InstrSeq * ins) {
-     printf("proc if\n");
+     // printf("proc if\n");
      ins = AppendSeq(res->exprCode, ins);
      AppendSeq(ins, GenLabel(res->label));
      return ins;
@@ -398,7 +401,7 @@ ProcIf(struct CondResult * res, struct InstrSeq * ins) {
 
 struct InstrSeq *
 ProcIfElse(struct CondResult * res, struct InstrSeq * ins1, struct InstrSeq * ins2){
-     printf("proc if else\n");
+     // printf("proc if else\n");
      char * l = NewLabel();
      // WriteSeq(ins2);
      AppendSeq(ins1, GenOp1X("b", l));
@@ -410,7 +413,7 @@ ProcIfElse(struct CondResult * res, struct InstrSeq * ins1, struct InstrSeq * in
 
 struct InstrSeq *
 ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
-     printf("Proc while");
+     // printf("Proc while");
      // WriteSeq(ins);
      char * l = NewLabel();
      struct InstrSeq * res =  AppendSeq(GenLabelX(l), cond->exprCode);
@@ -422,5 +425,5 @@ ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
 
 struct InstrSeq *
 ProcFuncCall(char * id){
-     return GenOp1("jal", AppendStr("_", id));
+     return GenOp1C("jal", AppendStr("_", id), "CallFunc");
 }

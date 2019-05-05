@@ -2,12 +2,9 @@ SPIM Version 8.0 of January 8, 2010
 Copyright 1990-2010, James R. Larus.
 All Rights Reserved.
 See the file README for a full copyright notice.
-The following symbols are undefined:
-_nn
-_isPrime
-L6
-L7
-L8
-_ret
-
-[0x00400018]	0x3c010000  lui $1, 0 [L6]                  ; 11: la          $a0         L6                             
+> number 25 is not prime. It has 1 divisors.
+> number 19 is prime.
+> number 15 is not prime. It has 2 divisors.
+> number 12 is not prime. It has 4 divisors.
+> number 8 is not prime. It has 2 divisors.
+> done

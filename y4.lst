@@ -1,6 +1,4 @@
-.codeblock
-Proc whilecodeblock
-     1: /* Input a number and calculate its factorial.
+.     1: /* Input a number and calculate its factorial.
      2: */
      3: 
      4: x, fac : int

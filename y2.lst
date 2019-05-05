@@ -1,5 +1,4 @@
-codeblock
-     1: x, y, r :: 0
+     1: x, y, r :: 0
      2: 
      3: main :: {
      4:   put('>')
