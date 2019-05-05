@@ -35,7 +35,7 @@ Grammar
    21 CodeBlock: '{' StmtSeq '}'
 
    22 StmtSeq: Stmt StmtSeq
-   23        | %empty
+   23        | /* empty */
 
    24 Stmt: "put" '(' Expr ')'
    25     | "put" '(' String ')'
@@ -154,7 +154,7 @@ Oprnd (55)
     on left: 47 48 49 50, on right: 46
 
 
-State 0
+state 0
 
     0 $accept: . Module $end
 
@@ -168,28 +168,28 @@ State 0
     Id        go to state 7
 
 
-State 1
+state 1
 
    11 Id: IDENT_TOK .
 
     $default  reduce using rule 11 (Id)
 
 
-State 2
+state 2
 
     0 $accept: Module . $end
 
     $end  shift, and go to state 8
 
 
-State 3
+state 3
 
     1 Module: DeclList .
 
     $default  reduce using rule 1 (Module)
 
 
-State 4
+state 4
 
     2 DeclList: Decl . DeclList
     3         | Decl .
@@ -205,7 +205,7 @@ State 4
     Id        go to state 7
 
 
-State 5
+state 5
 
     4 Decl: IdList . ':' BaseType
     5     | IdList . "::" Literal
@@ -216,7 +216,7 @@ State 5
     ':'   shift, and go to state 11
 
 
-State 6
+state 6
 
     8 IdList: IdItem . ',' IdList
     9       | IdItem .
@@ -226,28 +226,28 @@ State 6
     $default  reduce using rule 9 (IdList)
 
 
-State 7
+state 7
 
    10 IdItem: Id .
 
     $default  reduce using rule 10 (IdItem)
 
 
-State 8
+state 8
 
     0 $accept: Module $end .
 
     $default  accept
 
 
-State 9
+state 9
 
     2 DeclList: Decl DeclList .
 
     $default  reduce using rule 2 (DeclList)
 
 
-State 10
+state 10
 
     5 Decl: IdList "::" . Literal
     7     | IdList "::" . CodeBlock
@@ -261,7 +261,7 @@ State 10
     CodeBlock  go to state 18
 
 
-State 11
+state 11
 
     4 Decl: IdList ':' . BaseType
     6     | IdList ':' . FuncDecl
@@ -276,7 +276,7 @@ State 11
     FuncDecl  go to state 25
 
 
-State 12
+state 12
 
     8 IdList: IdItem ',' . IdList
 
@@ -287,28 +287,28 @@ State 12
     Id      go to state 7
 
 
-State 13
+state 13
 
    17 Literal: INTLIT_TOK .
 
     $default  reduce using rule 17 (Literal)
 
 
-State 14
+state 14
 
    18 Literal: CHRLIT_TOK .
 
     $default  reduce using rule 18 (Literal)
 
 
-State 15
+state 15
 
    19 Literal: BOOLLIT_TOK .
 
     $default  reduce using rule 19 (Literal)
 
 
-State 16
+state 16
 
    21 CodeBlock: '{' . StmtSeq '}'
 
@@ -325,77 +325,77 @@ State 16
     AssignStmt  go to state 33
 
 
-State 17
+state 17
 
     5 Decl: IdList "::" Literal .
 
     $default  reduce using rule 5 (Decl)
 
 
-State 18
+state 18
 
     7 Decl: IdList "::" CodeBlock .
 
     $default  reduce using rule 7 (Decl)
 
 
-State 19
+state 19
 
    13 BaseType: "int" .
 
     $default  reduce using rule 13 (BaseType)
 
 
-State 20
+state 20
 
    14 BaseType: "chr" .
 
     $default  reduce using rule 14 (BaseType)
 
 
-State 21
+state 21
 
    15 BaseType: "bool" .
 
     $default  reduce using rule 15 (BaseType)
 
 
-State 22
+state 22
 
    16 BaseType: "void" .
 
     $default  reduce using rule 16 (BaseType)
 
 
-State 23
+state 23
 
    20 FuncDecl: '(' . ')' "->" BaseType
 
     ')'  shift, and go to state 34
 
 
-State 24
+state 24
 
     4 Decl: IdList ':' BaseType .
 
     $default  reduce using rule 4 (Decl)
 
 
-State 25
+state 25
 
     6 Decl: IdList ':' FuncDecl .
 
     $default  reduce using rule 6 (Decl)
 
 
-State 26
+state 26
 
     8 IdList: IdItem ',' IdList .
 
     $default  reduce using rule 8 (IdList)
 
 
-State 27
+state 27
 
    27 Stmt: "if" . Cond CodeBlock
    28     | "if" . Cond CodeBlock "else" CodeBlock
@@ -414,7 +414,7 @@ State 27
     Oprnd  go to state 44
 
 
-State 28
+state 28
 
    29 Stmt: "while" . Cond CodeBlock
 
@@ -432,7 +432,7 @@ State 28
     Oprnd  go to state 44
 
 
-State 29
+state 29
 
    24 Stmt: "put" . '(' Expr ')'
    25     | "put" . '(' String ')'
@@ -440,7 +440,7 @@ State 29
     '('  shift, and go to state 46
 
 
-State 30
+state 30
 
    30 Stmt: Id . '(' ')'
    38 AssignStmt: Id . '=' Expr
@@ -449,14 +449,14 @@ State 30
     '='  shift, and go to state 48
 
 
-State 31
+state 31
 
    21 CodeBlock: '{' StmtSeq . '}'
 
     '}'  shift, and go to state 49
 
 
-State 32
+state 32
 
    22 StmtSeq: Stmt . StmtSeq
 
@@ -473,49 +473,49 @@ State 32
     AssignStmt  go to state 33
 
 
-State 33
+state 33
 
    26 Stmt: AssignStmt .
 
     $default  reduce using rule 26 (Stmt)
 
 
-State 34
+state 34
 
    20 FuncDecl: '(' ')' . "->" BaseType
 
     "->"  shift, and go to state 51
 
 
-State 35
+state 35
 
    47 Oprnd: INTLIT_TOK .
 
     $default  reduce using rule 47 (Oprnd)
 
 
-State 36
+state 36
 
    49 Oprnd: CHRLIT_TOK .
 
     $default  reduce using rule 49 (Oprnd)
 
 
-State 37
+state 37
 
    50 Oprnd: BOOLLIT_TOK .
 
     $default  reduce using rule 50 (Oprnd)
 
 
-State 38
+state 38
 
    45 Expr: "get" . '(' "int" ')'
 
     '('  shift, and go to state 52
 
 
-State 39
+state 39
 
    44 Expr: '-' . Expr
 
@@ -532,7 +532,7 @@ State 39
     Oprnd  go to state 44
 
 
-State 40
+state 40
 
    43 Expr: '(' . Expr ')'
 
@@ -549,14 +549,14 @@ State 40
     Oprnd  go to state 44
 
 
-State 41
+state 41
 
    48 Oprnd: Id .
 
     $default  reduce using rule 48 (Oprnd)
 
 
-State 42
+state 42
 
    27 Stmt: "if" Cond . CodeBlock
    28     | "if" Cond . CodeBlock "else" CodeBlock
@@ -566,7 +566,7 @@ State 42
     CodeBlock  go to state 55
 
 
-State 43
+state 43
 
    31 Cond: Expr . CondOp Expr
    39 Expr: Expr . '+' Expr
@@ -588,14 +588,14 @@ State 43
     CondOp  go to state 66
 
 
-State 44
+state 44
 
    46 Expr: Oprnd .
 
     $default  reduce using rule 46 (Expr)
 
 
-State 45
+state 45
 
    29 Stmt: "while" Cond . CodeBlock
 
@@ -604,7 +604,7 @@ State 45
     CodeBlock  go to state 67
 
 
-State 46
+state 46
 
    24 Stmt: "put" '(' . Expr ')'
    25     | "put" '(' . String ')'
@@ -624,14 +624,14 @@ State 46
     Oprnd   go to state 44
 
 
-State 47
+state 47
 
    30 Stmt: Id '(' . ')'
 
     ')'  shift, and go to state 71
 
 
-State 48
+state 48
 
    38 AssignStmt: Id '=' . Expr
 
@@ -648,21 +648,21 @@ State 48
     Oprnd  go to state 44
 
 
-State 49
+state 49
 
    21 CodeBlock: '{' StmtSeq '}' .
 
     $default  reduce using rule 21 (CodeBlock)
 
 
-State 50
+state 50
 
    22 StmtSeq: Stmt StmtSeq .
 
     $default  reduce using rule 22 (StmtSeq)
 
 
-State 51
+state 51
 
    20 FuncDecl: '(' ')' "->" . BaseType
 
@@ -674,14 +674,14 @@ State 51
     BaseType  go to state 73
 
 
-State 52
+state 52
 
    45 Expr: "get" '(' . "int" ')'
 
     "int"  shift, and go to state 74
 
 
-State 53
+state 53
 
    39 Expr: Expr . '+' Expr
    40     | Expr . '-' Expr
@@ -692,7 +692,7 @@ State 53
     $default  reduce using rule 44 (Expr)
 
 
-State 54
+state 54
 
    39 Expr: Expr . '+' Expr
    40     | Expr . '-' Expr
@@ -707,7 +707,7 @@ State 54
     ')'  shift, and go to state 75
 
 
-State 55
+state 55
 
    27 Stmt: "if" Cond CodeBlock .
    28     | "if" Cond CodeBlock . "else" CodeBlock
@@ -717,35 +717,35 @@ State 55
     $default  reduce using rule 27 (Stmt)
 
 
-State 56
+state 56
 
    34 CondOp: ">=" .
 
     $default  reduce using rule 34 (CondOp)
 
 
-State 57
+state 57
 
    35 CondOp: "<=" .
 
     $default  reduce using rule 35 (CondOp)
 
 
-State 58
+state 58
 
    36 CondOp: "==" .
 
     $default  reduce using rule 36 (CondOp)
 
 
-State 59
+state 59
 
    37 CondOp: "##" .
 
     $default  reduce using rule 37 (CondOp)
 
 
-State 60
+state 60
 
    39 Expr: Expr '+' . Expr
 
@@ -762,7 +762,7 @@ State 60
     Oprnd  go to state 44
 
 
-State 61
+state 61
 
    40 Expr: Expr '-' . Expr
 
@@ -779,7 +779,7 @@ State 61
     Oprnd  go to state 44
 
 
-State 62
+state 62
 
    41 Expr: Expr '*' . Expr
 
@@ -796,7 +796,7 @@ State 62
     Oprnd  go to state 44
 
 
-State 63
+state 63
 
    42 Expr: Expr '/' . Expr
 
@@ -813,21 +813,21 @@ State 63
     Oprnd  go to state 44
 
 
-State 64
+state 64
 
    32 CondOp: '>' .
 
     $default  reduce using rule 32 (CondOp)
 
 
-State 65
+state 65
 
    33 CondOp: '<' .
 
     $default  reduce using rule 33 (CondOp)
 
 
-State 66
+state 66
 
    31 Cond: Expr CondOp . Expr
 
@@ -844,28 +844,28 @@ State 66
     Oprnd  go to state 44
 
 
-State 67
+state 67
 
    29 Stmt: "while" Cond CodeBlock .
 
     $default  reduce using rule 29 (Stmt)
 
 
-State 68
+state 68
 
    12 String: "string" .
 
     $default  reduce using rule 12 (String)
 
 
-State 69
+state 69
 
    25 Stmt: "put" '(' String . ')'
 
     ')'  shift, and go to state 82
 
 
-State 70
+state 70
 
    24 Stmt: "put" '(' Expr . ')'
    39 Expr: Expr . '+' Expr
@@ -880,14 +880,14 @@ State 70
     ')'  shift, and go to state 83
 
 
-State 71
+state 71
 
    30 Stmt: Id '(' ')' .
 
     $default  reduce using rule 30 (Stmt)
 
 
-State 72
+state 72
 
    38 AssignStmt: Id '=' Expr .
    39 Expr: Expr . '+' Expr
@@ -903,28 +903,28 @@ State 72
     $default  reduce using rule 38 (AssignStmt)
 
 
-State 73
+state 73
 
    20 FuncDecl: '(' ')' "->" BaseType .
 
     $default  reduce using rule 20 (FuncDecl)
 
 
-State 74
+state 74
 
    45 Expr: "get" '(' "int" . ')'
 
     ')'  shift, and go to state 84
 
 
-State 75
+state 75
 
    43 Expr: '(' Expr ')' .
 
     $default  reduce using rule 43 (Expr)
 
 
-State 76
+state 76
 
    28 Stmt: "if" Cond CodeBlock "else" . CodeBlock
 
@@ -933,7 +933,7 @@ State 76
     CodeBlock  go to state 85
 
 
-State 77
+state 77
 
    39 Expr: Expr . '+' Expr
    39     | Expr '+' Expr .
@@ -947,7 +947,7 @@ State 77
     $default  reduce using rule 39 (Expr)
 
 
-State 78
+state 78
 
    39 Expr: Expr . '+' Expr
    40     | Expr . '-' Expr
@@ -961,7 +961,7 @@ State 78
     $default  reduce using rule 40 (Expr)
 
 
-State 79
+state 79
 
    39 Expr: Expr . '+' Expr
    40     | Expr . '-' Expr
@@ -972,7 +972,7 @@ State 79
     $default  reduce using rule 41 (Expr)
 
 
-State 80
+state 80
 
    39 Expr: Expr . '+' Expr
    40     | Expr . '-' Expr
@@ -983,7 +983,7 @@ State 80
     $default  reduce using rule 42 (Expr)
 
 
-State 81
+state 81
 
    31 Cond: Expr CondOp Expr .
    39 Expr: Expr . '+' Expr
@@ -999,28 +999,28 @@ State 81
     $default  reduce using rule 31 (Cond)
 
 
-State 82
+state 82
 
    25 Stmt: "put" '(' String ')' .
 
     $default  reduce using rule 25 (Stmt)
 
 
-State 83
+state 83
 
    24 Stmt: "put" '(' Expr ')' .
 
     $default  reduce using rule 24 (Stmt)
 
 
-State 84
+state 84
 
    45 Expr: "get" '(' "int" ')' .
 
     $default  reduce using rule 45 (Expr)
 
 
-State 85
+state 85
 
    28 Stmt: "if" Cond CodeBlock "else" CodeBlock .
 

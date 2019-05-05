@@ -420,7 +420,7 @@ ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
      AppendSeq(res, ins);
      AppendSeq(res, GenOp1X("b",l));
      AppendSeq(res, GenLabelX(cond->label));
-     res;
+     return res;
 }
 
 struct InstrSeq *

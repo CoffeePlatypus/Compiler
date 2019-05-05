@@ -1,13 +1,14 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
+/* Skeleton interface for Bison's Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +16,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -30,43 +33,34 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    IDENT_TOK = 258,
-    INT_TOK = 259,
-    CHR_TOK = 260,
-    BOOL_TOK = 261,
-    VOID_TOK = 262,
-    IF_TOK = 263,
-    ELSE_TOK = 264,
-    WHILE_TOK = 265,
-    STRLIT_TOK = 266,
-    INTLIT_TOK = 267,
-    CHRLIT_TOK = 268,
-    BOOLLIT_TOK = 269,
-    ARROW_TOK = 270,
-    DBLCOLON_TOK = 271,
-    PUT_TOK = 272,
-    GET_TOK = 273,
-    GTEQ_TOK = 274,
-    LTEQ_TOK = 275,
-    EQ_TOK = 276,
-    NTEQ_TOK = 277,
-    UMINUS = 278
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     IDENT_TOK = 258,
+     INT_TOK = 259,
+     CHR_TOK = 260,
+     BOOL_TOK = 261,
+     VOID_TOK = 262,
+     IF_TOK = 263,
+     ELSE_TOK = 264,
+     WHILE_TOK = 265,
+     STRLIT_TOK = 266,
+     INTLIT_TOK = 267,
+     CHRLIT_TOK = 268,
+     BOOLLIT_TOK = 269,
+     ARROW_TOK = 270,
+     DBLCOLON_TOK = 271,
+     PUT_TOK = 272,
+     GET_TOK = 273,
+     GTEQ_TOK = 274,
+     LTEQ_TOK = 275,
+     EQ_TOK = 276,
+     NTEQ_TOK = 277,
+     UMINUS = 278
+   };
 #endif
 /* Tokens.  */
 #define IDENT_TOK 258
@@ -91,13 +85,13 @@ extern int yydebug;
 #define NTEQ_TOK 277
 #define UMINUS 278
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+typedef union YYSTYPE
+#line 18 "YGrammar.y"
 {
-#line 18 "YGrammar.y" /* yacc.c:1909  */
-
   int Integer;
   char * Text;
   enum BaseTypes BaseType;
@@ -106,32 +100,28 @@ union YYSTYPE
   struct InstrSeq * InstrSeq;
   struct ExprResult * ExprResult;
   struct CondResult * CondResult;
-
-#line 111 "y.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 1529 of yacc.c.  */
+#line 106 "y.tab.h"
+	YYSTYPE;
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
-/* Location type.  */
+extern YYSTYPE yylval;
+
 #if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+typedef struct YYLTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
-};
+} YYLTYPE;
+# define yyltype YYLTYPE /* obsolescent; will be withdrawn */
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
 #endif
 
-
-extern YYSTYPE yylval;
 extern YYLTYPE yylloc;
-int yyparse (void);
-
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
