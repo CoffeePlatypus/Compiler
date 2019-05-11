@@ -3,11 +3,8 @@
     Author:      Julia Froegel
     Created:     04/08/2019
     Resources:
-
     ¯\_(ツ)_/¯
-
  */
-
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +18,7 @@
 struct SymTab * IdentifierTable;
 struct SymTab * StringTable;
 int sem_debug = false;
+char * bl;
 
 // corresponds to enum Operators
 char * Ops[] = { "add", "sub", "mul", "div"};
@@ -155,7 +153,6 @@ ProcDeclFunc(struct IdList * idList, enum BaseTypes type) {
   // check required conditions
   // make and assign function descriptor
   // make and assign id reference string
-
   // can there be multiple declared on a line? if not then it doesn't need loop
   while(idList) {
        struct SymEntry * d = LookupName(IdentifierTable, GetName(idList->entry));
@@ -200,7 +197,6 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   AppendSeq(codeBlock, exit);
 
   attr->typeDesc->funcDesc.funcCode = codeBlock;
-
 }
 
 struct IdList *
@@ -208,17 +204,13 @@ AppendIdList(struct IdList * item, struct IdList * list) {
   // chain item to list, return item
   // printf("append\n");
   if(!list) {
-       // printf("-%s- \n",GetName(item->entry));
        return item;
  }
   struct IdList * temp = list;
   while(temp->next){
-       // printf("-%s",GetName(temp->entry));
        temp = temp->next;
  }
  temp->next = item;
- // printf("-%s",GetName(temp->entry));
- // printf("-%s- \n",GetName(item->entry));
  return list;
 }
 
@@ -243,13 +235,22 @@ ProcAssign(char * id, struct ExprResult * res){
      // printf("proc ass : %s\n", id);
      struct SymEntry * d = LookupName(IdentifierTable, id);
      struct Attr * attr = GetAttr(d);
-     // if (res->resultRegister == -1) {
-     //
-     // }
      ReleaseTmpReg(res->resultRegister);
      // int reg = AvailTmpReg();
 
      return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(res->resultRegister), attr->reference));
+}
+
+struct InstrSeq *
+ProcTuri(char * id, struct CondResult * cond, struct ExprResult * exp1, struct ExprResult * exp2 ) {
+     char * l = NewLabel();
+     // WriteSeq(ins2);
+     struct InstrSeq * res = AppendSeq(cond->exprCode, ProcAssign(id, exp1));
+     AppendSeq(res, GenOp1X("b", l));
+     AppendSeq(res, GenLabelX(cond->label));
+     struct InstrSeq * res2 = AppendSeq( ProcAssign(id,exp2), GenLabelX(l));
+     // printf("1 %s \n2 %s\n", res->label, l);
+     return AppendSeq(res, res2);
 }
 
 struct InstrSeq *
@@ -259,7 +260,7 @@ Put(struct ExprResult * expr){
      if (! expr) {
           printf("put null\n");
           return NULL;
-     } // :[
+     }
      // printf("put \n");//, expr->desc->value);
      int reg = expr->operator == 'w'? expr->resultRegister : AvailTmpReg();
      int lval = expr->desc->value;
@@ -341,7 +342,6 @@ struct ExprResult *
 ProcLit(char * val, enum BaseTypes type) {
      // IntBaseType
      // printf("proc Lit %s : %d\n",val, type);
-
      struct LiteralDesc * litDesc = MakeLiteralDesc(val, type);
      // printf("litDesc %d", litDesc->value);
      if (type == IntBaseType ) {
@@ -421,6 +421,33 @@ ProcWhile(struct CondResult * cond, struct InstrSeq * ins){
      AppendSeq(res, GenOp1X("b",l));
      AppendSeq(res, GenLabelX(cond->label));
      return res;
+}
+
+struct InstrSeq *
+ProcFor(struct InstrSeq * a, struct CondResult * cond, struct InstrSeq * prog, struct InstrSeq * body) {
+     char * l = NewLabel();
+     AppendSeq(a, GenLabelX(l));
+     AppendSeq(a, cond->exprCode);
+     AppendSeq(a, body);
+     AppendSeq(a, prog);
+     AppendSeq(a, GenOp1X("b",l));
+     AppendSeq(a, GenLabelX(cond->label));
+     return a;
+}
+
+struct InstrSeq *
+ProcLoop(struct InstrSeq * seq){
+     char * l = NewLabel();
+     struct InstrSeq * ins = GenLabelX(l);
+     AppendSeq(ins, seq);
+     AppendSeq(ins, GenOp1X("b",l));
+     return AppendSeq(ins, GenLabelX(bl));
+}
+
+struct InstrSeq *
+ProcBreak() {
+     bl = NewLabel();
+     return GenOp1X("b",bl);
 }
 
 struct InstrSeq *

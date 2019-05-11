@@ -154,7 +154,35 @@ ytest: Y
 		@echo "===================="
 		@rm $*.test
 
+sem2test:    feature1 feature2 feature3 feature4
 
+feature1: Y
+		echo "Increment and decrement"
+		rm -f f1.asm
+		./Y f1
+		cat f1.asm
+		spim -noexception -file f1.asm
+
+feature2: Y
+		echo "For loop"
+		rm -f f2.asm
+		./Y f2
+		cat f2.asm
+		spim -noexception -file f2.asm
+
+feature3: Y
+		echo "ternary test"
+		rm -f f3.asm
+		./Y f3
+		cat f3.asm
+		spim -noexception -file f3.asm < f3.in
+
+feature4: Y
+		echo "LOOP"
+		rm -f f4.asm
+		./Y f4
+		cat f4.asm
+		spim -noexception -file f4.asm
 
 # Other
 clean:

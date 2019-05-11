@@ -1,0 +1,27 @@
+.     1: /* Input a number and calculate its factorial.
+     2: */
+     3: 
+     4: x, fac : int
+     5: 
+     6: main :: {
+     7:   put("> ")
+     8:   x = get(int)
+     9:   put("x = ")
+    10:   put(x)
+    11:   put("\n")
+    12:   fac = 1
+    13:   while x > 0 {
+    14:     fac = fac * x
+    15:     x = x - 1
+    16:   }
+    17:   put("factorial = ")
+    18:   put(fac)
+    19:   put("\n")
+    20: }
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               x              _x             int          0
+  1 global               main           _main          () -> void
+  2 global               fac            _fac           int          0
+Parse Successful

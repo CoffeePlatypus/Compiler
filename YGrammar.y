@@ -56,6 +56,9 @@
 %token IF_TOK          "if"
 %token ELSE_TOK        "else"
 %token WHILE_TOK       "while"
+%token FOR_TOK         "for"
+%token LOOP_TOK        "loop"
+%token BREAK_TOK       "break"
 %token STRLIT_TOK      "string"
 %token INTLIT_TOK
 %token CHRLIT_TOK
@@ -117,9 +120,15 @@ Stmt          : AssignStmt                                  { $$ = $1;          
 Stmt          : "if" Cond CodeBlock                         { $$ = ProcIf($2, $3);         };
 Stmt          : "if" Cond CodeBlock "else" CodeBlock        { $$ = ProcIfElse($2, $3, $5); };
 Stmt          : "while" Cond CodeBlock                      { $$ = ProcWhile($2, $3);      };
-Stmt          : Id '(' ')'                                  { $$ = ProcFuncCall($1);       };
+Stmt          : Id '(' ')'                                       { $$ = ProcFuncCall($1);       };
+Stmt          : Id '+' '+'                                       { $$ = ProcAssign($1, ProcOp(ProcLoadVar($1), ProcLit("1",IntBaseType), 0)); };
+Stmt          : Id '-' '-'                                       { $$ = ProcAssign($1, ProcOp(ProcLoadVar($1), ProcLit("1",IntBaseType), 1)); };
+Stmt          : "for" Id '=' Oprnd ':' Cond ':' '+' CodeBlock    { $$ = ProcFor( ProcAssign($2, $4), $6, ProcAssign($2, ProcOp(ProcLoadVar($2), ProcLit("1",IntBaseType), 0)), $9);};
+Stmt          : "loop" CodeBlock                                 { $$ = ProcLoop($2);   };
+Stmt          : "break"                                          { $$ = ProcBreak();    };
 
 Cond          : Expr CondOp Expr                            { $$ = ProcCond($1, $2, $3);   };
+//Cond          :
 
 CondOp        : '>'                                         { $$ = strdup("ble");   };
 CondOp        : '<'                                         { $$ = strdup("bge");   };
@@ -129,6 +138,7 @@ CondOp        : "=="                                        { $$ = strdup("bne")
 CondOp        : "##"                                        { $$ = strdup("beq");   };
 
 AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
+AssignStmt    : Id '=' Cond '?' Expr ':' Expr               { $$ = ProcTuri($1, $3, $5, $7);};
 
 Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0);     } ;
 Expr    :  Expr '-' Expr                { $$ = ProcOp($1, $3, 1);     } ;
@@ -142,7 +152,6 @@ Oprnd   :  INTLIT_TOK                   { $$ = ProcLit(strdup(yytext), IntBaseTy
 Oprnd   :  Id                           { $$ = ProcLoadVar($1);                            } ;
 Oprnd   :  CHRLIT_TOK                   { $$ = ProcLit(strdup(yytext), ChrBaseType);       } ;
 Oprnd   :  BOOLLIT_TOK                  { $$ = ProcLit(strdup(yytext), BoolBaseType);      } ;
-
 
 %%
 

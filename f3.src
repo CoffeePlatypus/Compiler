@@ -1,0 +1,14 @@
+// test ternary assign operator that I made for fun
+// absolute value
+
+x : int
+i : int
+
+main :: {
+     for i = 0 : i < 5 : + {
+          x = get(int)
+          put("|")put(x) put("| = ")
+          x = x < 0 ? -1 * x  : x
+          put(x) put('\n')
+     }
+}

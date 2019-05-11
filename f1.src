@@ -1,0 +1,13 @@
+// Tests increment and decrement
+
+i :: 0
+b :: true
+
+main :: {
+
+     while i < 5 {
+          put(i) put('\n')
+          i++
+     }
+     put(i) put('\n')
+}

@@ -1,0 +1,9 @@
+// A test of a for loop
+
+i : int
+
+main :: {
+     for i = 0 : i < 5 : +{
+          put(i) put('\n')
+     }
+}

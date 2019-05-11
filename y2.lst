@@ -1,0 +1,25 @@
+     1: x, y, r :: 0
+     2: 
+     3: main :: {
+     4:   put('>')
+     5:   x = get(int)
+     6:   put('>')
+     7:   y = get(int)
+     8:   r = y + (x * x)
+     9:   put('r') put('=') put(r) put('\n')
+    10:   r = (y + x) * x
+    11:   put('r') put('=') put(r) put('\n')
+    12:   r = y + x * x
+    13:   put('r') put('=') put(r) put('\n')
+    14:   r = x * x + y
+    15:   put('r') put('=') put(r) put('\n')
+    16:   put(true) put(' ') put(false) put('\n')
+    17: }
+
+Symbol Table: global
+Num Scope                Name           Ref            Type
+  0 global               r              _r             int          0
+  1 global               x              _x             int          0
+  2 global               main           _main          () -> void
+  3 global               y              _y             int          0
+Parse Successful

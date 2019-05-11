@@ -1,0 +1,19 @@
+// Tests the loop construct and prints meow a few times ^.^
+
+i :: 3
+
+main :: {
+     loop {
+          put("meow ")
+          loop{
+               put("tomato \n")
+               break
+          }
+          if i == 0{
+               put('\n')
+               break
+          }
+
+          i--
+     }
+}

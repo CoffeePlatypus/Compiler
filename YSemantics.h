@@ -37,3 +37,7 @@ struct InstrSeq * ProcIf(struct CondResult * res, struct InstrSeq * ins);
 struct InstrSeq * ProcIfElse(struct CondResult * res, struct InstrSeq * ins, struct InstrSeq * ins2);
 struct InstrSeq * ProcWhile(struct CondResult * cond, struct InstrSeq * ins);
 struct InstrSeq * ProcFuncCall(char * id);
+struct InstrSeq * ProcFor(struct InstrSeq * a, struct CondResult * cond, struct InstrSeq * prog, struct InstrSeq * body);
+struct InstrSeq * ProcTuri(char * id, struct CondResult * cond, struct ExprResult * exp1, struct ExprResult * exp2 );
+struct InstrSeq * ProcLoop(struct InstrSeq * seq);
+struct InstrSeq * ProcBreak();

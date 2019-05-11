@@ -39,6 +39,7 @@ Digit   [0-9]
 \/\*						  { nestedCommentCount++;                             }
 \*\/						  { nestedCommentCount--;                             }
 \,                              { if (!IN_COMMENT) RETURN(',',1);                   }
+\?                              { if (!IN_COMMENT) RETURN('?',1);                   }
 \{                              { if (!IN_COMMENT) RETURN('{',1);                   }
 \}                              { if (!IN_COMMENT) RETURN('}',1);                   }
 \)                              { if (!IN_COMMENT) RETURN(')',1);                   }
@@ -63,8 +64,11 @@ bool                            { if (!IN_COMMENT) RETURN(BOOL_TOK,1);          
 void                            { if (!IN_COMMENT) RETURN(VOID_TOK,1);              }
 true                            { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1);           }
 false                           { if (!IN_COMMENT) RETURN(BOOLLIT_TOK,1);           }
+for                             { if (!IN_COMMENT) RETURN(FOR_TOK,1);               }
 put                             { if (!IN_COMMENT) RETURN(PUT_TOK,1);               }
 get                             { if (!IN_COMMENT) RETURN(GET_TOK,1);               }
+loop                            { if (!IN_COMMENT) RETURN(LOOP_TOK,1);              }
+break                           { if (!IN_COMMENT) RETURN(BREAK_TOK,1);             }  
 while                           { if (!IN_COMMENT) RETURN(WHILE_TOK,1);             }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1);          }
 \:                              { if (!IN_COMMENT) RETURN(':',1);                   }
