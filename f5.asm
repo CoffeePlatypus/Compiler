@@ -7,8 +7,8 @@ __start:                                                                 # Finis
 _main:                                                                   # func entry
                     subu        $sp         $sp         4                # ProcFuncBody
                     sw          $ra         0($sp)                       # ProcFuncBody
-                    la          $t0         arr                          # ProcDeclArray
-                    sll         $t1         2                            # i*4
+                    la          $t0         _arr                         # ProcDeclArray
+                    sll         $t1         $t1         2                # i*4
                     add         $t1         $t1         $t0              # addr A[i]
                     sw          $t2         0($t1)                       # ProcAssignArray
                     li          $v0         4                              
@@ -21,4 +21,4 @@ _main_ret:
                     .data                                                # FinishSemantics
 _i:                 .word       0                                          
 L1:                 .asciiz     "done"                                     
-arr:                .space      20                                         
+_arr:               .space      20                                         

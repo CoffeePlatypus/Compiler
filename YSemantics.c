@@ -92,7 +92,7 @@ processArray(void * dataCode){
      while (*arrays) {
           const struct SymEntry * entry = *arrays;
           struct ArrayAttr * attr = GetAttr(entry);
-          AppendSeq(dataCode, GenInstr(GetName(entry), ".space", attr->sizeC, NULL, NULL, NULL));
+          AppendSeq(dataCode, GenInstr( AppendStr("_", GetName(entry)), ".space", attr->sizeC, NULL, NULL, NULL));
           arrays++;
      }
 }
@@ -222,7 +222,7 @@ ProcDeclArray(char * id, struct LiteralDesc * desc ) {
      struct ArrayAttr * attr = MakeArrayAttr(s, ssize, AvailTmpReg());
      struct SymEntry * ent = EnterName(ArrayTable, id);
      SetAttr(ent,STRUCT_KIND, attr);
-     return GenOp2X("la", TmpRegName(attr->reg), id);
+     return GenOp2X("la", TmpRegName(attr->reg), AppendStr("_", id));
 }
 
 struct IdList *
@@ -271,7 +271,7 @@ struct InstrSeq *
 ProcAssignArray(char * id, struct ExprResult * index, struct ExprResult * res) {
      struct SymEntry * d = LookupName(ArrayTable, id);
      struct ArrayAttr * attr = GetAttr(d);
-     struct InstrSeq * ins =  GenOp2C("sll", TmpRegName(index->resultRegister), "2", "i*4");
+     struct InstrSeq * ins =  GenOp3C("sll", TmpRegName(index->resultRegister), TmpRegName(index->resultRegister), "2", "i*4");
      char * s = malloc(sizeof(char) * 20);
      sprintf(s, "0(%s)", TmpRegName(index->resultRegister));
      AppendSeq(ins, GenOp3C("add", TmpRegName(index->resultRegister), TmpRegName(index->resultRegister), TmpRegName(attr->reg), "addr A[i]"));
