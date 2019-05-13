@@ -41,3 +41,5 @@ struct InstrSeq * ProcFor(struct InstrSeq * a, struct CondResult * cond, struct 
 struct InstrSeq * ProcTuri(char * id, struct CondResult * cond, struct ExprResult * exp1, struct ExprResult * exp2 );
 struct InstrSeq * ProcLoop(struct InstrSeq * seq);
 struct InstrSeq * ProcBreak();
+struct InstrSeq * ProcDeclArray(char * id,  struct LiteralDesc * desc );
+struct InstrSeq * ProcAssignArray(char * id, struct ExprResult * index, struct ExprResult * res);

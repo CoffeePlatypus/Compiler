@@ -154,7 +154,7 @@ ytest: Y
 		@echo "===================="
 		@rm $*.test
 
-sem2test:    feature1 feature2 feature3 feature4
+sem2test:    feature1 feature2 feature3 feature4 feature5
 
 feature1: Y
 		echo "Increment and decrement"
@@ -183,6 +183,13 @@ feature4: Y
 		./Y f4
 		cat f4.asm
 		spim -noexception -file f4.asm
+
+feature5: Y
+		echo "Array"
+		rm -f f5.asm
+		./Y f5
+		cat f5.asm
+		spim -noexception -file f5.asm
 
 # Other
 clean:

@@ -86,8 +86,9 @@ DeclList      : Decl                                        {  };
 
 Decl          : IdList ':' BaseType                         { ProcDecl($1,$3,0); };
 Decl          : IdList "::" Literal                         { ProcDecl($1,$3->baseType,$3->value); };
-Decl          : IdList ':' FuncDecl                         { ProcDeclFunc($1,$3); };
-Decl          : IdList "::" CodeBlock                       { ProcFuncBody($1,$3); };
+Decl          : IdList ':' FuncDecl                         { ProcDeclFunc($1,$3);   };
+Decl          : IdList "::" CodeBlock                       { ProcFuncBody($1,$3);   };
+//Decl          : Id "::" '<' INTLIT_TOK '>'                  { ProcDeclArray($1, strdup(yytext)); };
 
 IdList        : IdItem ',' IdList                           { $$ = AppendIdList($1,$3); };
 IdList        : IdItem                                      { $$ = $1; };
@@ -103,7 +104,7 @@ BaseType      : "chr"                                       { @$ = @1; $$ = ChrB
 BaseType      : "bool"                                      { @$ = @1; $$ = BoolBaseType; };
 BaseType      : "void"                                      { @$ = @1; $$ = VoidBaseType; };
 
-Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType);  };
+Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType); printf("whyyy %s\n", yytext);  };
 Literal       : CHRLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType);  };
 Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = MakeLiteralDesc(yytext,BoolBaseType); };
 
@@ -126,6 +127,7 @@ Stmt          : Id '-' '-'                                       { $$ = ProcAssi
 Stmt          : "for" Id '=' Oprnd ':' Cond ':' '+' CodeBlock    { $$ = ProcFor( ProcAssign($2, $4), $6, ProcAssign($2, ProcOp(ProcLoadVar($2), ProcLit("1",IntBaseType), 0)), $9);};
 Stmt          : "loop" CodeBlock                                 { $$ = ProcLoop($2);   };
 Stmt          : "break"                                          { $$ = ProcBreak();    };
+Stmt          : Id '=' '<' Literal '>'                  { $$ = ProcDeclArray($1, $4); };
 
 Cond          : Expr CondOp Expr                            { $$ = ProcCond($1, $2, $3);   };
 //Cond          :
@@ -138,6 +140,7 @@ CondOp        : "=="                                        { $$ = strdup("bne")
 CondOp        : "##"                                        { $$ = strdup("beq");   };
 
 AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
+AssignStmt    : Id  '<' Expr '>'  '=' Expr               { $$ = ProcAssignArray($1, $3, $6); };
 AssignStmt    : Id '=' Cond '?' Expr ':' Expr               { $$ = ProcTuri($1, $3, $5, $7);};
 
 Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0);     } ;

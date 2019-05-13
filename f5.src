@@ -1,0 +1,13 @@
+// Tests the loop construct and prints meow a few times ^.^
+
+i : int
+
+main :: {
+     arr = < 5 >
+     arr < 0 > = 1
+     //for i = 0 : i < 5 : + {
+     //     put(i)
+     //     arr < i > = i
+     //}
+     put("done")
+}

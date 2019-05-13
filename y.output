@@ -49,54 +49,56 @@ Grammar
    33     | "for" Id '=' Oprnd ':' Cond ':' '+' CodeBlock
    34     | "loop" CodeBlock
    35     | "break"
+   36     | Id '=' '<' Literal '>'
 
-   36 Cond: Expr CondOp Expr
+   37 Cond: Expr CondOp Expr
 
-   37 CondOp: '>'
-   38       | '<'
-   39       | ">="
-   40       | "<="
-   41       | "=="
-   42       | "##"
+   38 CondOp: '>'
+   39       | '<'
+   40       | ">="
+   41       | "<="
+   42       | "=="
+   43       | "##"
 
-   43 AssignStmt: Id '=' Expr
-   44           | Id '=' Cond '?' Expr ':' Expr
+   44 AssignStmt: Id '=' Expr
+   45           | Id '<' Expr '>' '=' Expr
+   46           | Id '=' Cond '?' Expr ':' Expr
 
-   45 Expr: Expr '+' Expr
-   46     | Expr '-' Expr
-   47     | Expr '*' Expr
-   48     | Expr '/' Expr
-   49     | '(' Expr ')'
-   50     | '-' Expr
-   51     | "get" '(' "int" ')'
-   52     | Oprnd
+   47 Expr: Expr '+' Expr
+   48     | Expr '-' Expr
+   49     | Expr '*' Expr
+   50     | Expr '/' Expr
+   51     | '(' Expr ')'
+   52     | '-' Expr
+   53     | "get" '(' "int" ')'
+   54     | Oprnd
 
-   53 Oprnd: INTLIT_TOK
-   54      | Id
-   55      | CHRLIT_TOK
-   56      | BOOLLIT_TOK
+   55 Oprnd: INTLIT_TOK
+   56      | Id
+   57      | CHRLIT_TOK
+   58      | BOOLLIT_TOK
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 20 24 25 30 49 51
-')' (41) 20 24 25 30 49 51
-'*' (42) 47
-'+' (43) 31 33 45
+'(' (40) 20 24 25 30 51 53
+')' (41) 20 24 25 30 51 53
+'*' (42) 49
+'+' (43) 31 33 47
 ',' (44) 8
-'-' (45) 32 46 50
-'/' (47) 48
-':' (58) 4 6 33 44
-'<' (60) 38
-'=' (61) 33 43 44
-'>' (62) 37
-'?' (63) 44
+'-' (45) 32 48 52
+'/' (47) 50
+':' (58) 4 6 33 46
+'<' (60) 36 39 45
+'=' (61) 33 36 44 45 46
+'>' (62) 36 38 45
+'?' (63) 46
 '{' (123) 21
 '}' (125) 21
 error (256)
 IDENT_TOK (258) 11
-"int" (259) 13 51
+"int" (259) 13 53
 "chr" (260) 14
 "bool" (261) 15
 "void" (262) 16
@@ -107,17 +109,17 @@ IDENT_TOK (258) 11
 "loop" (267) 34
 "break" (268) 35
 "string" (269) 12
-INTLIT_TOK (270) 17 53
-CHRLIT_TOK (271) 18 55
-BOOLLIT_TOK (272) 19 56
+INTLIT_TOK (270) 17 55
+CHRLIT_TOK (271) 18 57
+BOOLLIT_TOK (272) 19 58
 "->" (273) 20
 "::" (274) 5 7
 "put" (275) 24 25
-"get" (276) 51
-">=" (277) 39
-"<=" (278) 40
-"==" (279) 41
-"##" (280) 42
+"get" (276) 53
+">=" (277) 40
+"<=" (278) 41
+"==" (279) 42
+"##" (280) 43
 UMINUS (281)
 
 
@@ -136,13 +138,13 @@ IdList (45)
 IdItem (46)
     on left: 10, on right: 8 9
 Id (47)
-    on left: 11, on right: 10 30 31 32 33 43 44 54
+    on left: 11, on right: 10 30 31 32 33 36 44 45 46 56
 String (48)
     on left: 12, on right: 25
 BaseType (49)
     on left: 13 14 15 16, on right: 4 20
 Literal (50)
-    on left: 17 18 19, on right: 5
+    on left: 17 18 19, on right: 5 36
 FuncDecl (51)
     on left: 20, on right: 6
 CodeBlock (52)
@@ -150,18 +152,18 @@ CodeBlock (52)
 StmtSeq (53)
     on left: 22 23, on right: 21 22
 Stmt (54)
-    on left: 24 25 26 27 28 29 30 31 32 33 34 35, on right: 22
+    on left: 24 25 26 27 28 29 30 31 32 33 34 35 36, on right: 22
 Cond (55)
-    on left: 36, on right: 27 28 29 33 44
+    on left: 37, on right: 27 28 29 33 46
 CondOp (56)
-    on left: 37 38 39 40 41 42, on right: 36
+    on left: 38 39 40 41 42 43, on right: 37
 AssignStmt (57)
-    on left: 43 44, on right: 26
+    on left: 44 45 46, on right: 26
 Expr (58)
-    on left: 45 46 47 48 49 50 51 52, on right: 24 36 43 44 45 46 47
-    48 49 50
+    on left: 47 48 49 50 51 52 53 54, on right: 24 37 44 45 46 47 48
+    49 50 51 52
 Oprnd (59)
-    on left: 53 54 55 56, on right: 33 52
+    on left: 55 56 57 58, on right: 33 54
 
 
 State 0
@@ -483,20 +485,23 @@ State 33
    30 Stmt: Id . '(' ')'
    31     | Id . '+' '+'
    32     | Id . '-' '-'
-   43 AssignStmt: Id . '=' Expr
-   44           | Id . '=' Cond '?' Expr ':' Expr
+   36     | Id . '=' '<' Literal '>'
+   44 AssignStmt: Id . '=' Expr
+   45           | Id . '<' Expr '>' '=' Expr
+   46           | Id . '=' Cond '?' Expr ':' Expr
 
     '+'  shift, and go to state 52
     '-'  shift, and go to state 53
     '('  shift, and go to state 54
     '='  shift, and go to state 55
+    '<'  shift, and go to state 56
 
 
 State 34
 
    21 CodeBlock: '{' StmtSeq . '}'
 
-    '}'  shift, and go to state 56
+    '}'  shift, and go to state 57
 
 
 State 35
@@ -514,7 +519,7 @@ State 35
     $default  reduce using rule 23 (StmtSeq)
 
     Id          go to state 33
-    StmtSeq     go to state 57
+    StmtSeq     go to state 58
     Stmt        go to state 35
     AssignStmt  go to state 36
 
@@ -530,57 +535,40 @@ State 37
 
    20 FuncDecl: '(' ')' . "->" BaseType
 
-    "->"  shift, and go to state 58
+    "->"  shift, and go to state 59
 
 
 State 38
 
-   53 Oprnd: INTLIT_TOK .
-
-    $default  reduce using rule 53 (Oprnd)
-
-
-State 39
-
-   55 Oprnd: CHRLIT_TOK .
+   55 Oprnd: INTLIT_TOK .
 
     $default  reduce using rule 55 (Oprnd)
 
 
+State 39
+
+   57 Oprnd: CHRLIT_TOK .
+
+    $default  reduce using rule 57 (Oprnd)
+
+
 State 40
 
-   56 Oprnd: BOOLLIT_TOK .
+   58 Oprnd: BOOLLIT_TOK .
 
-    $default  reduce using rule 56 (Oprnd)
+    $default  reduce using rule 58 (Oprnd)
 
 
 State 41
 
-   51 Expr: "get" . '(' "int" ')'
+   53 Expr: "get" . '(' "int" ')'
 
-    '('  shift, and go to state 59
+    '('  shift, and go to state 60
 
 
 State 42
 
-   50 Expr: '-' . Expr
-
-    IDENT_TOK    shift, and go to state 1
-    INTLIT_TOK   shift, and go to state 38
-    CHRLIT_TOK   shift, and go to state 39
-    BOOLLIT_TOK  shift, and go to state 40
-    "get"        shift, and go to state 41
-    '-'          shift, and go to state 42
-    '('          shift, and go to state 43
-
-    Id     go to state 44
-    Expr   go to state 60
-    Oprnd  go to state 47
-
-
-State 43
-
-   49 Expr: '(' . Expr ')'
+   52 Expr: '-' . Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -595,11 +583,28 @@ State 43
     Oprnd  go to state 47
 
 
+State 43
+
+   51 Expr: '(' . Expr ')'
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 62
+    Oprnd  go to state 47
+
+
 State 44
 
-   54 Oprnd: Id .
+   56 Oprnd: Id .
 
-    $default  reduce using rule 54 (Oprnd)
+    $default  reduce using rule 56 (Oprnd)
 
 
 State 45
@@ -609,36 +614,36 @@ State 45
 
     '{'  shift, and go to state 16
 
-    CodeBlock  go to state 62
+    CodeBlock  go to state 63
 
 
 State 46
 
-   36 Cond: Expr . CondOp Expr
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
+   37 Cond: Expr . CondOp Expr
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
 
-    ">="  shift, and go to state 63
-    "<="  shift, and go to state 64
-    "=="  shift, and go to state 65
-    "##"  shift, and go to state 66
-    '+'   shift, and go to state 67
-    '-'   shift, and go to state 68
-    '*'   shift, and go to state 69
-    '/'   shift, and go to state 70
-    '>'   shift, and go to state 71
+    ">="  shift, and go to state 64
+    "<="  shift, and go to state 65
+    "=="  shift, and go to state 66
+    "##"  shift, and go to state 67
+    '+'   shift, and go to state 68
+    '-'   shift, and go to state 69
+    '*'   shift, and go to state 70
+    '/'   shift, and go to state 71
     '<'   shift, and go to state 72
+    '>'   shift, and go to state 73
 
-    CondOp  go to state 73
+    CondOp  go to state 74
 
 
 State 47
 
-   52 Expr: Oprnd .
+   54 Expr: Oprnd .
 
-    $default  reduce using rule 52 (Expr)
+    $default  reduce using rule 54 (Expr)
 
 
 State 48
@@ -647,14 +652,14 @@ State 48
 
     '{'  shift, and go to state 16
 
-    CodeBlock  go to state 74
+    CodeBlock  go to state 75
 
 
 State 49
 
    33 Stmt: "for" Id . '=' Oprnd ':' Cond ':' '+' CodeBlock
 
-    '='  shift, and go to state 75
+    '='  shift, and go to state 76
 
 
 State 50
@@ -670,7 +675,7 @@ State 51
    25     | "put" '(' . String ')'
 
     IDENT_TOK    shift, and go to state 1
-    "string"     shift, and go to state 76
+    "string"     shift, and go to state 77
     INTLIT_TOK   shift, and go to state 38
     CHRLIT_TOK   shift, and go to state 39
     BOOLLIT_TOK  shift, and go to state 40
@@ -679,8 +684,8 @@ State 51
     '('          shift, and go to state 43
 
     Id      go to state 44
-    String  go to state 77
-    Expr    go to state 78
+    String  go to state 78
+    Expr    go to state 79
     Oprnd   go to state 47
 
 
@@ -688,27 +693,47 @@ State 52
 
    31 Stmt: Id '+' . '+'
 
-    '+'  shift, and go to state 79
+    '+'  shift, and go to state 80
 
 
 State 53
 
    32 Stmt: Id '-' . '-'
 
-    '-'  shift, and go to state 80
+    '-'  shift, and go to state 81
 
 
 State 54
 
    30 Stmt: Id '(' . ')'
 
-    ')'  shift, and go to state 81
+    ')'  shift, and go to state 82
 
 
 State 55
 
-   43 AssignStmt: Id '=' . Expr
-   44           | Id '=' . Cond '?' Expr ':' Expr
+   36 Stmt: Id '=' . '<' Literal '>'
+   44 AssignStmt: Id '=' . Expr
+   46           | Id '=' . Cond '?' Expr ':' Expr
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+    '<'          shift, and go to state 83
+
+    Id     go to state 44
+    Cond   go to state 84
+    Expr   go to state 85
+    Oprnd  go to state 47
+
+
+State 56
+
+   45 AssignStmt: Id '<' . Expr '>' '=' Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -719,26 +744,25 @@ State 55
     '('          shift, and go to state 43
 
     Id     go to state 44
-    Cond   go to state 82
-    Expr   go to state 83
+    Expr   go to state 86
     Oprnd  go to state 47
 
 
-State 56
+State 57
 
    21 CodeBlock: '{' StmtSeq '}' .
 
     $default  reduce using rule 21 (CodeBlock)
 
 
-State 57
+State 58
 
    22 StmtSeq: Stmt StmtSeq .
 
     $default  reduce using rule 22 (StmtSeq)
 
 
-State 58
+State 59
 
    20 FuncDecl: '(' ')' "->" . BaseType
 
@@ -747,134 +771,83 @@ State 58
     "bool"  shift, and go to state 21
     "void"  shift, and go to state 22
 
-    BaseType  go to state 84
-
-
-State 59
-
-   51 Expr: "get" '(' . "int" ')'
-
-    "int"  shift, and go to state 85
+    BaseType  go to state 87
 
 
 State 60
 
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-   50     | '-' Expr .
+   53 Expr: "get" '(' . "int" ')'
 
-    $default  reduce using rule 50 (Expr)
+    "int"  shift, and go to state 88
 
 
 State 61
 
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-   49     | '(' Expr . ')'
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   52     | '-' Expr .
 
-    '+'  shift, and go to state 67
-    '-'  shift, and go to state 68
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-    ')'  shift, and go to state 86
+    $default  reduce using rule 52 (Expr)
 
 
 State 62
 
-   27 Stmt: "if" Cond CodeBlock .
-   28     | "if" Cond CodeBlock . "else" CodeBlock
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   51     | '(' Expr . ')'
 
-    "else"  shift, and go to state 87
-
-    $default  reduce using rule 27 (Stmt)
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+    ')'  shift, and go to state 89
 
 
 State 63
 
-   39 CondOp: ">=" .
+   27 Stmt: "if" Cond CodeBlock .
+   28     | "if" Cond CodeBlock . "else" CodeBlock
 
-    $default  reduce using rule 39 (CondOp)
+    "else"  shift, and go to state 90
+
+    $default  reduce using rule 27 (Stmt)
 
 
 State 64
 
-   40 CondOp: "<=" .
+   40 CondOp: ">=" .
 
     $default  reduce using rule 40 (CondOp)
 
 
 State 65
 
-   41 CondOp: "==" .
+   41 CondOp: "<=" .
 
     $default  reduce using rule 41 (CondOp)
 
 
 State 66
 
-   42 CondOp: "##" .
+   42 CondOp: "==" .
 
     $default  reduce using rule 42 (CondOp)
 
 
 State 67
 
-   45 Expr: Expr '+' . Expr
+   43 CondOp: "##" .
 
-    IDENT_TOK    shift, and go to state 1
-    INTLIT_TOK   shift, and go to state 38
-    CHRLIT_TOK   shift, and go to state 39
-    BOOLLIT_TOK  shift, and go to state 40
-    "get"        shift, and go to state 41
-    '-'          shift, and go to state 42
-    '('          shift, and go to state 43
-
-    Id     go to state 44
-    Expr   go to state 88
-    Oprnd  go to state 47
+    $default  reduce using rule 43 (CondOp)
 
 
 State 68
 
-   46 Expr: Expr '-' . Expr
-
-    IDENT_TOK    shift, and go to state 1
-    INTLIT_TOK   shift, and go to state 38
-    CHRLIT_TOK   shift, and go to state 39
-    BOOLLIT_TOK  shift, and go to state 40
-    "get"        shift, and go to state 41
-    '-'          shift, and go to state 42
-    '('          shift, and go to state 43
-
-    Id     go to state 44
-    Expr   go to state 89
-    Oprnd  go to state 47
-
-
-State 69
-
-   47 Expr: Expr '*' . Expr
-
-    IDENT_TOK    shift, and go to state 1
-    INTLIT_TOK   shift, and go to state 38
-    CHRLIT_TOK   shift, and go to state 39
-    BOOLLIT_TOK  shift, and go to state 40
-    "get"        shift, and go to state 41
-    '-'          shift, and go to state 42
-    '('          shift, and go to state 43
-
-    Id     go to state 44
-    Expr   go to state 90
-    Oprnd  go to state 47
-
-
-State 70
-
-   48 Expr: Expr '/' . Expr
+   47 Expr: Expr '+' . Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -889,23 +862,9 @@ State 70
     Oprnd  go to state 47
 
 
-State 71
+State 69
 
-   37 CondOp: '>' .
-
-    $default  reduce using rule 37 (CondOp)
-
-
-State 72
-
-   38 CondOp: '<' .
-
-    $default  reduce using rule 38 (CondOp)
-
-
-State 73
-
-   36 Cond: Expr CondOp . Expr
+   48 Expr: Expr '-' . Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -920,228 +879,9 @@ State 73
     Oprnd  go to state 47
 
 
-State 74
+State 70
 
-   29 Stmt: "while" Cond CodeBlock .
-
-    $default  reduce using rule 29 (Stmt)
-
-
-State 75
-
-   33 Stmt: "for" Id '=' . Oprnd ':' Cond ':' '+' CodeBlock
-
-    IDENT_TOK    shift, and go to state 1
-    INTLIT_TOK   shift, and go to state 38
-    CHRLIT_TOK   shift, and go to state 39
-    BOOLLIT_TOK  shift, and go to state 40
-
-    Id     go to state 44
-    Oprnd  go to state 93
-
-
-State 76
-
-   12 String: "string" .
-
-    $default  reduce using rule 12 (String)
-
-
-State 77
-
-   25 Stmt: "put" '(' String . ')'
-
-    ')'  shift, and go to state 94
-
-
-State 78
-
-   24 Stmt: "put" '(' Expr . ')'
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-
-    '+'  shift, and go to state 67
-    '-'  shift, and go to state 68
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-    ')'  shift, and go to state 95
-
-
-State 79
-
-   31 Stmt: Id '+' '+' .
-
-    $default  reduce using rule 31 (Stmt)
-
-
-State 80
-
-   32 Stmt: Id '-' '-' .
-
-    $default  reduce using rule 32 (Stmt)
-
-
-State 81
-
-   30 Stmt: Id '(' ')' .
-
-    $default  reduce using rule 30 (Stmt)
-
-
-State 82
-
-   44 AssignStmt: Id '=' Cond . '?' Expr ':' Expr
-
-    '?'  shift, and go to state 96
-
-
-State 83
-
-   36 Cond: Expr . CondOp Expr
-   43 AssignStmt: Id '=' Expr .
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-
-    ">="  shift, and go to state 63
-    "<="  shift, and go to state 64
-    "=="  shift, and go to state 65
-    "##"  shift, and go to state 66
-    '+'   shift, and go to state 67
-    '-'   shift, and go to state 68
-    '*'   shift, and go to state 69
-    '/'   shift, and go to state 70
-    '>'   shift, and go to state 71
-    '<'   shift, and go to state 72
-
-    $default  reduce using rule 43 (AssignStmt)
-
-    CondOp  go to state 73
-
-
-State 84
-
-   20 FuncDecl: '(' ')' "->" BaseType .
-
-    $default  reduce using rule 20 (FuncDecl)
-
-
-State 85
-
-   51 Expr: "get" '(' "int" . ')'
-
-    ')'  shift, and go to state 97
-
-
-State 86
-
-   49 Expr: '(' Expr ')' .
-
-    $default  reduce using rule 49 (Expr)
-
-
-State 87
-
-   28 Stmt: "if" Cond CodeBlock "else" . CodeBlock
-
-    '{'  shift, and go to state 16
-
-    CodeBlock  go to state 98
-
-
-State 88
-
-   45 Expr: Expr . '+' Expr
-   45     | Expr '+' Expr .
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-
-    $default  reduce using rule 45 (Expr)
-
-
-State 89
-
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   46     | Expr '-' Expr .
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-
-    $default  reduce using rule 46 (Expr)
-
-
-State 90
-
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   47     | Expr '*' Expr .
-   48     | Expr . '/' Expr
-
-    $default  reduce using rule 47 (Expr)
-
-
-State 91
-
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-   48     | Expr '/' Expr .
-
-    $default  reduce using rule 48 (Expr)
-
-
-State 92
-
-   36 Cond: Expr CondOp Expr .
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
-
-    '+'  shift, and go to state 67
-    '-'  shift, and go to state 68
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-
-    $default  reduce using rule 36 (Cond)
-
-
-State 93
-
-   33 Stmt: "for" Id '=' Oprnd . ':' Cond ':' '+' CodeBlock
-
-    ':'  shift, and go to state 99
-
-
-State 94
-
-   25 Stmt: "put" '(' String ')' .
-
-    $default  reduce using rule 25 (Stmt)
-
-
-State 95
-
-   24 Stmt: "put" '(' Expr ')' .
-
-    $default  reduce using rule 24 (Stmt)
-
-
-State 96
-
-   44 AssignStmt: Id '=' Cond '?' . Expr ':' Expr
+   49 Expr: Expr '*' . Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -1152,25 +892,349 @@ State 96
     '('          shift, and go to state 43
 
     Id     go to state 44
-    Expr   go to state 100
+    Expr   go to state 93
     Oprnd  go to state 47
 
 
-State 97
+State 71
 
-   51 Expr: "get" '(' "int" ')' .
+   50 Expr: Expr '/' . Expr
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 94
+    Oprnd  go to state 47
+
+
+State 72
+
+   39 CondOp: '<' .
+
+    $default  reduce using rule 39 (CondOp)
+
+
+State 73
+
+   38 CondOp: '>' .
+
+    $default  reduce using rule 38 (CondOp)
+
+
+State 74
+
+   37 Cond: Expr CondOp . Expr
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 95
+    Oprnd  go to state 47
+
+
+State 75
+
+   29 Stmt: "while" Cond CodeBlock .
+
+    $default  reduce using rule 29 (Stmt)
+
+
+State 76
+
+   33 Stmt: "for" Id '=' . Oprnd ':' Cond ':' '+' CodeBlock
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+
+    Id     go to state 44
+    Oprnd  go to state 96
+
+
+State 77
+
+   12 String: "string" .
+
+    $default  reduce using rule 12 (String)
+
+
+State 78
+
+   25 Stmt: "put" '(' String . ')'
+
+    ')'  shift, and go to state 97
+
+
+State 79
+
+   24 Stmt: "put" '(' Expr . ')'
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+    ')'  shift, and go to state 98
+
+
+State 80
+
+   31 Stmt: Id '+' '+' .
+
+    $default  reduce using rule 31 (Stmt)
+
+
+State 81
+
+   32 Stmt: Id '-' '-' .
+
+    $default  reduce using rule 32 (Stmt)
+
+
+State 82
+
+   30 Stmt: Id '(' ')' .
+
+    $default  reduce using rule 30 (Stmt)
+
+
+State 83
+
+   36 Stmt: Id '=' '<' . Literal '>'
+
+    INTLIT_TOK   shift, and go to state 13
+    CHRLIT_TOK   shift, and go to state 14
+    BOOLLIT_TOK  shift, and go to state 15
+
+    Literal  go to state 99
+
+
+State 84
+
+   46 AssignStmt: Id '=' Cond . '?' Expr ':' Expr
+
+    '?'  shift, and go to state 100
+
+
+State 85
+
+   37 Cond: Expr . CondOp Expr
+   44 AssignStmt: Id '=' Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    ">="  shift, and go to state 64
+    "<="  shift, and go to state 65
+    "=="  shift, and go to state 66
+    "##"  shift, and go to state 67
+    '+'   shift, and go to state 68
+    '-'   shift, and go to state 69
+    '*'   shift, and go to state 70
+    '/'   shift, and go to state 71
+    '<'   shift, and go to state 72
+    '>'   shift, and go to state 73
+
+    $default  reduce using rule 44 (AssignStmt)
+
+    CondOp  go to state 74
+
+
+State 86
+
+   45 AssignStmt: Id '<' Expr . '>' '=' Expr
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+    '>'  shift, and go to state 101
+
+
+State 87
+
+   20 FuncDecl: '(' ')' "->" BaseType .
+
+    $default  reduce using rule 20 (FuncDecl)
+
+
+State 88
+
+   53 Expr: "get" '(' "int" . ')'
+
+    ')'  shift, and go to state 102
+
+
+State 89
+
+   51 Expr: '(' Expr ')' .
 
     $default  reduce using rule 51 (Expr)
 
 
+State 90
+
+   28 Stmt: "if" Cond CodeBlock "else" . CodeBlock
+
+    '{'  shift, and go to state 16
+
+    CodeBlock  go to state 103
+
+
+State 91
+
+   47 Expr: Expr . '+' Expr
+   47     | Expr '+' Expr .
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+
+    $default  reduce using rule 47 (Expr)
+
+
+State 92
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   48     | Expr '-' Expr .
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+
+    $default  reduce using rule 48 (Expr)
+
+
+State 93
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   49     | Expr '*' Expr .
+   50     | Expr . '/' Expr
+
+    $default  reduce using rule 49 (Expr)
+
+
+State 94
+
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+   50     | Expr '/' Expr .
+
+    $default  reduce using rule 50 (Expr)
+
+
+State 95
+
+   37 Cond: Expr CondOp Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+
+    $default  reduce using rule 37 (Cond)
+
+
+State 96
+
+   33 Stmt: "for" Id '=' Oprnd . ':' Cond ':' '+' CodeBlock
+
+    ':'  shift, and go to state 104
+
+
+State 97
+
+   25 Stmt: "put" '(' String ')' .
+
+    $default  reduce using rule 25 (Stmt)
+
+
 State 98
+
+   24 Stmt: "put" '(' Expr ')' .
+
+    $default  reduce using rule 24 (Stmt)
+
+
+State 99
+
+   36 Stmt: Id '=' '<' Literal . '>'
+
+    '>'  shift, and go to state 105
+
+
+State 100
+
+   46 AssignStmt: Id '=' Cond '?' . Expr ':' Expr
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 106
+    Oprnd  go to state 47
+
+
+State 101
+
+   45 AssignStmt: Id '<' Expr '>' . '=' Expr
+
+    '='  shift, and go to state 107
+
+
+State 102
+
+   53 Expr: "get" '(' "int" ')' .
+
+    $default  reduce using rule 53 (Expr)
+
+
+State 103
 
    28 Stmt: "if" Cond CodeBlock "else" CodeBlock .
 
     $default  reduce using rule 28 (Stmt)
 
 
-State 99
+State 104
 
    33 Stmt: "for" Id '=' Oprnd ':' . Cond ':' '+' CodeBlock
 
@@ -1183,36 +1247,36 @@ State 99
     '('          shift, and go to state 43
 
     Id     go to state 44
-    Cond   go to state 101
+    Cond   go to state 108
     Expr   go to state 46
     Oprnd  go to state 47
 
 
-State 100
+State 105
 
-   44 AssignStmt: Id '=' Cond '?' Expr . ':' Expr
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
+   36 Stmt: Id '=' '<' Literal '>' .
 
-    '+'  shift, and go to state 67
-    '-'  shift, and go to state 68
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
-    ':'  shift, and go to state 102
+    $default  reduce using rule 36 (Stmt)
 
 
-State 101
+State 106
 
-   33 Stmt: "for" Id '=' Oprnd ':' Cond . ':' '+' CodeBlock
+   46 AssignStmt: Id '=' Cond '?' Expr . ':' Expr
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
 
-    ':'  shift, and go to state 103
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+    ':'  shift, and go to state 109
 
 
-State 102
+State 107
 
-   44 AssignStmt: Id '=' Cond '?' Expr ':' . Expr
+   45 AssignStmt: Id '<' Expr '>' '=' . Expr
 
     IDENT_TOK    shift, and go to state 1
     INTLIT_TOK   shift, and go to state 38
@@ -1223,43 +1287,83 @@ State 102
     '('          shift, and go to state 43
 
     Id     go to state 44
-    Expr   go to state 104
+    Expr   go to state 110
     Oprnd  go to state 47
 
 
-State 103
+State 108
+
+   33 Stmt: "for" Id '=' Oprnd ':' Cond . ':' '+' CodeBlock
+
+    ':'  shift, and go to state 111
+
+
+State 109
+
+   46 AssignStmt: Id '=' Cond '?' Expr ':' . Expr
+
+    IDENT_TOK    shift, and go to state 1
+    INTLIT_TOK   shift, and go to state 38
+    CHRLIT_TOK   shift, and go to state 39
+    BOOLLIT_TOK  shift, and go to state 40
+    "get"        shift, and go to state 41
+    '-'          shift, and go to state 42
+    '('          shift, and go to state 43
+
+    Id     go to state 44
+    Expr   go to state 112
+    Oprnd  go to state 47
+
+
+State 110
+
+   45 AssignStmt: Id '<' Expr '>' '=' Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
+
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
+
+    $default  reduce using rule 45 (AssignStmt)
+
+
+State 111
 
    33 Stmt: "for" Id '=' Oprnd ':' Cond ':' . '+' CodeBlock
 
-    '+'  shift, and go to state 105
+    '+'  shift, and go to state 113
 
 
-State 104
+State 112
 
-   44 AssignStmt: Id '=' Cond '?' Expr ':' Expr .
-   45 Expr: Expr . '+' Expr
-   46     | Expr . '-' Expr
-   47     | Expr . '*' Expr
-   48     | Expr . '/' Expr
+   46 AssignStmt: Id '=' Cond '?' Expr ':' Expr .
+   47 Expr: Expr . '+' Expr
+   48     | Expr . '-' Expr
+   49     | Expr . '*' Expr
+   50     | Expr . '/' Expr
 
-    '+'  shift, and go to state 67
-    '-'  shift, and go to state 68
-    '*'  shift, and go to state 69
-    '/'  shift, and go to state 70
+    '+'  shift, and go to state 68
+    '-'  shift, and go to state 69
+    '*'  shift, and go to state 70
+    '/'  shift, and go to state 71
 
-    $default  reduce using rule 44 (AssignStmt)
+    $default  reduce using rule 46 (AssignStmt)
 
 
-State 105
+State 113
 
    33 Stmt: "for" Id '=' Oprnd ':' Cond ':' '+' . CodeBlock
 
     '{'  shift, and go to state 16
 
-    CodeBlock  go to state 106
+    CodeBlock  go to state 114
 
 
-State 106
+State 114
 
    33 Stmt: "for" Id '=' Oprnd ':' Cond ':' '+' CodeBlock .
 

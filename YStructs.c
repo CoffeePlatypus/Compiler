@@ -100,6 +100,15 @@ MakeCondResult(struct InstrSeq * exprCode, int resultRegister, char * str){
      return res;
 }
 
+struct ArrayAttr *
+MakeArrayAttr(int size, char* sizeC, int reg){
+     struct ArrayAttr * res = malloc(sizeof(struct ArrayAttr));
+     res->size = size;
+     res->sizeC = sizeC;
+     res->reg = reg;
+     return res;
+}
+
 void
 FreeIdList(struct IdList * item) {
   free(item);

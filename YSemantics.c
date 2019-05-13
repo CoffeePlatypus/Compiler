@@ -17,6 +17,7 @@
 
 struct SymTab * IdentifierTable;
 struct SymTab * StringTable;
+struct SymTab * ArrayTable;
 int sem_debug = false;
 char * bl;
 
@@ -31,6 +32,7 @@ void
 InitSemantics() {
   IdentifierTable = CreateSymTab(100,"global",NULL);
   StringTable = CreateSymTab(100, "strings", NULL);
+  ArrayTable = CreateSymTab(100, "arrays", NULL);
 }
 
 bool
@@ -84,6 +86,17 @@ processStrings(void * dataCode){
      }
 }
 
+void
+processArray(void * dataCode){
+     struct SymEntry **  arrays = GetEntries(ArrayTable, false, NULL);
+     while (*arrays) {
+          const struct SymEntry * entry = *arrays;
+          struct ArrayAttr * attr = GetAttr(entry);
+          AppendSeq(dataCode, GenInstr(GetName(entry), ".space", attr->sizeC, NULL, NULL, NULL));
+          arrays++;
+     }
+}
+
 // Semantics Actions
 
 void
@@ -113,7 +126,7 @@ FinishSemantics() {
   struct InstrSeq * dataCode = GenOpX(".data");
   processGlobalIdentifier(dataCode);
   processStrings(dataCode);
-
+  processArray(dataCode);
   // combine and write
   struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
   WriteSeq(moduleCode);
@@ -199,6 +212,19 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
   attr->typeDesc->funcDesc.funcCode = codeBlock;
 }
 
+struct InstrSeq *
+ProcDeclArray(char * id, struct LiteralDesc * desc ) {
+     printf(">.<\n");
+     int s = desc->value * 4;
+     char * ssize = malloc(sizeof(char)*10);
+     sprintf(ssize, "%d",s);
+     printf("hmm %s %d \n", ssize, s);
+     struct ArrayAttr * attr = MakeArrayAttr(s, ssize, AvailTmpReg());
+     struct SymEntry * ent = EnterName(ArrayTable, id);
+     SetAttr(ent,STRUCT_KIND, attr);
+     return GenOp2X("la", TmpRegName(attr->reg), id);
+}
+
 struct IdList *
 AppendIdList(struct IdList * item, struct IdList * list) {
   // chain item to list, return item
@@ -239,6 +265,18 @@ ProcAssign(char * id, struct ExprResult * res){
      // int reg = AvailTmpReg();
 
      return AppendSeq(res->exprCode, GenOp2("sw", TmpRegName(res->resultRegister), attr->reference));
+}
+
+struct InstrSeq *
+ProcAssignArray(char * id, struct ExprResult * index, struct ExprResult * res) {
+     struct SymEntry * d = LookupName(ArrayTable, id);
+     struct ArrayAttr * attr = GetAttr(d);
+     struct InstrSeq * ins =  GenOp2C("sll", TmpRegName(index->resultRegister), "2", "i*4");
+     char * s = malloc(sizeof(char) * 20);
+     sprintf(s, "0(%s)", TmpRegName(index->resultRegister));
+     AppendSeq(ins, GenOp3C("add", TmpRegName(index->resultRegister), TmpRegName(index->resultRegister), TmpRegName(attr->reg), "addr A[i]"));
+     AppendSeq(ins, GenOp2X("sw", TmpRegName(res->resultRegister), s));
+     return ins;
 }
 
 struct InstrSeq *

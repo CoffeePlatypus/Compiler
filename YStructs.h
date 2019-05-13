@@ -74,6 +74,13 @@ struct CondResult {
      char * label;
 };
 
+struct ArrayAttr{
+     int size;
+     int reg;
+     char * sizeC;
+
+};
+
 // Make and Free Structs
 struct IdList *        MakeIdList(struct SymEntry * entry, struct Span span);
 struct TypeDesc *      MakePrimDesc(enum BaseTypes type, int initialValue);
@@ -83,6 +90,7 @@ struct Attr *          MakeAttr(struct TypeDesc * typeDesc, char * reference, st
 struct ExprResult *    MakeExprResult(struct InstrSeq * exprCode, int resultRegister, char operator, enum BaseTypes resType, struct LiteralDesc * desc);
 struct CondResult *    MakeCondResult(struct InstrSeq * exprCode, int resultRegister, char * label);
 struct StrAttr *       MakeStrAttr(char * label, char * text);
+struct ArrayAttr *     MakeArrayAttr(int size, char* sizeC, int reg);
 
 void                   FreeIdList(struct IdList * item);
 void                   FreeTypeDesc(struct TypeDesc * typeDesc);
