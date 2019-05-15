@@ -82,6 +82,7 @@ processStrings(void * dataCode){
           const struct SymEntry * entry = *asciiz;
           struct StrAttr * attr = GetAttr(entry);
           AppendSeq(dataCode, GenInstr(attr->label, ".asciiz", attr->text, NULL, NULL, NULL));
+          AppendSeq(dataCode, GenInstr( NULL, ".align", "2", NULL, NULL, NULL));
           asciiz++;
      }
 }
@@ -93,6 +94,7 @@ processArray(void * dataCode){
           const struct SymEntry * entry = *arrays;
           struct ArrayAttr * attr = GetAttr(entry);
           AppendSeq(dataCode, GenInstr( AppendStr("_", GetName(entry)), ".space", attr->sizeC, NULL, NULL, NULL));
+          AppendSeq(dataCode, GenInstr( NULL, ".align", "2", NULL, NULL,  "align? This is how we did it in 270"));
           arrays++;
      }
 }
@@ -125,8 +127,8 @@ FinishSemantics() {
 
   struct InstrSeq * dataCode = GenOpX(".data");
   processGlobalIdentifier(dataCode);
-  processStrings(dataCode);
   processArray(dataCode);
+  processStrings(dataCode);
   // combine and write
   struct InstrSeq * moduleCode = AppendSeq(textCode,dataCode);
   WriteSeq(moduleCode);
@@ -214,11 +216,11 @@ ProcFuncBody(struct IdList * idItem, struct InstrSeq * codeBlock) {
 
 struct InstrSeq *
 ProcDeclArray(char * id, struct LiteralDesc * desc ) {
-     printf(">.<\n");
+     // printf(">.<\n");
      int s = desc->value * 4;
      char * ssize = malloc(sizeof(char)*10);
      sprintf(ssize, "%d",s);
-     printf("hmm %s %d \n", ssize, s);
+     // printf("hmm %s %d \n", ssize, s);
      struct ArrayAttr * attr = MakeArrayAttr(s, ssize, AvailTmpReg());
      struct SymEntry * ent = EnterName(ArrayTable, id);
      SetAttr(ent,STRUCT_KIND, attr);

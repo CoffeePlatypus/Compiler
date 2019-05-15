@@ -104,7 +104,7 @@ BaseType      : "chr"                                       { @$ = @1; $$ = ChrB
 BaseType      : "bool"                                      { @$ = @1; $$ = BoolBaseType; };
 BaseType      : "void"                                      { @$ = @1; $$ = VoidBaseType; };
 
-Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType); printf("whyyy %s\n", yytext);  };
+Literal       : INTLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,IntBaseType);  };
 Literal       : CHRLIT_TOK                                  { @$ = @1; $$ = MakeLiteralDesc(yytext,ChrBaseType);  };
 Literal       : BOOLLIT_TOK                                 { @$ = @1; $$ = MakeLiteralDesc(yytext,BoolBaseType); };
 

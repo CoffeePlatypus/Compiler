@@ -20,5 +20,7 @@ _main_ret:
                     jr          $ra                                      # func return
                     .data                                                # FinishSemantics
 _i:                 .word       0                                          
-L1:                 .asciiz     "done"                                     
 _arr:               .space      20                                         
+                    .align      2                                        # align? This is how we did it in 270
+L1:                 .asciiz     "done"                                     
+                    .align      2                                          

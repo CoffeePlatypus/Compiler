@@ -171,21 +171,21 @@ feature2: Y
 		spim -noexception -file f2.asm
 
 feature3: Y
-		echo "ternary test"
+		echo "ternary operator in assign statements"
 		rm -f f3.asm
 		./Y f3
 		cat f3.asm
 		spim -noexception -file f3.asm < f3.in
 
 feature4: Y
-		echo "LOOP"
+		echo "LOOP loop loop"
 		rm -f f4.asm
 		./Y f4
 		cat f4.asm
 		spim -noexception -file f4.asm
 
 feature5: Y
-		echo "Array"
+		echo "Array - Doesn't actually work I didn't figure out the algin thing"
 		rm -f f5.asm
 		./Y f5
 		cat f5.asm

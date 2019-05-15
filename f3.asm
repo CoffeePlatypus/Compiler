@@ -61,4 +61,6 @@ _main_ret:
 _i:                 .word       0                                          
 _x:                 .word       0                                          
 L2:                 .asciiz     "|"                                        
+                    .align      2                                          
 L3:                 .asciiz     "| = "                                     
+                    .align      2                                          
