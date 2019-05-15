@@ -40,6 +40,4 @@ _main_ret:
                     .data                                                # FinishSemantics
 _i:                 .word       3                                          
 L1:                 .asciiz     "meow "                                    
-                    .align      2                                          
 L2:                 .asciiz     "tomato \n"                                
-                    .align      2                                          

@@ -51,6 +51,8 @@ Digit   [0-9]
 \/                              { if (!IN_COMMENT) RETURN('/',1);                   }
 \>                              { if (!IN_COMMENT) RETURN('>',1);                   }
 \<                              { if (!IN_COMMENT) RETURN('<',1);                   }
+\[                              { if (!IN_COMMENT) RETURN('[',1);                   }
+\]                              { if (!IN_COMMENT) RETURN(']',1);                   }
 \-\>                            { if (!IN_COMMENT) RETURN(ARROW_TOK ,1);            }
 \>\=                            { if (!IN_COMMENT) RETURN(GTEQ_TOK ,1);             }
 \<\=                            { if (!IN_COMMENT) RETURN(LTEQ_TOK,1);              }
@@ -68,7 +70,7 @@ for                             { if (!IN_COMMENT) RETURN(FOR_TOK,1);           
 put                             { if (!IN_COMMENT) RETURN(PUT_TOK,1);               }
 get                             { if (!IN_COMMENT) RETURN(GET_TOK,1);               }
 loop                            { if (!IN_COMMENT) RETURN(LOOP_TOK,1);              }
-break                           { if (!IN_COMMENT) RETURN(BREAK_TOK,1);             }  
+break                           { if (!IN_COMMENT) RETURN(BREAK_TOK,1);             }
 while                           { if (!IN_COMMENT) RETURN(WHILE_TOK,1);             }
 \:\:                            { if (!IN_COMMENT) RETURN(DBLCOLON_TOK,1);          }
 \:                              { if (!IN_COMMENT) RETURN(':',1);                   }

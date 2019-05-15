@@ -30,6 +30,7 @@ struct ExprResult * ProcUmin(struct ExprResult * oprnd1);
 struct ExprResult * ProcLit(char * val, enum BaseTypes type);
 struct ExprResult * ProcLoadVar(char * id);
 struct ExprResult * GetInt();
+struct ExprResult * ProcAccessArray(char * id, struct ExprResult * index);
 
 struct CondResult * ProcCond(struct ExprResult * x, char * op, struct ExprResult * y);
 

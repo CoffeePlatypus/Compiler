@@ -3,11 +3,13 @@
 i : int
 
 main :: {
-     arr = < 5 >
-     arr < 0 > = 1
-     //for i = 0 : i < 5 : + {
-     //     put(i)
-     //     arr < i > = i
-     //}
+     arr = [ 6 ]
+     for i = 0 : i < 6 : + {
+          put(i)
+          arr [ i ] = 6
+          put(":")
+          put(arr[i])
+          put("\n")
+     }
      put("done")
 }

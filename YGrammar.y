@@ -127,7 +127,7 @@ Stmt          : Id '-' '-'                                       { $$ = ProcAssi
 Stmt          : "for" Id '=' Oprnd ':' Cond ':' '+' CodeBlock    { $$ = ProcFor( ProcAssign($2, $4), $6, ProcAssign($2, ProcOp(ProcLoadVar($2), ProcLit("1",IntBaseType), 0)), $9);};
 Stmt          : "loop" CodeBlock                                 { $$ = ProcLoop($2);   };
 Stmt          : "break"                                          { $$ = ProcBreak();    };
-Stmt          : Id '=' '<' Literal '>'                  { $$ = ProcDeclArray($1, $4); };
+Stmt          : Id '=' '[' Literal ']'                  { $$ = ProcDeclArray($1, $4); };
 
 Cond          : Expr CondOp Expr                            { $$ = ProcCond($1, $2, $3);   };
 //Cond          :
@@ -140,7 +140,7 @@ CondOp        : "=="                                        { $$ = strdup("bne")
 CondOp        : "##"                                        { $$ = strdup("beq");   };
 
 AssignStmt    : Id '=' Expr                                 { $$ = ProcAssign($1, $3); };
-AssignStmt    : Id  '<' Expr '>'  '=' Expr               { $$ = ProcAssignArray($1, $3, $6); };
+AssignStmt    : Id  '[' Expr ']'  '=' Expr                  { $$ = ProcAssignArray($1, $3, $6); };
 AssignStmt    : Id '=' Cond '?' Expr ':' Expr               { $$ = ProcTuri($1, $3, $5, $7);};
 
 Expr    :  Expr '+' Expr                { $$ = ProcOp($1, $3, 0);     } ;
@@ -155,6 +155,7 @@ Oprnd   :  INTLIT_TOK                   { $$ = ProcLit(strdup(yytext), IntBaseTy
 Oprnd   :  Id                           { $$ = ProcLoadVar($1);                            } ;
 Oprnd   :  CHRLIT_TOK                   { $$ = ProcLit(strdup(yytext), ChrBaseType);       } ;
 Oprnd   :  BOOLLIT_TOK                  { $$ = ProcLit(strdup(yytext), BoolBaseType);      } ;
+Oprnd   :  Id '[' Oprnd ']'              { $$ = ProcAccessArray($1, $3);                    } ;
 
 %%
 

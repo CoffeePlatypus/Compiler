@@ -82,7 +82,7 @@ processStrings(void * dataCode){
           const struct SymEntry * entry = *asciiz;
           struct StrAttr * attr = GetAttr(entry);
           AppendSeq(dataCode, GenInstr(attr->label, ".asciiz", attr->text, NULL, NULL, NULL));
-          AppendSeq(dataCode, GenInstr( NULL, ".align", "2", NULL, NULL, NULL));
+          // AppendSeq(dataCode, GenInstr( NULL, ".align", "2", NULL, NULL, NULL));
           asciiz++;
      }
 }
@@ -415,6 +415,19 @@ ProcLoadVar(char * id) {
      char * stringy = malloc(sizeof(char)*10);
      sprintf(stringy, "%d", attr->typeDesc->primDesc.initialValue); // This is gross and stupid - Should probably not do it this way
      return MakeExprResult(instr, reg, 'w', attr->typeDesc->primDesc.type, MakeLiteralDesc(stringy, attr->typeDesc->primDesc.type));
+}
+
+struct ExprResult *
+ProcAccessArray(char * id, struct ExprResult * index) {
+     struct SymEntry * d = LookupName(ArrayTable, id);
+     struct ArrayAttr * attr = GetAttr(d);
+     struct InstrSeq * ins = index->exprCode;
+     AppendSeq(ins, GenOp3X("sll", TmpRegName(index->resultRegister), TmpRegName(index->resultRegister), "2"));
+     AppendSeq(ins, GenOp3X("add", TmpRegName(index->resultRegister), TmpRegName(index->resultRegister), TmpRegName(attr->reg)));
+     char * str = malloc(sizeof(char) * 20);
+     sprintf(str, "0(%s)", TmpRegName(index->resultRegister));
+     AppendSeq(ins, GenOp2X("lw", TmpRegName(index->resultRegister), str));
+     return index;
 }
 
 //////// Cond /////////
